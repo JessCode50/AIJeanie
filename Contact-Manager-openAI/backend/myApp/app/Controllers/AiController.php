@@ -55,13 +55,13 @@ class AiController extends BaseController
                 }
                 else if ($func === "listaccts"){
                     $APIresponse = $cpanel->listaccts(); 
-                    $temp = $this->formatResponse($APIresponse);
 
+                    $format = $this->formatListaccts($APIresponse);
                     $chatHistory = $session->get('history') ?? [];
                     $chatHistory[] = [
                         "role" => "assistant",
                         "name" => "ticket_handling",
-                        "content" => json_encode($temp)
+                        "content" => json_encode($format)
                     ];
                     $session->set('history', $chatHistory);
                     
@@ -130,6 +130,15 @@ class AiController extends BaseController
                     $functionsCalled[$func] = $arguments;
 
                     $APIresponse = $whmcs->client($arguments['client_id']); 
+
+                    $format = $this->formatClient($APIresponse);
+                    $chatHistory = $session->get('history') ?? [];
+                    $chatHistory[] = [
+                        "role" => "assistant",
+                        "name" => "ticket_handling",
+                        "content" => json_encode($format)
+                    ];
+                    $session->set('history', $chatHistory);
                 }
                 else if ($func === "invoices"){
                     $functionsCalled[$func] = $arguments;
@@ -563,52 +572,67 @@ class AiController extends BaseController
            //"You are a helpful AI assistant.  First, MUST ALWAYS make a helpful response to the user explaining what you are doing unless if the user asks for something that doesn't align at all with any tools don't respond.  Then, make a tools call but if you don't have the enoguh parameters, in that case ask the user for clarification.
             "model" => "gpt-4o",
             "messages" => array_merge([
-                ["role" => "system", "content" => "You are a helpful Technical Support AI.
+                ["role" => "system", "content" =>  "You are a helpful Technical support employee.
+You will receive customer support requests via 'tickets' and your job is to resolve
+them using the tools provided.
+You always communicate directly with a knowledgeable internal employee (role: user)
+who will monitor your actions, help redirect you
+when needed and give you special information you don't have access to.
+It is important to keep the internal employee updated on what you are doing by calling
+the 'agentChat' tool.
 
-                You will receive customer support requests formatted as 'TICKET: ...'. Your job is to resolve these using the available tools.
-                
-                You also communicate with an internal support employee (messages formatted as 'AGENT: ...'). This person may provide additional context, answer your questions, or guide your actions. You must keep this internal agent informed of what you're doing and ask for help if needed.
-                
-                ROLES
-                
-                - TICKET: A message from the customer. You respond to these only using the 'ticketResponse' tool.
-                - AGENT: The internal support employee. You communicate with them only using the 'agentChat' tool.
-                
-                TOOL CALL RULES
 
-                When a tool has been successfully executed and confirmed by the user, the user message contains a confirmation such as 'The [TOOL_NAME] function request was completed successfully.', consider the tool execution complete or when there is no new customer input:
-- Do not only describe in 'agentChat' what you did, you must call 'ticketResponse in the same response to inform the customer. Describing what you did via 'agentChat' is not enough — you must notify the customer immediately.
-- Do not call that tool again, instead if you are still waiting fo a tool execution, make a call to 'agentChat'
-- Use 'ticketResponse' as your first tool call to send the customer a clear, friendly summary of what was done.
-- Also use 'agentChat' to send a brief internal update to the agent.
-- Both tools must be called in the same response, with 'agentChat' listed first.
-                
-                When the TICKET matches a tool and all required parameters are present:
-                - You must call 'agentChat' and the relevant tool(s) in the same response. Describing your intent is not enough — you must take the action immediately.
-                - Use 'agentChat' as your first tool call to explain what you are about to do and why.
-                - Immediately after, use the relevant tool(s) with the appropriate parameters.
-                - Both tool calls must be included in the same response, with 'agentChat' listed first.
-                - If the 'agentChat' is not called, you are not following instructions.
-                - If other tools are not called, you are not following instructions.
+  - You are communicating with an internal employee however, you may recieve
+  prompts that are formated as 'TICKET: 'content'' indicating that is the customer's
+  request that you must resolve
+  - A prompt with 'AGENT : 'content'' indicates the internal employee's response
+  to what you are doing.
 
-                
-                Do not ask the agent for permission to proceed. Simply inform them.
-                
-                When information is missing:
-                - Use the 'ticketResponse' tool to politely ask the customer for the missing details.
-                - Do not call any other tools until this information is received.
-                
-                When no tool can address the TICKET:
-                - Use 'agentChat' to inform the agent that the issue cannot be resolved automatically and may need their intervention.
-                - Do not attempt to respond directly to the customer.
-                
-              
-                BEHAVIOR RULES
-                - Do not answer unrelated customer questions. Escalate them to the agent.
-                - Do not invent information or act without justification.
-                - Always follow these rules strictly.
-                
-                Do not describe future actions without executing them. If a tool should be called, call it immediately. All explanations must be accompanied by actual tool calls."
+
+You must always follow this strict behavior when responding to user requests:
+
+
+1. If the user request approximately matches the general capabilities of a tool,
+all required parameters are provided, and the request has not yet been completed in
+the near past:
+  - You must always include a call to the 'agentChat' tool
+  as your first tool call to explain what
+  you are about to do.
+  - You must then include the actual tool call(s) in the same response, immediately
+  after the 'agentChat' tool entry.
+  - These must all be included in the same list of tool_calls, with 'agentChat' tool
+   listed first and other tools listed following it.
+  - Do not separate the 'agentChat' tool and the actual tool call into
+  different responses.
+  -Do not delay tool execution after 'agentChat' — both must be called together.
+
+
+2. If the request matches a tool, but any required parameter is missing:
+  - Use the 'ticketResponse' tool to politely ask the user for the missing information.
+  - Do not call any other tools or proceed until all required parameters are confirmed.
+
+
+3. If the user's message does not map to any available tool:
+  - Only respond naturally and politely by calling 'ticketResponse' to:
+    - Greetings
+    - Thanks
+    - Clarifying questions about tool-related messages
+  - Do **not** answer questions or provide help unrelated to your toolset.
+  - If the message is outside your tool capabilities, respond by calling the
+  'agentChat' tool to escalate to a human.
+
+
+4. If there is no user input or no new user message
+  - Evaluate the chat history and determine if the user's request was met meaning the
+  user has confirmed the tool was completed
+  - Call the 'ticketResponse' tool to send a clear, friendly summary to the customer
+  about what was done.
+  - Also call the agentChat tool to send a brief internal summary of what you did to the
+  internal agent
+
+
+You must not deviate from this logic under any circumstance."
+
 
                 ]
             ], $historyString),
@@ -930,7 +954,7 @@ EOT;
         }
     }
 
-    public function formatResponse($data) {
+    public function formatListaccts($data) {
         $accounts = [];
         $data = $data['data'];
     
@@ -948,6 +972,30 @@ EOT;
         }
     return $accounts;
     }
+
+    public function formatClient($data) {
+        $formattedClients = [];
+    
+        // Support both direct array or array of objects
+        foreach ($data as $client) {
+            $formattedClients[] = [
+                'Full Name'    => $client['fullname'] ?? ($client['firstname'] ?? '') . ' ' . ($client['lastname'] ?? ''),
+                'Email'        => $client['email'] ?? 'N/A',
+                'Phone'        => $client['phonenumberformatted'] ?? ($client['phonenumber'] ?? 'N/A'),
+                'Address'      => trim(($client['address1'] ?? '') . ' ' . ($client['address2'] ?? '')),
+                'City'         => $client['city'] ?? '',
+                'Province'     => $client['state'] ?? '',
+                'Postal Code'  => $client['postcode'] ?? '',
+                'Country'      => $client['countryname'] ?? $client['countrycode'] ?? '',
+                'Status'       => $client['status'] ?? 'Unknown',
+                'Client ID'    => $client['id'] ?? $client['client_id'] ?? 'N/A',
+                'Last Login'   => $client['lastlogin'] ?? 'N/A',
+            ];
+        }
+    
+        return $formattedClients;
+    }
+    
 
     public function formatToolCalls(array $assistantMessage): array
     {

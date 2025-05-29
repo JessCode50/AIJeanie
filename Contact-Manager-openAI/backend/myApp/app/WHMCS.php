@@ -229,6 +229,16 @@ class WHMCS {
 		return $this->_post($data);
 	}
 
+    // Added by me
+    public function getTicket($ticket_num, $data = null) {
+		if(is_null($data)) {
+			$data = array();
+		}
+		$data["action"] = "GetTicket";
+        $data["ticketnum"] = $ticket_num;
+		return $this->_post($data);
+	}
+
 	public function updateTicket($ticket_id, $data = null) {
 		if(is_null($data)) {
 			$data = array();
@@ -247,7 +257,7 @@ class WHMCS {
 		if(!isset($data["message"])) {
 			return false;
 		}
-        
+
 		$data["action"] = "AddTicketReply";
 		$data["ticketid"] = $ticket_id;
 		return $this->_post($data);

@@ -229,6 +229,15 @@ class WHMCS {
 		return $this->_post($data);
 	}
 
+	public function getTicket($ticket_num, $data = null) {
+		if(is_null($data)) {
+			$data = array();
+		}
+		$data["action"] = "GetTicket";
+        $data["ticketnum"] = $ticket_num;
+		return $this->_post($data);
+	}
+
 	public function updateTicket($ticket_id, $data = null) {
 		if(is_null($data)) {
 			$data = array();
@@ -295,8 +304,10 @@ $secret = 'ooxF2HcGp1VjifSAB6bcHO6WfunujurY';
 // Initialize WHMCS class
 $whmcs = new WHMCS($server, $identifier, $secret);
 
-$data = $whmcs->tickets();
+$data = $whmcs->getTicket('WOF-562732');
 print_r ($data);
+$dataClient = $whmcs->client('14673');
+print_r ($dataClient);
 // // Get client ID from command line or use a default for testing
 // $clientId = isset($argv[1]) ? $argv[1] : 24576; // Default to the first client ID we saw
 // // Get client details

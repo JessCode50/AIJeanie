@@ -82,10 +82,14 @@
   <!-- Agent Chat Left Column -->
   <div style="flex: 1; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 20px; display: flex; flex-direction: column;">
     <div style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
-      <p v-for="(resp, index) in aiResponse" :key="index" style="font-size: 14px; margin-bottom: 8px; line-height: 1.4;">
-        {{ resp }}
-      </p>
-    </div>
+  <p
+    v-for="(resp, index) in aiResponse"
+    :key="index"
+    :style="getStyle(resp)"
+  >
+    {{ resp }}
+  </p>
+</div>
     <textarea
       id="input-message"
       v-model="userMessage"
@@ -205,6 +209,45 @@ export default {
   },
 
   methods: {
+  
+    getStyle(text) {
+  const upperText = text.toUpperCase();
+
+  const style = {
+    fontSize: '14px',
+    marginBottom: '8px',
+    lineHeight: 1.4,
+    width: '50%',
+    padding: '8px',
+    borderRadius: '6px',
+  };
+
+  if (upperText.startsWith('AGENT:')) {
+    style.color = '#c71104';
+    style.textAlign = 'left';
+    style.marginLeft = 'auto';
+    style.backgroundColor = '#fce3e1';
+  } else if (upperText.startsWith('TICKET:')) {
+    style.color = '#525050';
+    style.textAlign = 'left';
+    style.marginLeft = 'auto';
+    style.backgroundColor = '#f2f2f2';
+  } else if (upperText.startsWith('AI:')) {
+    style.color = '#1533ad';
+    style.textAlign = 'left';
+    style.marginRight = 'auto';
+    style.backgroundColor = '#e6f0ff';
+  } else {
+    style.color = 'white';
+    style.textAlign = 'left';
+    style.marginRight = 'auto';
+    style.backgroundColor = 'white';
+  }
+
+  return style;
+},
+
+
     reset(){
       fetch('http://localhost:8080/contacts',{
         method: 'GET'
@@ -249,6 +292,10 @@ export default {
 
     aiClick() {
       console.log('Sending API_response:', JSON.parse(JSON.stringify(this.apiResponse)));
+      const trimmedMessage = this.userMessage.trim();
+      if (trimmedMessage){
+        this.aiResponse.push(trimmedMessage);
+      }
 
 
       fetch('http://localhost:8080/contacts/ai',{
