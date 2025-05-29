@@ -4214,5 +4214,1380 @@
                 "client_id": "29292"
             }
         }
+    },
+    {
+        "date": "2025-05-27 17:13:34",
+        "session_id": "436d26cff02aea9f810e658dc37f96e7",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:41:16",
+        "session_id": "b42850bce569167609143b9462eaacf0",
+        "action": {
+            "0": "client",
+            "client": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 17:42:05",
+        "session_id": "b42850bce569167609143b9462eaacf0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:42:46",
+        "session_id": "b42850bce569167609143b9462eaacf0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:43:08",
+        "session_id": "b42850bce569167609143b9462eaacf0",
+        "action": {
+            "0": "client",
+            "client": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 17:44:49",
+        "session_id": "b42850bce569167609143b9462eaacf0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:44:53",
+        "session_id": "b42850bce569167609143b9462eaacf0",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:46:09",
+        "session_id": "f2811da0a4f55d01f3fc1f058065564e",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:47:29",
+        "session_id": "f2811da0a4f55d01f3fc1f058065564e",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:47:33",
+        "session_id": "f2811da0a4f55d01f3fc1f058065564e",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:48:01",
+        "session_id": "f2811da0a4f55d01f3fc1f058065564e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:48:05",
+        "session_id": "f2811da0a4f55d01f3fc1f058065564e",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:49:46",
+        "session_id": "f2811da0a4f55d01f3fc1f058065564e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:49:51",
+        "session_id": "f2811da0a4f55d01f3fc1f058065564e",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:53:54",
+        "session_id": "8c1000ec3d953707de9fd4bda9de5c07",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:53:59",
+        "session_id": "8c1000ec3d953707de9fd4bda9de5c07",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:55:04",
+        "session_id": "8c1000ec3d953707de9fd4bda9de5c07",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:55:14",
+        "session_id": "8c1000ec3d953707de9fd4bda9de5c07",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 17:56:14",
+        "session_id": "8c1000ec3d953707de9fd4bda9de5c07",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:12:59",
+        "session_id": "e384ba4250c6bbe17bcad2846b1f99de",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:13:04",
+        "session_id": "e384ba4250c6bbe17bcad2846b1f99de",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:13:54",
+        "session_id": "e384ba4250c6bbe17bcad2846b1f99de",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:14:01",
+        "session_id": "e384ba4250c6bbe17bcad2846b1f99de",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:17:36",
+        "session_id": "e384ba4250c6bbe17bcad2846b1f99de",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:17:40",
+        "session_id": "e384ba4250c6bbe17bcad2846b1f99de",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:18:53",
+        "session_id": "e5df0fdd402e81a52c337bbaa47f6ae9",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:19:40",
+        "session_id": "e5df0fdd402e81a52c337bbaa47f6ae9",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 18:19:47",
+        "session_id": "e5df0fdd402e81a52c337bbaa47f6ae9",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:24:15",
+        "session_id": "5afcaedfde3dfd76d7be8cfa48c8d655",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:25:14",
+        "session_id": "5afcaedfde3dfd76d7be8cfa48c8d655",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:26:18",
+        "session_id": "5afcaedfde3dfd76d7be8cfa48c8d655",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:26:37",
+        "session_id": "5afcaedfde3dfd76d7be8cfa48c8d655",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:29:17",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:29:20",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:29:22",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:29:51",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:30:18",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:32:17",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:32:49",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:33:12",
+        "session_id": "ef1a8aca8a5d87efc25f1bfaf1bd7e2b",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:34:25",
+        "session_id": "077a04d1225fd6d596bbd66a0db121db",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:34:56",
+        "session_id": "077a04d1225fd6d596bbd66a0db121db",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:35:16",
+        "session_id": "077a04d1225fd6d596bbd66a0db121db",
+        "action": {
+            "0": "add_pop",
+            "add_pop": {
+                "cpanel_user": "dev477",
+                "email_user": "newemailMay",
+                "password": "1234"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 18:35:22",
+        "session_id": "077a04d1225fd6d596bbd66a0db121db",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:36:32",
+        "session_id": "077a04d1225fd6d596bbd66a0db121db",
+        "action": {
+            "0": "delete_pop",
+            "delete_pop": {
+                "cpanel_user": "dev477",
+                "email": "newemailMay@dev477.easyonnet.io"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 18:43:48",
+        "session_id": "057e3b0131c22fa28c8eb3fd15c36b9b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:43:54",
+        "session_id": "057e3b0131c22fa28c8eb3fd15c36b9b",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:44:02",
+        "session_id": "057e3b0131c22fa28c8eb3fd15c36b9b",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:44:50",
+        "session_id": "057e3b0131c22fa28c8eb3fd15c36b9b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:44:54",
+        "session_id": "057e3b0131c22fa28c8eb3fd15c36b9b",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:45:56",
+        "session_id": "20ece41a62ce1cf438745655c31b8d11",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:46:12",
+        "session_id": "20ece41a62ce1cf438745655c31b8d11",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:46:59",
+        "session_id": "20ece41a62ce1cf438745655c31b8d11",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:48:15",
+        "session_id": "20ece41a62ce1cf438745655c31b8d11",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:48:33",
+        "session_id": "20ece41a62ce1cf438745655c31b8d11",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:50:08",
+        "session_id": "20ece41a62ce1cf438745655c31b8d11",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:50:12",
+        "session_id": "20ece41a62ce1cf438745655c31b8d11",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:50:29",
+        "session_id": "dc68dfe25d7ed1e879aebd46f23dd3ee",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:50:32",
+        "session_id": "dc68dfe25d7ed1e879aebd46f23dd3ee",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:51:01",
+        "session_id": "dc68dfe25d7ed1e879aebd46f23dd3ee",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:51:28",
+        "session_id": "dc68dfe25d7ed1e879aebd46f23dd3ee",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 18:57:31",
+        "session_id": "a68e895bcfb2bfa4129d00705f7a368d",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:05:23",
+        "session_id": "d982046aa340ebb6da28e7bbe3075d53",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:07:05",
+        "session_id": "d982046aa340ebb6da28e7bbe3075d53",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:07:29",
+        "session_id": "d982046aa340ebb6da28e7bbe3075d53",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 19:09:11",
+        "session_id": "d982046aa340ebb6da28e7bbe3075d53",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:09:41",
+        "session_id": "d982046aa340ebb6da28e7bbe3075d53",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:10:05",
+        "session_id": "d982046aa340ebb6da28e7bbe3075d53",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 19:10:31",
+        "session_id": "db9f1eec02a6bc5e691032f7d4fb5057",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:16:37",
+        "session_id": "584b34bf6ef96f1a4a361048a13bef14",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:16:43",
+        "session_id": "584b34bf6ef96f1a4a361048a13bef14",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:17:38",
+        "session_id": "584b34bf6ef96f1a4a361048a13bef14",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:17:56",
+        "session_id": "584b34bf6ef96f1a4a361048a13bef14",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:18:33",
+        "session_id": "584b34bf6ef96f1a4a361048a13bef14",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:19:21",
+        "session_id": "584b34bf6ef96f1a4a361048a13bef14",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:43:29",
+        "session_id": "a6a84a36dc6de5192e961acb6626dd33",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:43:38",
+        "session_id": "a6a84a36dc6de5192e961acb6626dd33",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:44:46",
+        "session_id": "a6a84a36dc6de5192e961acb6626dd33",
+        "action": {
+            "0": "client",
+            "client": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 19:45:05",
+        "session_id": "ec93b3f04353715067411011ccf14bc7",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:45:10",
+        "session_id": "ec93b3f04353715067411011ccf14bc7",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:47:56",
+        "session_id": "ec93b3f04353715067411011ccf14bc7",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:48:09",
+        "session_id": "ec93b3f04353715067411011ccf14bc7",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:49:02",
+        "session_id": "ec93b3f04353715067411011ccf14bc7",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:49:21",
+        "session_id": "ec93b3f04353715067411011ccf14bc7",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-27 19:49:38",
+        "session_id": "ec93b3f04353715067411011ccf14bc7",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:51:00",
+        "session_id": "5aecda69d3b03f272deec552c1837984",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:51:07",
+        "session_id": "5aecda69d3b03f272deec552c1837984",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:51:37",
+        "session_id": "5aecda69d3b03f272deec552c1837984",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-27 19:51:47",
+        "session_id": "5aecda69d3b03f272deec552c1837984",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:35:12",
+        "session_id": "abebd17881843a62e0aea4fa3c274fe1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:35:35",
+        "session_id": "abebd17881843a62e0aea4fa3c274fe1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:36:02",
+        "session_id": "abebd17881843a62e0aea4fa3c274fe1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:36:06",
+        "session_id": "abebd17881843a62e0aea4fa3c274fe1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:40:17",
+        "session_id": "80bc11ddbcbe991306118e1ac21d90e9",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:40:24",
+        "session_id": "80bc11ddbcbe991306118e1ac21d90e9",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:40:54",
+        "session_id": "80bc11ddbcbe991306118e1ac21d90e9",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:41:01",
+        "session_id": "80bc11ddbcbe991306118e1ac21d90e9",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:41:07",
+        "session_id": "80bc11ddbcbe991306118e1ac21d90e9",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:44:22",
+        "session_id": "80bc11ddbcbe991306118e1ac21d90e9",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:44:47",
+        "session_id": "80bc11ddbcbe991306118e1ac21d90e9",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:47:23",
+        "session_id": "8b35b33989397d8b116582b002959cfd",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:48:14",
+        "session_id": "8b35b33989397d8b116582b002959cfd",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 13:48:33",
+        "session_id": "8b35b33989397d8b116582b002959cfd",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:43:46",
+        "session_id": "3b6e04c1c252c62f1b6e866f03d07849",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:44:12",
+        "session_id": "3b6e04c1c252c62f1b6e866f03d07849",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 14:44:21",
+        "session_id": "3b6e04c1c252c62f1b6e866f03d07849",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:55:54",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:55:59",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:56:15",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:56:32",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": {
+            "0": "delete_pop",
+            "delete_pop": {
+                "cpanel_user": "dev477",
+                "email": "newemail1@dev477.easyonnet.io"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 14:56:41",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:57:47",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 14:58:16",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 14:58:37",
+        "session_id": "98c4748aaf1d7a9c1a2d8598ceac2489",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:01:00",
+        "session_id": "51b28d18563a49c9f619180bab94cdca",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:01:44",
+        "session_id": "51b28d18563a49c9f619180bab94cdca",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:01:57",
+        "session_id": "51b28d18563a49c9f619180bab94cdca",
+        "action": {
+            "0": "add_pop",
+            "add_pop": {
+                "cpanel_user": "dev477",
+                "email_user": "testemailnew1",
+                "password": "1234"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:03:23",
+        "session_id": "51b28d18563a49c9f619180bab94cdca",
+        "action": {
+            "0": "client",
+            "client": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:07:54",
+        "session_id": "0fcb3677f8d8b7d4c294312dfdee9e58",
+        "action": {
+            "0": "client",
+            "client": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:08:19",
+        "session_id": "0fcb3677f8d8b7d4c294312dfdee9e58",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:12:24",
+        "session_id": "0fcb3677f8d8b7d4c294312dfdee9e58",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:13:04",
+        "session_id": "7feef500675459d19a486e1aeb89de02",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:13:47",
+        "session_id": "7feef500675459d19a486e1aeb89de02",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:14:11",
+        "session_id": "7feef500675459d19a486e1aeb89de02",
+        "action": {
+            "0": "invoices",
+            "invoices": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:14:46",
+        "session_id": "7feef500675459d19a486e1aeb89de02",
+        "action": {
+            "0": "invoices",
+            "invoices": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:18:30",
+        "session_id": "adf325f00f9833b37501e4ebb0553219",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:19:49",
+        "session_id": "adf325f00f9833b37501e4ebb0553219",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:21:41",
+        "session_id": "adf325f00f9833b37501e4ebb0553219",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:22:12",
+        "session_id": "adf325f00f9833b37501e4ebb0553219",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:23:09",
+        "session_id": "adf325f00f9833b37501e4ebb0553219",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:23:14",
+        "session_id": "adf325f00f9833b37501e4ebb0553219",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:23:52",
+        "session_id": "ea820761070736d2a66d9a1057888358",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:24:14",
+        "session_id": "ea820761070736d2a66d9a1057888358",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:25:30",
+        "session_id": "ea820761070736d2a66d9a1057888358",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:25:35",
+        "session_id": "ea820761070736d2a66d9a1057888358",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:25:42",
+        "session_id": "ea820761070736d2a66d9a1057888358",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:29:13",
+        "session_id": "6ed756aac8ac6c90afab944320795960",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:29:19",
+        "session_id": "6ed756aac8ac6c90afab944320795960",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:29:23",
+        "session_id": "6ed756aac8ac6c90afab944320795960",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:29:26",
+        "session_id": "6ed756aac8ac6c90afab944320795960",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:31:25",
+        "session_id": "6ed756aac8ac6c90afab944320795960",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:31:30",
+        "session_id": "6ed756aac8ac6c90afab944320795960",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:33:54",
+        "session_id": "6ed756aac8ac6c90afab944320795960",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:33:58",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:34:15",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:34:56",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:35:00",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:36:12",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:36:16",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:36:20",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:36:24",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:37:08",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": {
+            "0": "list_pops",
+            "list_pops": {
+                "cpanel_user": "dev477"
+            }
+        }
+    },
+    {
+        "date": "2025-05-28 15:37:14",
+        "session_id": "fa1f510276a743a9f00a496810023413",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 15:48:05",
+        "session_id": "89c0b6bf0d087835305f5e52e472759d",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:27:36",
+        "session_id": "50e5cfb4fdc50ac7a06ff85c1f0d76a0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:29:25",
+        "session_id": "58e16f7fd250264a509212f8380f9a32",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:30:45",
+        "session_id": "58e16f7fd250264a509212f8380f9a32",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:32:05",
+        "session_id": "58e16f7fd250264a509212f8380f9a32",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:33:11",
+        "session_id": "58e16f7fd250264a509212f8380f9a32",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:34:10",
+        "session_id": "58e16f7fd250264a509212f8380f9a32",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:36:31",
+        "session_id": "ca6bc6f3c44d7db04c6bc0cd758c30c8",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:37:46",
+        "session_id": "ca6bc6f3c44d7db04c6bc0cd758c30c8",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 16:40:30",
+        "session_id": "ca6bc6f3c44d7db04c6bc0cd758c30c8",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:18:34",
+        "session_id": "f9dcd5ea9b056ab56e1732275b029f80",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:21:05",
+        "session_id": "f9dcd5ea9b056ab56e1732275b029f80",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:25:08",
+        "session_id": "e26674c478ce5e087924f83490cfb38f",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:32:36",
+        "session_id": "5d2e93c1a6d488fda15f68f0267e3a9b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:34:50",
+        "session_id": "5d2e93c1a6d488fda15f68f0267e3a9b",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:37:45",
+        "session_id": "0ec0a403d59b92a93d47ab7f0bd1714a",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:39:09",
+        "session_id": "0ec0a403d59b92a93d47ab7f0bd1714a",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:40:30",
+        "session_id": "0ec0a403d59b92a93d47ab7f0bd1714a",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:42:37",
+        "session_id": "4f59f754ff21825fd8cf8bc2699271fd",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:44:12",
+        "session_id": "4f59f754ff21825fd8cf8bc2699271fd",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:46:06",
+        "session_id": "4f59f754ff21825fd8cf8bc2699271fd",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:47:51",
+        "session_id": "e4ae5907fcfacefe8f426275f72eb8d0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:50:49",
+        "session_id": "e4ae5907fcfacefe8f426275f72eb8d0",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:51:42",
+        "session_id": "e4ae5907fcfacefe8f426275f72eb8d0",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:55:32",
+        "session_id": "1d17c38bc18fdb7fac464f159cb935ca",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:56:18",
+        "session_id": "1d17c38bc18fdb7fac464f159cb935ca",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:57:34",
+        "session_id": "1d17c38bc18fdb7fac464f159cb935ca",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 17:58:50",
+        "session_id": "1d17c38bc18fdb7fac464f159cb935ca",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 18:00:13",
+        "session_id": "1d17c38bc18fdb7fac464f159cb935ca",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 18:08:13",
+        "session_id": "98b2f55788e49bb55f4952656f786b1d",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 18:15:35",
+        "session_id": "7d45556760e5d84406591c7501a682d3",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 18:17:03",
+        "session_id": "7d45556760e5d84406591c7501a682d3",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 18:25:12",
+        "session_id": "05db324030b155044558e15cf4407824",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-05-28 18:25:57",
+        "session_id": "05db324030b155044558e15cf4407824",
+        "action": [
+            "listaccts"
+        ]
     }
 ]

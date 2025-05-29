@@ -64,117 +64,77 @@
     </button>
   </div>
 
-  <div v-else-if="view === 'AI'">
-    <div :style="{ display: 'flex', gap: '10px' }">
-      <!-- Left Column -->
-      <div :style="{ width: '50%', textAlign: 'center' }">
-        <p :style="{ fontSize: '30px', margin: 0 }">Agent Chat</p>
-      </div>
+  <div v-else-if="view === 'AI'" style="display: flex; flex-direction: column; padding: 20px; background: #f9f9f9; font-family: 'Segoe UI', sans-serif; min-height: 100vh;">
 
-      <!-- Right Column -->
-      <div :style="{ width: '50%', textAlign: 'center' }">
-        <p :style="{ fontSize: '30px', margin: 0 }">Action Queue</p>
-      </div>
-    </div>
-
-    <div :style="{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '20px' }">
-      <!-- Left Column -->
-      <div :style="{ width: '50%', marginRight: '20px', border: '2px solid #ccc'}">
-        <p  v-for="(resp, index) in aiResponse" :key="index" :style="{ fontSize: '15px' }"> 
-          {{ resp }}
-        </p>
-        <textarea
-          id="input-message"
-          placeholder="Type your message"
-          v-model="userMessage"
-          :style="{ width: '92%', height: '50px', fontSize: '16px', padding: '20px', marginTop: '20px' }"
-        ></textarea>
-        <button @click="aiClick()" :style="{marginTop: '20px'}">
-          Submit
-        </button>
-        <button @click="aiClear()" :style="{marginTop: '20px'}">
-        Clear History
-      </button>
-      </div>
-
-      <!-- Right Column (wraps all function blocks) -->
-      <div :style="{ width: '50%' }">
-        <div
-          v-for="(func, index) in pending_functions"
-          :key="index"
-          :style="{ marginBottom: '10px', backgroundColor: '#e6e6e6', padding: '10px', border: '1px solid #ccc', borderRadius: '6px' }"
-        >
-          <div :style="{ fontSize: '20px', marginBottom: '20px' }">
-            {{ func.functionName }} : {{ func.description }}
-          </div>
-          <div>
-            <button
-              @click="aiReject(index)"
-              style="background-color: #991506; color: white; margin-right: 16px; margin-bottom: 16px"
-            >
-              Reject
-            </button>
-            <button
-              @click="aiProceed(index)"
-              style="background-color: #099c33; color:white; margin-left: 16px"
-            >
-              Proceed
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-
-      <button @click="view ='contacts'" :style="{marginTop: '40px'}">
-        Back
-      </button>
-      <button @click="view = 'session'" :style="{marginTop: '40px'}">
-        View a Session
-      </button>
-      <button @click="aiLog()" :style="{marginTop: '40px'}">
-        View History Log
-      </button>
-      <p :style="{fontSize: '20px'}"> 
-       Tokens Used: {{ tokens }}
-      </p>
-      <!-- <p :style="{fontSize: '30px'}"> 
-      AI Response:
-      </p>
-      <p :style="{fontSize: '20px'}"> 
-        {{ aiResponse }}
-      </p> -->
-<!-- 
-      <div v-if="confirmation === 'Pending'">
-        <button @click="aiReject()" style="background-color: #991506; color: white; margin-right: 16px">
-        Reject
-        </button>
-        <button @click="aiProceed()" style="background-color: #099c33; color:white; margin-left: 16px">
-        Proceed
-        </button>
-      </div> -->
-      <!-- <div v-for="(func, index) in pending_functions" :key="index" :style="{marginBottom: '10px', backgroundColor: '#e6e6e6'}">
-        <div :style="{fontSize: '20px', marginBottom: '20px'}">
-          {{ func.functionName }} : {{ func.description }}
-        </div>
-        <div>
-          <button @click="aiReject(index)" style="background-color: #991506; color: white; margin-right: 16px; margin-bottom: 16px">
-          Reject
-          </button>
-          <button @click="aiProceed(index)" style="background-color: #099c33; color:white; margin-left: 16px">
-          Proceed
-          </button>
-        </div>
-      </div> -->
-      <p :style="{fontSize: '30px'}"> 
-      API Response/calls:
-      </p>
-      <p :style="{fontSize: '20px'}"> 
-        {{ apiResponse }}
-      </p>
-
+<!-- Header -->
+<div style="display: flex; gap: 20px; margin-bottom: 20px;">
+  <div style="flex: 1; text-align: center;">
+    <h2 style="font-size: 26px; margin: 0; border-bottom: 2px solid #ccc; padding-bottom: 10px;">Agent Chat</h2>
   </div>
+  <div style="flex: 1; text-align: center;">
+    <h2 style="font-size: 26px; margin: 0; border-bottom: 2px solid #ccc; padding-bottom: 10px;">Action Queue</h2>
+  </div>
+</div>
+
+<!-- Main Columns -->
+<div style="display: flex; gap: 20px; flex: 1;">
+
+  <!-- Agent Chat Left Column -->
+  <div style="flex: 1; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 20px; display: flex; flex-direction: column;">
+    <div style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
+      <p v-for="(resp, index) in aiResponse" :key="index" style="font-size: 14px; margin-bottom: 8px; line-height: 1.4;">
+        {{ resp }}
+      </p>
+    </div>
+    <textarea
+      id="input-message"
+      v-model="userMessage"
+      placeholder="Type your message"
+      style="width: 96%; height: 60px; padding: 10px; font-size: 14px; border-radius: 6px; border: 1px solid #ccc; resize: none; margin-bottom: 12px;"
+    ></textarea>
+    <div style="display: flex; gap: 10px;">
+      <button @click="aiClick" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 6px; font-weight: 500;">Submit</button>
+      <button @click="aiClear" style="padding: 8px 16px; background: #e0e0e0; color: #333; border: none; border-radius: 6px; font-weight: 500;">Clear History</button>
+    </div>
+  </div>
+
+  <!-- Action Queue Right Column -->
+  <div style="flex: 1; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 20px;">
+    <div
+      v-for="(func, index) in pending_functions"
+      :key="index"
+      style="background: #f0f0f0; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bbb;"
+    >
+      <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+        {{ func.functionName }}
+      </div>
+      <p style="font-size: 14px; margin-bottom: 12px;">
+        {{ func.description }}
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <button @click="aiReject(index)" style="padding: 8px 16px; background-color: #c0392b; color: white; border: none; border-radius: 6px; font-weight: 500;">Reject</button>
+        <button @click="aiProceed(index)" style="padding: 8px 16px; background-color: #27ae60; color: white; border: none; border-radius: 6px; font-weight: 500;">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Buttons -->
+<div style="margin-top: 40px; display: flex; gap: 20px;">
+  <button @click="view = 'contacts'" style="padding: 8px 16px; background: #ddd; border: none; border-radius: 6px;">Back</button>
+  <button @click="view = 'session'" style="padding: 8px 16px; background: #ddd; border: none; border-radius: 6px;">View a Session</button>
+  <button @click="aiLog()" style="padding: 8px 16px; background: #ddd; border: none; border-radius: 6px;">View History Log</button>
+</div>
+
+<!-- Tokens + API Response -->
+<div style="margin-top: 20px;">
+  <p style="font-size: 18px; font-weight: 600;">Tokens Used: {{ tokens }}</p>
+  <p style="font-size: 22px; font-weight: bold; margin-top: 20px;">API Response/calls:</p>
+  <p style="font-size: 16px;">{{ apiResponse }}</p>
+</div>
+
+</div>
+
 
   <div v-else-if="view === 'session'">
     <p>ID Number: <input type="text" v-model="id"></p>
@@ -396,5 +356,5 @@ export default {
 </script>
 
 <style scoped>
-/* Optional styling */
+
 </style>
