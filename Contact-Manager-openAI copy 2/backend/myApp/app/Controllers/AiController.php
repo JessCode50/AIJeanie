@@ -241,7 +241,18 @@ class AiController extends BaseController
         
         $session = session();
         
-        $open_ai_key = getenv('app.openai_key');
+        // Get API key from App config (which loads from environment variable)
+        $appConfig = config('App');
+        $open_ai_key = $appConfig->openai_key;
+        
+        // Validate API key is configured
+        if (empty($open_ai_key)) {
+            return $this->response->setJSON([
+                'error' => 'OpenAI API key not configured. Please set the OPENAI_API_KEY environment variable.',
+                'success' => false
+            ]);
+        }
+        
         $json = $this->request->getJSON(true);
         $userMessage = $json['message'] ?? ''; // Default message
 

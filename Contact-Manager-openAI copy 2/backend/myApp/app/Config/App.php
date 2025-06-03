@@ -202,4 +202,23 @@ public $sessionSavePath = WRITEPATH . 'session'; // Ensure this folder is writab
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = false;
+
+    /**
+     * --------------------------------------------------------------------------
+     * OpenAI API Key
+     * --------------------------------------------------------------------------
+     *
+     * Your OpenAI API key for the AI chatbot functionality.
+     * Get your API key from: https://platform.openai.com/api-keys
+     * Set this as an environment variable for security.
+     */
+    public string $openai_key = '';
+
+    public function __construct()
+    {
+        parent::__construct();
+        
+        // Load OpenAI API key from environment variable for security
+        $this->openai_key = getenv('OPENAI_API_KEY') ?: '';
+    }
 }
