@@ -2,205 +2,97 @@
 namespace App\Controllers;
 require_once __DIR__ . '/../APILib.php';
 require_once __DIR__ . '/../WHMCS.php';
-
+require_once __DIR__ . '/../Utils/ValidationHelper.php';
+require_once __DIR__ . '/../Utils/ResponseFormatter.php';
+require_once __DIR__ . '/../Utils/ContextManager.php';
+require_once __DIR__ . '/../Utils/ErrorHandler.php';
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\API\ResponseTrait;
 use Cpanel\APILib;
 use WHMCS;
+use App\Utils\ValidationHelper;
+use App\Utils\ResponseFormatter;
+use App\Utils\ContextManager;
+use App\Utils\ErrorHandler;
 
 class AiController extends BaseController
-
 {
     use ResponseTrait;
 
-    public function index()
+    private $validationHelper;
+    private $responseFormatter;
+    private $contextManager;
+    private $errorHandler;
+    private $cpanel;
+    private $whmcs;
+
+    public function __construct()
     {
-        //
+        $this->validationHelper = new ValidationHelper();
+        $this->responseFormatter = new ResponseFormatter();
+        $this->contextManager = new ContextManager();
+        $this->errorHandler = new ErrorHandler();
+        
+        // Initialize API connections with better error handling
+        try {
+            $this->cpanel = new APILib('janus13.easyonnet.io', 'root','GGWKWFGGCBIGJZ9RJV8Z7H47TM8YA1EG', '2087');
+            $this->whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
+                'm2ftQEEegLHpyLPD6fiUpAqA0mx9T1XL',
+                'ooxF2HcGp1VjifSAB6bcHO6WfunujurY');
+        } catch (Exception $e) {
+            $this->errorHandler->logError('API_INIT_FAILED', $e->getMessage());
+        }
     }
 
-    public function proceed(){
-        header("Access-Control-Allow-Origin: http://localhost:5173");
-        header("Access-Control-Allow-Credentials: true");
+    public function index()
+    {
+        return $this->respond(['status' => 'AI Controller Active', 'version' => '2.0.0']);
+    }
+
+    public function proceed()
+    {
+        try {
         $data = $this->request->getJSON(true);
-        // return $this->respond($data);
-        $func = $data[0]["functionName"];
+            
+            // Enhanced validation
+            $validationResult = $this->validationHelper->validateProceedRequest($data);
+            if (!$validationResult['valid']) {
+                return $this->respondWithValidationError($validationResult['errors']);
+            }
 
         $session = session();
-        $chatHistory = $session->get('history') ?? [];
-        // $responseData = $session->get('response') ?? [];
+            $func = $data[0]["functionName"];
+            $parameters = $data[0]["parameters"];
 
-        $cpanel = new APILib('janus13.easyonnet.io', 'root','GGWKWFGGCBIGJZ9RJV8Z7H47TM8YA1EG', '2087');
-        $whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
-        'm2ftQEEegLHpyLPD6fiUpAqA0mx9T1XL',
-        'ooxF2HcGp1VjifSAB6bcHO6WfunujurY');
-        // $aiMessage = $responseData['choices'][0]['message']; 
-        // return $this->respond($aiMessage);
+            // Log the action attempt
+            $this->logInteraction('proceed', $func, $parameters, $session->session_id);
 
-        $functionsResponse = [];
-        $functionsCalled = [];
-
-        // foreach ($aiMessage['tool_calls'] as $toolCall){
-            // $func = $aiMessage['tool_calls'][0]['function']['name'];
-            $functionsCalled[] = $func;
-
-            if (isset($func)){
-                $arguments = $data[0]["parameters"];
-                // $arguments = json_decode($rawParams, true); 
-
-                if ($func === "get_domain_info"){
-                    $APIresponse = $cpanel->get_domain_info();
-                }
-                else if ($func === "listaccts"){
-                    $APIresponse = $cpanel->listaccts(); 
-                }
-                else if ($func === "listpkgs"){
-                    $APIresponse = $cpanel->listpkgs(); 
-                }
-                else if ($func === "count_pops"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $cpanel->count_pops($arguments['cpanel_user']); 
-                }
-                else if ($func === "createacct"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $cpanel->createacct($arguments['username'], $arguments['domain'], $arguments['contact_email']); 
-                }
-                else if ($func === "delete_pop"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $cpanel->delete_pop($arguments['cpanel_user'], $arguments['email']); 
-                }
-                else if ($func === "list_pops"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-                    
-                    $APIresponse = $cpanel->list_pops($arguments['cpanel_user']); 
-                }
-                else if ($func === "add_pop"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $cpanel->add_pop($arguments['cpanel_user'], $arguments['email_user'], $arguments['password']); 
-                }
-                else if ($func === "list_forwarders"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $cpanel->list_forwarders($arguments['cpanel_user'], $arguments['domain']); 
-                }
-                else if ($func === "add_forwarder"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $cpanel->add_forwarder($arguments['cpanel_user'], $arguments['email'], $arguments['forward_to_email']); 
-                }
-                else if ($func === "RECOMMENDED TICKET RESPONSE"){
-                    $chatHistory[] =  ["role" => "assistant", "content" => "The recommended ticket response was accepted by the user: " . $data[0]["description"]];
-                    $session->set('history', $chatHistory);
-                    $APIresponse = '';
+            // Execute function with enhanced error handling
+            $result = $this->executeFunction($func, $parameters);
+            
+            if ($result['success']) {
+                // Update context and history
+                $this->contextManager->updateContext($session, $func, $result['data']);
                 
-                }
-                else if ($func === "client"){
-                    // $rawArguments = $toolCall['function']['arguments'];
-                    // $arguments = json_decode($rawArguments, true);
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $whmcs->client($arguments['client_id']); 
-                }
-                else if ($func === "invoices"){
-                    $functionsCalled[$func] = $arguments;
-
-                    $APIresponse = $whmcs->invoices($arguments['client_id']); 
-                }
-
+                return $this->respond([
+                    "status" => "success",
+                    "response" => $this->responseFormatter->formatSuccessMessage($func, $parameters),
+                    "API_response" => [$result['data']],
+                    "execution_time" => $result['execution_time'] ?? null
+                ]);
+            } else {
+                return $this->respondWithError($result['error'], $result['code']);
             }
-    
-            else {
-                return $this->respond("alert");
-            }
-            $functionsResponse[] = $APIresponse;
-        //}
-        // $func = $responseData['choices'][0]['message']['tool_calls'][0]['function']['name'];
 
-        // return $this->respond($functionsCalled); /////////!!!!!!!!!!!!
-
-
-        // return $this->respond($APIresponse);
-        // $functionsCalledStr = "";
-
-        // foreach ($functionsCalled as $f) {
-        //     $functionsCalledStr .= $f . ", ";
-        // }
-        // $functionsCalledStr = rtrim($functionsCalledStr, ", ");
-        
-        // Log actions in json
-        $this->json_log($functionsCalled, $session->session_id);
-        $session->remove('response');
-        $parameters = $data[0]["parameters"];
-
-        if (!empty($parameters)){
-            $returnMessage = "The " . $func . " function with these parameters: ";
-
-            foreach ($parameters as $p){
-                $returnMessage .= $p . ", ";
-            }
+        } catch (Exception $e) {
+            $this->errorHandler->logError('PROCEED_EXCEPTION', $e->getMessage(), $e->getTrace());
+            return $this->respondWithError('An unexpected error occurred: ' . $e->getMessage(), 500);
         }
-
-        else {
-            $returnMessage = "The " . $func . " function ";
-        }
-
-        $returnMessage .= "request was completed successfully.";
-
-        if (isset($responseData['choices'][0]['message']['content'])) {
-            //preg_match('/Summary:\s*(.*?)\s*Response:\s*(.*)/is', $responseData['choices'][0]['message']['content'], $matches);
-
-            // $chatHistory[] = ["role" => "user", "content" => $userMessage]; // use this for no simplification
-            // $chatHistory[] = ["role" => "user", "content" => $matches[1]];
-            // $chatHistory[] = ["role" => "assistant", "content" => $matches[2]];
-            $chatHistory[] =  ["role" => "assistant", "content" => $responseData['choices'][0]['message']['content']];
-            $chatHistory[] =  ["role" => "user", "content" => $returnMessage];
-            $session->set('history', $chatHistory);
-
-            return $this->respond([
-                "status" => "success",
-                "response" => $responseData['choices'][0]['message']['content'], //*** 
-                "tokens_used" => $responseData['usage'] ?? null,
-                "API_response" => $functionsResponse
-            ]);
-        }
-
-        else {
-            $chatHistory[] =  ["role" => "user", "content" => $returnMessage];
-            $session->set('history', $chatHistory);
-
-            return $this->respond([
-                "status" => "success",
-                "response" => "No Response was Generated", //*** 
-                "tokens_used" => $responseData['usage'] ?? null,
-                "API_response" => $functionsResponse
-            ]);
-        }
-        // return $this->fail("Failed to get a response from OpenAI.", 500);
-
     }
 
     public function rejected(){
-        header("Access-Control-Allow-Origin: http://localhost:5173");
-        header("Access-Control-Allow-Credentials: true");
         $session = session();
 
         $chatHistory = $session->get('history') ?? [];
@@ -234,551 +126,75 @@ class AiController extends BaseController
 
     public function chat()
     {
-        header("Access-Control-Allow-Origin: http://localhost:5173");
-        header("Access-Control-Allow-Credentials: true");
-        // header("Access-Control-Allow-Origin: *");
-        // header("Access-Control-Allow-Credentials: true");
-        
-        $session = session();
-        
-        // Get API key from App config (which loads from environment variable)
-        $appConfig = config('App');
-        $open_ai_key = $appConfig->openai_key;
-        
-        // Validate API key is configured
-        if (empty($open_ai_key)) {
-            return $this->response->setJSON([
-                'error' => 'OpenAI API key not configured. Please set the OPENAI_API_KEY environment variable.',
-                'success' => false
-            ]);
-        }
-        
-        $json = $this->request->getJSON(true);
-        $userMessage = $json['message'] ?? ''; // Default message
-
-        $chatHistory = $session->get('history') ?? [];
-        
-
-        $historyString = [];
-
-        
-        foreach ($chatHistory as $entry) {
-            $historyString[] = ["role" => $entry['role'], "content" => $entry['content']];
-        }
-        
-        $historyString[] = ["role" => "user", "content" => $userMessage];
-
-        $chatHistory[] = ["role" => "user", "content" => $userMessage];
-        // var_dump($historyString);
-    
-        // $chatHistoryString = implode("\n", $chatHistory);
-        // $chatHistoryString = $chatHistoryString . "\n" . $userMessage;
-        $tools = [
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "get_domain_info",
-                    "description" => "Return a list of all domains on a server.",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => new \stdClass(), // No parameters
-                        "required" => []
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "listaccts",
-                    "description" => "Returns a list of accounts on the server",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => new \stdClass(), // No parameters
-                        "required" => []
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "listpkgs",
-                    "description" => "Lists available Packages/Plans on the server",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => new \stdClass(), // No parameters
-                        "required" => []
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "count_pops",
-                    "description" => "Returns a count of all email addresses on the account",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "cpanel_user" => [
-                            "type" => "string",
-                            "description" => "The username of the cPanel account to check."
-                        ]
-                        ],
-                        "required" => ["cpanel_user"]
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "createacct",
-                    "description" => "Creates a new CPanel Account on the server",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "username" => [
-                            "type" => "string",
-                            "description" => "The username of the new cPanel account"
-                        ], 
-                        "domain" => [
-                            "type" => "string",
-                            "description" => "The domain of the new cPanel account"
-                        ],
-                        "contact_email" => [
-                            "type" => "string",
-                            "description" => "The email account of the new cPanel account"
-                        ]
-                        ],
-                        "required" => ["username", "domain", "contact_email"]
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "delete_pop",
-                    "description" => "Removes an Email Address",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "cpanel_user" => [
-                            "type" => "string",
-                            "description" => "The username of the cPanel account to check."
-                        ], 
-                        "email" => [
-                            "type" => "string",
-                            "description" => "The email account for the user"
-                        ]
-                        ],
-                        "required" => ["cpanel_user", "email"]
-                    ]
-                ]
-            ],  
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "list_pops",
-                    "description" => "Returns a list of all email addresses on the account",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "cpanel_user" => [
-                            "type" => "string",
-                            "description" => "The username of the cPanel account to check."
-                        ]
-                        ],
-                        "required" => ["cpanel_user"]
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "add_pop",
-                    "description" => "Adds a new Email Address to the Account",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "cpanel_user" => [
-                            "type" => "string",
-                            "description" => "The username of the cPanel account to check."
-                        ],
-                        "email_user" => [
-                            "type" => "string",
-                            "description" => "The first part of an email account before the '@' sign"
-                        ],
-                        "password" => [
-                            "type" => "string",
-                            "description" => "The password for the new email address"
-                        ]
-                        ],
-                        "required" => ["cpanel_user", "email_user", "password"]
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "list_forwarders",
-                    "description" => "Lists all forwarders on the server for the provided domain name",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "cpanel_user" => [
-                            "type" => "string",
-                            "description" => "The username of the cPanel account to check."
-                        ],
-                        "domain" => [
-                            "type" => "string",
-                            "description" => "The domain of the new cPanel account"
-                        ]
-                        ],
-                        "required" => ["cpanel_user", "domain"]
-                    ]
-                ]
-            ], 
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "add_forwarder",
-                    "description" => "Adds an Email Forwarder",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "cpanel_user" => [
-                            "type" => "string",
-                            "description" => "The username of the cPanel account to check."
-                        ],
-                        "email" => [
-                            "type" => "string",
-                            "description" => "The email that is being forwarded from"
-                        ],
-                        "forward_to_email" => [
-                            "type" => "string",
-                            "description" => "The email that is being forwarded to"
-                        ]
-                        ],
-                        "required" => ["cpanel_user", "email", "forward_to_email"]
-                    ]
-                ]
-            ],
-            //**** WHMCS functions */
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "client",
-                    "description" => "Returns info about a specifc client",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "client_id" => [
-                            "type" => "string",
-                            "description" => "The ID of the requested client"
-                        ]
-                        ],
-                        "required" => ["client_id"]
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "invoices",
-                    "description" => "Returns invoices for a specifc client",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "client_id" => [
-                            "type" => "string",
-                            "description" => "The ID of the requested client"
-                        ]
-                        ],
-                        "required" => ["client_id"]
-                    ]
-                ]
-            ],
-            //**** General AI Flow */
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "ticketResponse",
-                    "description" => "Returns a generated ticket response to the client",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "ticket_message" => [
-                            "type" => "string",
-                            "description" => "The full proposed message to send to the client generated by you, as an AI assistant"
-                        ]
-                        ],
-                        "required" => ["ticket_message"]
-                    ]
-                ]
-            ],
-            [
-                "type" => "function",
-                "function" => [
-                    "name" => "agentChat",
-                    "description" => "Returns a generated response to an internal employee",
-                    "parameters" => [
-                        "type" => "object",
-                        "properties" => [
-                        "agent_message" => [
-                            "type" => "string",
-                            "description" => "The full proposed message to send to the employee generated by you, as an AI assistant"
-                        ]
-                        ],
-                        "required" => ["agent_message"]
-                    ]
-                ]
-            ]
-
-
-        ];
-        
-        
-        
-        $url = "https://api.openai.com/v1/chat/completions";
-        $headers = [
-            "Authorization: Bearer $open_ai_key",
-            "Content-Type: application/json"
-        ];
-
-
-        $data = [
-            //"model" => "gpt-4-turbo",
-            //"You are a helpful AI assistant that always responds using this format, \nSummary: <use a very short, cryptic way to track the core idea of the user input in a compressed form for only AI to use internally meant to take minimal tokens while being specific enough for memory reference. No full sentences.\nResponse: <your helpful response to the user>
-           //"You are a helpful AI assistant.  First, MUST ALWAYS make a helpful response to the user explaining what you are doing unless if the user asks for something that doesn't align at all with any tools don't respond.  Then, make a tools call but if you don't have the enoguh parameters, in that case ask the user for clarification.
-            "model" => "gpt-4o",
-            "messages" => array_merge([
-                ["role" => "system", "content" => "You are a helpful Technical support employee.
-You will be receiving requests from a customer in the form of a 'ticket'. Your job is to
-understand their request and assist them with the tools you have access to. You always
-speak directly with a knowledgeable internal employee who will help redirect you
-when needed and give you special information you don't have access to. 
-It is important to keep the internal employee updated on what you are doing
-You can then create a response to the customer that the internal employee will 
-decide to use or not.
-
-Understand that the role 'user' is the internal employee.
-
-You must always follow this strict behavior when responding to user requests:
-
-1. If the user request approximately matches the general capabilities of a tool, 
-all required parameters are provided, and the request has not yet been completed in 
-the near past:
-   - You must always include a call to agentChat as your first tool call to explain what 
-   you are about to do.
-   - You must then include the actual tool call(s) in the same response, immediately 
-   after the agentChat entry.
-   - These must all be included in the same list of tool_calls, with agentChat listed 
-   first and other tools listed following it.
-   - Do not separate agentChat and the actual tool call into different responses.
-   -Do not delay tool execution after agentChat — both must be called together.
-
-2. If the request matches a tool, but any required parameter is missing:
-   - Use the 'ticketResponse' tool to politely ask the user for the missing information.
-   - Do not call any other tools or proceed until all required parameters are confirmed.
-
-3. If the user's message does not map to any available tool:
-   - Only respond naturally and politely by calling 'ticketResponse' to:
-     - Greetings
-     - Thanks
-     - Clarifying questions about tool-related messages
-   - Do **not** answer questions or provide help unrelated to your toolset.
-   - If the message is outside your tool capabilities, respond by calling the 
-   'agentChat' tool to escalate to a human.
-
-4. If there is no user input or no new user message
-   - Evaluate the chat history and determine if the user's request was met meaning the
-   user has confirmed the tool was completed
-   - Call the 'ticketResponse' tool to send a clear, friendly summary to the customer 
-   about what was done.
-   - Also call the agentChat tool to send a brief internal summary of what you did to the 
-   internal agent 
-
-You must not deviate from this logic under any circumstance."
-
-                ]
-            ], $historyString),
-            "temperature" => 0.7,
-            "tools" => $tools,
-            "tool_choice" => "required"
-        ];
-        
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1); // 👈 Force HTTP/1.1
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-        $response = curl_exec($ch);
-
-        
-        curl_close($ch);
-
-        $responseData = json_decode($response, true);
-
-        // $func = $responseData['choices'][0]['message'];
-        // return $this->respond($responseData);
-
-        $cpanel = new APILib('janus13.easyonnet.io', 'root','GGWKWFGGCBIGJZ9RJV8Z7H47TM8YA1EG', '2087');
-        $whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
-        'm2ftQEEegLHpyLPD6fiUpAqA0mx9T1XL',
-        'ooxF2HcGp1VjifSAB6bcHO6WfunujurY');
-
-        $functionsResponse = [];
-        $functionsCalled = [];
-
-        if (!isset($responseData['choices'][0]['message'])){
-            return $this->respond("Can't handle request");
-        }
-
-        $aiMessage = $responseData['choices'][0]['message']; 
-
-        if (!isset($responseData['choices'][0]['message']['tool_calls'][0]['function']['name'])){
-            if (isset($responseData['choices'][0]['message']['content'])) {
-                if ($responseData['choices'][0]['message']['content'] === 'alert'){
-                    return $this->respond("alert");
-                }
-
-                $chatHistory[] =  ["role" => "assistant", "content" => $responseData['choices'][0]['message']['content']];
-                $session->set('history', $chatHistory);
-    
-                return $this->respond([
-                    "status" => "success",
-                    "response" => $responseData['choices'][0]['message']['content'], //*** 
-                    "tokens_used" => $responseData['usage'] ?? null,
-                    "API_response" => 'No call was made'
-                ]);
-            }
-            return $this->respond($responseData);
-            // return $this->respond("alert");
-        }
-
-        // $session->set('response', $responseData);
-
-        $chatHistory = $session->get('history') ?? [];
-        $chatHistory[] = ["role" => "user", "content" => $userMessage];
-
-        $session->set('history', $chatHistory);
-
-        // return $this->respond([
-        //     "confirmation" => "Pending",
-        //     "tokens_used" => $responseData['usage'] ?? null
-        // ]);
-        // return $this->respond($json);
-        $apiResponse = $json['API_response'] ?? '';
-        $pending_functions = $json['pendingFunctions'] ?? [];
-
-        /////************************** */
-
-        $agentChatMessage = "";
-        
-        // return $this->respond($pending_functions);
-        $alreadyPending = false;
-        $assistantMessage = "I will call the following functions to complete your request: ";
-        $assistantMessagefunc = "";
-
-        foreach ($aiMessage['tool_calls'] as $toolCall){
-            $func = $toolCall['function']['name'];
-
-            if ($func != "agentChat" && $func != "ticketResponse"){
-                $assistantMessagefunc .= $func . ", ";
-            }
+        try {
+            $startTime = microtime(true);
+            $session = session();
             
+            $config = config('App');
+            $open_ai_key = $config->openai_key;
+            $json = $this->request->getJSON(true);
+            $userMessage = trim($json['message'] ?? '');
 
-            $rawArguments = $toolCall['function']['arguments'];
-            $arguments = json_decode($rawArguments, true);
-            $alreadyPending = false;
-
-            foreach ($pending_functions as $pending) {
-                if ($pending['functionName'] === $func) {
-                    $alreadyPending = true;
-                    break;
-                }
+            // Enhanced input validation
+            $validationResult = $this->validationHelper->validateChatInput($userMessage);
+            if (!$validationResult['valid']) {
+                return $this->respondWithValidationError($validationResult['errors']);
             }
- 
-            if (!$alreadyPending){
-                if ($func === 'agentChat'){
-                    $description = $arguments['agent_message'];
-                    $agentChatMessage = "AI: " . $description;
 
-                    // $chatHistory = $session->get('history') ?? [];
-                    // $chatHistory[] = ["role" => "user", "content" => "AGENT CHAT: " . $agentChatMessage];
-                    // $session->set('history', $chatHistory);
-                }
+            // Get and enhance chat history with context
+            $chatHistory = $this->contextManager->getChatHistory($session);
+            $conversationContext = $this->contextManager->analyzeConversationContext($chatHistory);
+            
+            // Build enhanced message history
+            $historyString = $this->contextManager->buildEnhancedHistory($chatHistory, $userMessage, $conversationContext);
 
-                else if ($toolCall['function']['name'] === 'ticketResponse'){
-                    $description = $arguments['ticket_message'];
-                    $pending_functions[] = ["description" => $description, "functionName" => "RECOMMENDED TICKET RESPONSE", "confirmation" => "pending", "parameters" => ''];
-                }
+            // Get improved system prompt
+            $systemPrompt = $this->getEnhancedSystemPrompt($conversationContext);
+            
+            // Get enhanced tools definition
+            $tools = $this->getEnhancedToolsDefinition();
 
-                else {
-                    $description = $this->description($func);
-                    $pending_functions[] = ["description" => $description, "functionName" => $func, "confirmation" => "pending", "parameters" => $arguments];
-                }
-        
+            // Smart tool choice determination
+            $toolChoice = $this->determineToolChoice($userMessage, $conversationContext);
+
+            $data = [
+                "model" => "gpt-4o",
+                "messages" => array_merge([
+                    ["role" => "system", "content" => $systemPrompt]
+                ], $historyString),
+                "temperature" => 0.3, // Lower for consistency
+                "top_p" => 0.9,
+                "frequency_penalty" => 0.1,
+                "presence_penalty" => 0.1,
+                "max_tokens" => 4000,
+                "tools" => $tools,
+                "tool_choice" => $toolChoice
+            ];
+
+            // Enhanced OpenAI API call with retry logic
+            $responseData = $this->makeOpenAIRequest($data, $open_ai_key);
+            
+            if (!$responseData || !isset($responseData['choices'][0]['message'])) {
+                return $this->respondWithError("Failed to get AI response", 500);
             }
+
+            $aiMessage = $responseData['choices'][0]['message'];
+            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+
+            // Enhanced response processing
+            $processedResponse = $this->processAIResponse($aiMessage, $json, $session, $userMessage);
+            $processedResponse['execution_time'] = $executionTime . 'ms';
+            $processedResponse['tokens_used'] = $responseData['usage'] ?? null;
+
+            // Enhanced logging
+            $this->logInteraction('chat', $userMessage, $processedResponse, $session->session_id);
+
+            return $this->respond($processedResponse);
+
+        } catch (Exception $e) {
+            $this->errorHandler->logError('CHAT_EXCEPTION', $e->getMessage(), $e->getTrace());
+            return $this->respondWithError('Chat service temporarily unavailable', 503);
         }
-
-        if ($assistantMessagefunc != ""){
-            $assistantMessage .= $assistantMessagefunc;
-
-            $chatHistory = $session->get('history') ?? [];
-            $chatHistory[] = ["role" => "assistant", "content" => $assistantMessage];
-    
-            $session->set('history', $chatHistory);
-
-        }
-
-
-        return $this->respond(["pending_functions" => $pending_functions, "status" => "success",
-        "response" => $agentChatMessage, //*** 
-        "tokens_used" => $responseData['usage'] ?? null,
-        "API_response" => $apiResponse]);
-       
-        // // $func = $responseData['choices'][0]['message']['tool_calls'][0]['function']['name'];
-
-        // // return $this->respond($functionsResponse); /////////!!!!!!!!!!!!
-
-
-        // // return $this->respond($APIresponse);
-
-        // // Log actions in json
-        // $this->json_log($functionsCalled, $session->session_id);
-
-        // if (isset($responseData['choices'][0]['message']['content'])) {
-        //     //preg_match('/Summary:\s*(.*?)\s*Response:\s*(.*)/is', $responseData['choices'][0]['message']['content'], $matches);
-
-        //     // $chatHistory[] = ["role" => "user", "content" => $userMessage]; // use this for no simplification
-        //     // $chatHistory[] = ["role" => "user", "content" => $matches[1]];
-        //     // $chatHistory[] = ["role" => "assistant", "content" => $matches[2]];
-        //     $chatHistory[] =  ["role" => "assistant", "content" => $responseData['choices'][0]['message']['content']];
-        //     $chatHistory[] =  ["role" => "assistant", "content" => $func];
-        //     $session->set('history', $chatHistory);
-
-        //     return $this->respond([
-        //         "status" => "success",
-        //         "response" => $responseData['choices'][0]['message']['content'], //*** 
-        //         "tokens_used" => $responseData['usage'] ?? null,
-        //         "API_response" => $functionsResponse
-        //     ]);
-        // }
-
-        // else {
-        //     $chatHistory[] =  ["role" => "assistant", "content" => $func];
-        //     $session->set('history', $chatHistory);
-        //     return $this->respond([
-        //         "status" => "success",
-        //         "response" => "No Response was Generated", //*** 
-        //         "tokens_used" => $responseData['usage'] ?? null,
-        //         "API_response" => $functionsResponse
-        //     ]);
-        // }
-        // // return $this->fail("Failed to get a response from OpenAI.", 500);
     }
 
     public function hosting_servers_list()
@@ -793,11 +209,14 @@ EOT;
     }
 
     public function clear(){
-        header("Access-Control-Allow-Origin: http://localhost:5173");
-        header("Access-Control-Allow-Credentials: true");
         $session = session();
         $session->remove('history');
         $session->remove('response');
+        
+        return $this->respond([
+            'status' => 'success',
+            'message' => 'Chat history cleared successfully'
+        ]);
     }
 
     public function decode_ci_session($raw_data) {
@@ -844,10 +263,7 @@ EOT;
     }
 
     public function session_view(){
-        header("Access-Control-Allow-Origin: http://localhost:5173");
-        header("Access-Control-Allow-Credentials: true");
         $sessionId = $this->request->getJSON(true);
-        // $sessionId = '1ddf41f07863c6898f211acde0abda73';
         $sessionFile = WRITEPATH . 'session/ci_session' . $sessionId;
         
         if (file_exists($sessionFile)) {
@@ -862,8 +278,6 @@ EOT;
     }
 
     public function history_log(){
-        header("Access-Control-Allow-Origin: http://localhost:5173");
-        header("Access-Control-Allow-Credentials: true");
         $filePath = WRITEPATH . 'actions_log.json';
         $contents = file_get_contents($filePath);
         return $this->respond($contents);
@@ -895,7 +309,7 @@ EOT;
             return "Adds a new Email Address to the Account";
         }
         else if ($func === "list_forwarders"){
-            return "Lists all forwarders on the server for the provided domain name";
+            return "Lists all EMAIL FORWARDERS configured for a specific domain under a cPanel account. This is specifically for email forwarding rules, NOT hosting accounts.";
         }
         else if ($func === "add_forwarder"){
             return "Adds an Email Forwarder";
@@ -908,4 +322,722 @@ EOT;
         }
     }
 
+    private function getEnhancedSystemPrompt($conversationContext)
+    {
+        $basePrompt = "You are an advanced AI Technical Support Assistant for a hosting company specializing in cPanel/WHM and WHMCS systems. ";
+        $basePrompt .= "You provide accurate, efficient, and professional support with a focus on hosting, server management, and client billing.\n\n";
+        
+        $basePrompt .= "CORE CAPABILITIES:\n";
+        $basePrompt .= "• Server & Account Management (cPanel/WHM)\n";
+        $basePrompt .= "• Email Management (create, delete, list accounts)\n";
+        $basePrompt .= "• Client Management (WHMCS integration)\n";
+        $basePrompt .= "• Billing & Invoice Operations\n";
+        $basePrompt .= "• Domain & Package Administration\n\n";
+        
+        $basePrompt .= "FUNCTION SELECTION RULES:\n";
+        $basePrompt .= "• 'list email forwarders' = use list_forwarders function (requires cpanel_user and domain)\n";
+        $basePrompt .= "• 'list accounts' or 'list hosting accounts' = use listaccts function (no parameters)\n";
+        $basePrompt .= "• 'list emails' or 'list email accounts' = use list_pops function (requires cpanel_user)\n";
+        $basePrompt .= "• 'count emails' = use count_pops function (requires cpanel_user)\n";
+        $basePrompt .= "• 'create email' or 'add email' = use add_pop function (requires cpanel_user, email_user, password)\n";
+        $basePrompt .= "• 'create account' = use createacct function (requires username, domain, contact_email)\n";
+        $basePrompt .= "• 'client info' or 'show client' = use client function (requires client_id)\n\n";
+        
+        $basePrompt .= "BEHAVIOR RULES:\n";
+        $basePrompt .= "1. ALWAYS prioritize accuracy and data integrity\n";
+        $basePrompt .= "2. Use tools efficiently - group related operations when possible\n";
+        $basePrompt .= "3. Validate all user inputs before execution\n";
+        $basePrompt .= "4. Provide clear, formatted responses with relevant details\n";
+        $basePrompt .= "5. If unsure about parameters, ask for clarification\n";
+        $basePrompt .= "6. Escalate complex issues that exceed your tool capabilities\n";
+        $basePrompt .= "7. Pay careful attention to the EXACT wording of user requests\n\n";
+        
+        $basePrompt .= "CRITICAL PARAMETER RULES:\n";
+        $basePrompt .= "• NEVER use placeholder, example, or dummy values (like 'exampleuser', 'newemail', 'securepassword123')\n";
+        $basePrompt .= "• When a user requests a function that requires parameters, DO NOT call the function\n";
+        $basePrompt .= "• Instead, respond with ONLY text asking for the specific parameters - DO NOT generate function calls\n";
+        $basePrompt .= "• For list_forwarders: Ask 'Please provide the cPanel username and domain name'\n";
+        $basePrompt .= "• For add_pop: Ask 'Please provide the cPanel username, email username, and password'\n";
+        $basePrompt .= "• For client functions: Ask 'Please provide the client ID number'\n";
+        $basePrompt .= "• Only call functions when you have ALL required parameters with real values\n\n";
+        
+        // Add context-aware instructions
+        if (!empty($conversationContext['recent_topics'])) {
+            $topics = implode(', ', $conversationContext['recent_topics']);
+            $basePrompt .= "CURRENT CONTEXT: This conversation involves {$topics}. ";
+            $basePrompt .= "Continue building on this context when providing assistance.\n\n";
+        }
+        
+        if ($conversationContext['conversation_flow'] === 'ongoing_task') {
+            $basePrompt .= "TASK STATUS: You are currently helping with an ongoing task. ";
+            $basePrompt .= "Check if the user needs follow-up actions or has completed their objective.\n\n";
+        }
+        
+        $basePrompt .= "RESPONSE FORMAT:\n";
+        $basePrompt .= "• Use clear, professional language\n";
+        $basePrompt .= "• Include relevant details and status updates\n";
+        $basePrompt .= "• Suggest logical next steps when appropriate\n";
+        $basePrompt .= "• Format data outputs for easy reading\n";
+        
+        return $basePrompt;
+    }
+
+    private function getEnhancedToolsDefinition()
+    {
+        return [
+            // Server Management Tools
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "listaccts",
+                    "description" => "Retrieves a comprehensive list of all HOSTING ACCOUNTS on the server with detailed information including domains, users, packages, and resource usage. NOT for email forwarders.",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "get_domain_info",
+                    "description" => "Returns detailed information about all domains configured on the server including subdomains and addon domains",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "listpkgs",
+                    "description" => "Lists all available hosting packages/plans with their features, limits, and pricing information",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "createacct",
+                    "description" => "Creates a new cPanel hosting account with specified domain, username, and contact email. Requires valid domain and unique username",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "username" => [
+                            "type" => "string",
+                                "description" => "Unique username for the cPanel account (3-16 characters, alphanumeric)"
+                        ], 
+                        "domain" => [
+                            "type" => "string",
+                                "description" => "Primary domain name for the account (must be valid domain format)"
+                        ],
+                        "contact_email" => [
+                            "type" => "string",
+                                "description" => "Valid email address for account notifications and password resets"
+                        ]
+                        ],
+                        "required" => ["username", "domain", "contact_email"]
+                    ]
+                ]
+            ],
+            
+            // Email Management Tools
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "list_pops",
+                    "description" => "Lists all email accounts for a specific cPanel user with detailed information including quotas and usage statistics",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "cpanel_user" => [
+                            "type" => "string",
+                                "description" => "The cPanel username to query email accounts for"
+                            ]
+                        ],
+                        "required" => ["cpanel_user"]
+                    ]
+                ]
+            ],  
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "count_pops",
+                    "description" => "Returns the total count of email accounts for a specific cPanel user",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "cpanel_user" => [
+                            "type" => "string",
+                                "description" => "The cPanel username to count email accounts for"
+                        ]
+                        ],
+                        "required" => ["cpanel_user"]
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "add_pop",
+                    "description" => "Creates a new email account for a cPanel user with specified username and secure password",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "cpanel_user" => [
+                            "type" => "string",
+                                "description" => "The cPanel username that will own this email account"
+                        ],
+                        "email_user" => [
+                            "type" => "string",
+                                "description" => "The username part of the email address (before @ symbol)"
+                        ],
+                        "password" => [
+                            "type" => "string",
+                                "description" => "Secure password for the email account (minimum 6 characters)"
+                        ]
+                        ],
+                        "required" => ["cpanel_user", "email_user", "password"]
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "delete_pop",
+                    "description" => "Removes an email account permanently. This action cannot be undone and will delete all emails in the account",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                            "cpanel_user" => [
+                                "type" => "string",
+                                "description" => "The cPanel username that owns the email account"
+                            ],
+                            "email" => [
+                                "type" => "string",
+                                "description" => "Complete email address to delete (user@domain.com format)"
+                            ]
+                        ],
+                        "required" => ["cpanel_user", "email"]
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "list_forwarders",
+                    "description" => "Lists all EMAIL FORWARDERS configured for a specific domain under a cPanel account. This is specifically for email forwarding rules, NOT hosting accounts.",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "cpanel_user" => [
+                            "type" => "string",
+                                "description" => "The cPanel username to query forwarders for"
+                        ],
+                        "domain" => [
+                            "type" => "string",
+                                "description" => "Domain name to list forwarders for"
+                        ]
+                        ],
+                        "required" => ["cpanel_user", "domain"]
+                    ]
+                ]
+            ], 
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "add_forwarder",
+                    "description" => "Creates an email forwarder to redirect emails from one address to another",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "cpanel_user" => [
+                            "type" => "string",
+                                "description" => "The cPanel username that owns the domain"
+                        ],
+                        "email" => [
+                            "type" => "string",
+                                "description" => "Source email address to forward from"
+                        ],
+                        "forward_to_email" => [
+                            "type" => "string",
+                                "description" => "Destination email address to forward to"
+                        ]
+                        ],
+                        "required" => ["cpanel_user", "email", "forward_to_email"]
+                    ]
+                ]
+            ],
+            
+            // Client Management Tools (WHMCS)
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "client",
+                    "description" => "Retrieves comprehensive client information from WHMCS including contact details, billing info, and account status",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "client_id" => [
+                            "type" => "string",
+                                "description" => "Numeric client ID from WHMCS system"
+                        ]
+                        ],
+                        "required" => ["client_id"]
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "invoices",
+                    "description" => "Retrieves all invoices for a specific client including payment status, amounts, and due dates",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                        "client_id" => [
+                            "type" => "string",
+                                "description" => "Numeric client ID to retrieve invoices for"
+                        ]
+                        ],
+                        "required" => ["client_id"]
+                    ]
+                ]
+            ],
+            
+            // Communication Tools
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "agentChat",
+                    "description" => "Send an internal message to the support agent with updates, questions, or status information",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                            "agent_message" => [
+                            "type" => "string",
+                                "description" => "Professional message to send to the internal support agent"
+                        ]
+                        ],
+                        "required" => ["agent_message"]
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "ticketResponse",
+                    "description" => "Generate a professional response to send directly to the customer",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => [
+                            "ticket_message" => [
+                            "type" => "string",
+                                "description" => "Professional, helpful response to send to the customer"
+                            ]
+                        ],
+                        "required" => ["ticket_message"]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    private function determineToolChoice($userMessage, $conversationContext)
+    {
+        // Smart tool choice based on message content and context
+        $message = strtolower($userMessage);
+        
+        // If it's a greeting or thanks, allow natural response
+        $conversationalPhrases = ['hello', 'hi', 'thank', 'thanks', 'appreciate'];
+        foreach ($conversationalPhrases as $phrase) {
+            if (strpos($message, $phrase) !== false) {
+                return "auto"; // Let AI decide
+            }
+        }
+        
+        // If asking for specific data but might need parameters, use auto
+        $parameterRequiredPhrases = ['list email forwarders', 'create email', 'add email', 'client info', 'show client'];
+        foreach ($parameterRequiredPhrases as $phrase) {
+            if (strpos($message, $phrase) !== false) {
+                return "auto"; // Let AI ask for parameters if needed
+            }
+        }
+        
+        // If asking for data that doesn't need parameters, require function calls
+        $noParameterPhrases = ['list accounts', 'list hosting accounts', 'list packages'];
+        foreach ($noParameterPhrases as $phrase) {
+            if (strpos($message, $phrase) !== false) {
+                return "required";
+            }
+        }
+        
+        // Default to auto for flexibility
+        return "auto";
+    }
+
+    private function makeOpenAIRequest($data, $apiKey, $retries = 3)
+    {
+        $url = "https://api.openai.com/v1/chat/completions";
+        $headers = [
+            "Authorization: Bearer $apiKey",
+            "Content-Type: application/json"
+        ];
+
+        for ($attempt = 1; $attempt <= $retries; $attempt++) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+
+        $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+        curl_close($ch);
+
+            if ($response && $httpCode === 200) {
+        $responseData = json_decode($response, true);
+                if ($responseData && isset($responseData['choices'])) {
+                    return $responseData;
+                }
+            }
+
+            // Log the attempt
+            $this->errorHandler->logError('OPENAI_REQUEST_FAILED', 
+                "Attempt {$attempt}: HTTP {$httpCode}, Error: {$error}");
+
+            if ($attempt < $retries) {
+                sleep(1); // Wait before retry
+            }
+        }
+
+        return false;
+    }
+
+    private function executeFunction($functionName, $parameters)
+    {
+        $startTime = microtime(true);
+        
+        try {
+            $result = null;
+            
+            switch ($functionName) {
+                case 'get_domain_info':
+                    $result = $this->cpanel->get_domain_info();
+                    if ($result) {
+                        $result = $this->responseFormatter->formatDomainInfo($result);
+                    }
+                    break;
+                    
+                case 'listaccts':
+                    $result = $this->cpanel->listaccts();
+                    if ($result && is_array($result)) {
+                        // Validate the raw response before formatting
+                        $validation = $this->validationHelper->validateApiResponse($result, $functionName);
+                        if (!$validation['valid']) {
+                            throw new \Exception($validation['error']);
+                        }
+                        
+                        if (isset($result['data']['acct'])) {
+                            $result = $this->responseFormatter->formatListAccounts($result);
+                        }
+                    }
+                    break;
+                    
+                case 'listpkgs':
+                    $result = $this->cpanel->listpkgs();
+                    if ($result) {
+                        $result = $this->responseFormatter->formatPackageList($result);
+                    }
+                    break;
+                    
+                case 'count_pops':
+                    $result = $this->cpanel->count_pops($parameters['cpanel_user']);
+                    if ($result && is_array($result)) {
+                        // Validate the raw response before formatting
+                        $validation = $this->validationHelper->validateApiResponse($result, $functionName);
+                        if (!$validation['valid']) {
+                            throw new \Exception($validation['error']);
+                        }
+                        
+                        $result = $this->responseFormatter->formatEmailCount($result, $parameters['cpanel_user']);
+                    }
+                    break;
+                    
+                case 'createacct':
+                    $result = $this->cpanel->createacct(
+                        $parameters['username'],
+                        $parameters['domain'], 
+                        $parameters['contact_email']
+                    );
+                    break;
+                    
+                case 'delete_pop':
+                    $result = $this->cpanel->delete_pop(
+                        $parameters['cpanel_user'],
+                        $parameters['email']
+                    );
+                    break;
+                    
+                case 'list_pops':
+                    $result = $this->cpanel->list_pops($parameters['cpanel_user']);
+                    if ($result) {
+                        // Add cpanel_user to the result data for formatting
+                        $result['cpanel_user'] = $parameters['cpanel_user'];
+                        $result = $this->responseFormatter->formatEmailList($result);
+                    }
+                    break;
+                    
+                case 'add_pop':
+                    $result = $this->cpanel->add_pop(
+                        $parameters['cpanel_user'],
+                        $parameters['email_user'],
+                        $parameters['password']
+                    );
+                    if ($result) {
+                        $result = $this->responseFormatter->formatEmailCreation(
+                            $result, 
+                            $parameters['cpanel_user'], 
+                            $parameters['email_user']
+                        );
+                    }
+                    break;
+                    
+                case 'list_forwarders':
+                    $result = $this->cpanel->list_forwarders(
+                        $parameters['cpanel_user'],
+                        $parameters['domain']
+                    );
+                    if ($result) {
+                        $result = $this->responseFormatter->formatEmailForwarders(
+                            $result, 
+                            $parameters['cpanel_user'], 
+                            $parameters['domain']
+                        );
+                    }
+                    break;
+                    
+                case 'add_forwarder':
+                    $result = $this->cpanel->add_forwarder(
+                        $parameters['cpanel_user'],
+                        $parameters['email'],
+                        $parameters['forward_to_email']
+                    );
+                    break;
+                    
+                case 'client':
+                    if (!isset($parameters['client_id'])) {
+                        throw new \Exception("Missing required parameter: client_id");
+                    }
+                    
+                    if (!$this->whmcs) {
+                        throw new \Exception("WHMCS connection not initialized");
+                    }
+                    
+                    $result = $this->whmcs->client($parameters['client_id']);
+                    
+                    if ($result) {
+                        if (isset($result['result']) && $result['result'] === 'error') {
+                            throw new \Exception("WHMCS Error: " . ($result['message'] ?? 'Unknown error'));
+                        }
+                        
+                        // Validate the raw response before formatting
+                        $validation = $this->validationHelper->validateApiResponse($result, $functionName);
+                        if (!$validation['valid']) {
+                            throw new \Exception($validation['error']);
+                        }
+                        
+                        try {
+                            $formattedResult = $this->responseFormatter->formatClientInfo($result);
+                            $result = $formattedResult;
+                        } catch (\Exception $e) {
+                            throw new \Exception("Failed to format client information: " . $e->getMessage());
+                        }
+                    } else {
+                        throw new \Exception("No client data returned from WHMCS");
+                    }
+                    break;
+                    
+                case 'invoices':
+                    $result = $this->whmcs->invoices($parameters['client_id']);
+                    if ($result) {
+                        // Add client_id to the result data for formatting
+                        $result['client_id'] = $parameters['client_id'];
+                        $result = $this->responseFormatter->formatInvoices($result);
+                    }
+                    break;
+                    
+                default:
+                    throw new \Exception("Unknown function: {$functionName}");
+            }
+
+            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+            
+            // Validate the result (client, listaccts, count_pops, and list_forwarders functions validate before formatting)
+            if ($functionName !== 'client' && $functionName !== 'listaccts' && $functionName !== 'count_pops' && $functionName !== 'list_forwarders') {
+                $validation = $this->validationHelper->validateApiResponse($result, $functionName);
+                if (!$validation['valid']) {
+                    throw new \Exception($validation['error']);
+                }
+            }
+
+            return [
+                'success' => true,
+                'data' => $result,
+                'execution_time' => $executionTime . 'ms'
+            ];
+
+        } catch (\Exception $e) {
+            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+            $this->errorHandler->handleApiError($functionName, $e->getMessage(), $parameters);
+            
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'code' => 500,
+                'execution_time' => $executionTime . 'ms'
+            ];
+        }
+    }
+
+    private function processAIResponse($aiMessage, $requestData, $session, $userMessage)
+    {
+        $chatHistory = $this->contextManager->getChatHistory($session);
+        
+        // Handle different response types
+        if (isset($aiMessage['tool_calls']) && !empty($aiMessage['tool_calls'])) {
+            return $this->processToolCalls($aiMessage, $requestData, $session, $userMessage);
+        } elseif (isset($aiMessage['content']) && !empty($aiMessage['content'])) {
+            return $this->processTextResponse($aiMessage, $session, $userMessage);
+        } else {
+            return $this->respondWithError('Invalid AI response format', 500);
+        }
+    }
+
+    private function processToolCalls($aiMessage, $requestData, $session, $userMessage)
+    {
+        $pendingFunctions = $requestData['pendingFunctions'] ?? [];
+        $agentChatMessage = "";
+        $assistantMessage = "I will execute the following functions: ";
+        $functionNames = [];
+
+        foreach ($aiMessage['tool_calls'] as $toolCall) {
+            $func = $toolCall['function']['name'];
+            $arguments = json_decode($toolCall['function']['arguments'], true);
+
+            // Skip if already pending
+            $alreadyPending = false;
+            foreach ($pendingFunctions as $pending) {
+                if ($pending['functionName'] === $func) {
+                    $alreadyPending = true;
+                        break;
+                }
+            }
+
+            if (!$alreadyPending) {
+                if ($func === 'agentChat') {
+                    $agentChatMessage = "AI: " . $arguments['agent_message'];
+                } elseif ($func === 'ticketResponse') {
+                    $pendingFunctions[] = [
+                        "description" => $arguments['ticket_message'],
+                        "functionName" => "RECOMMENDED TICKET RESPONSE",
+                        "confirmation" => "pending",
+                        "parameters" => []
+                    ];
+        } else {
+                    $description = $this->getFunctionDescription($func);
+                    $pendingFunctions[] = [
+                        "description" => $description,
+                        "functionName" => $func,
+                        "confirmation" => "pending", 
+                        "parameters" => $arguments
+                    ];
+                    $functionNames[] = $func;
+                }
+            }
+        }
+
+        // Update chat history
+        if (!empty($functionNames)) {
+            $assistantMessage .= implode(', ', $functionNames);
+            $chatHistory[] = ["role" => "assistant", "content" => $assistantMessage];
+            $chatHistory[] = ["role" => "user", "content" => $userMessage];
+            $session->set('history', $chatHistory);
+        }
+
+        return [
+            "status" => "success",
+            "pending_functions" => $pendingFunctions,
+            "response" => $agentChatMessage,
+            "API_response" => $requestData['API_response'] ?? []
+        ];
+    }
+
+    private function processTextResponse($aiMessage, $session, $userMessage)
+    {
+        $chatHistory = $this->contextManager->getChatHistory($session);
+        $chatHistory[] = ["role" => "user", "content" => $userMessage];
+        $chatHistory[] = ["role" => "assistant", "content" => $aiMessage['content']];
+        $session->set('history', $chatHistory);
+
+        return [
+            "status" => "success",
+            "response" => $aiMessage['content'],
+            "API_response" => []
+        ];
+    }
+
+    private function getFunctionDescription($functionName)
+    {
+        $descriptions = [
+            'get_domain_info' => 'Retrieve domain information from server',
+            'listaccts' => 'List all hosting accounts on server',
+            'listpkgs' => 'List available hosting packages',
+            'count_pops' => 'Count email accounts for user',
+            'createacct' => 'Create new hosting account',
+            'delete_pop' => 'Delete email account',
+            'list_pops' => 'List email accounts for user',
+            'add_pop' => 'Create new email account',
+            'list_forwarders' => 'List email forwarders for domain',
+            'add_forwarder' => 'Create email forwarder',
+            'client' => 'Retrieve client information',
+            'invoices' => 'Retrieve client invoices'
+        ];
+
+        return $descriptions[$functionName] ?? "Execute {$functionName} function";
+    }
+
+    private function logInteraction($type, $input, $response, $sessionId)
+    {
+        $this->errorHandler->logInteraction($type, $input, $response, $sessionId);
+    }
+
+    private function respondWithValidationError($errors)
+    {
+        $this->errorHandler->handleValidationError($errors);
+        return $this->fail([
+            'error' => 'Validation failed',
+            'details' => $errors
+        ], 400);
+    }
+
+    private function respondWithError($message, $code = 500)
+    {
+        return $this->fail([
+            'error' => $message,
+            'timestamp' => date('Y-m-d H:i:s')
+        ], $code);
+    }
 }

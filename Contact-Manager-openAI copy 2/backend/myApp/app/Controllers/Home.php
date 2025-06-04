@@ -9,18 +9,12 @@ class Home extends BaseController
         $model = new \App\Models\ContactsModel();
         $data = $model->findAll(); 
 
-        header('Access-Control-Allow-Origin: *');
-        header('Content-Type: application/json');
-
         return $this->response->setJSON($data);
     }
 
     public function getContacts() {
         $model = new \App\Models\ContactsModel();
         $data= $model->findAll(); 
-
-        header('Access-Control-Allow-Origin: *');
-        header('Content-Type: application/json');
 
         return $this->response->setJSON($data);
     }
@@ -29,9 +23,6 @@ class Home extends BaseController
         $model = new \App\Models\ContactsModel();
         $data = $this->request->getJSON(true);
         $update = $model->update($data['id'], $data); 
-
-        header('Access-Control-Allow-Origin: *');
-        header('Content-Type: application/json');
         
         return $this->response->setJSON($data);
     } 
@@ -40,9 +31,6 @@ class Home extends BaseController
         $model = new \App\Models\ContactsModel();
         $data = $this->request->getJSON(true); //note that true means conversion to associative array
         $insert = $model->insert($data); 
-
-        header('Access-Control-Allow-Origin: *');
-        header('Content-Type: application/json');
         
         return $this->response->setJSON($data);
     }
@@ -51,9 +39,6 @@ class Home extends BaseController
         $model = new \App\Models\ContactsModel();
         $data = $this->request->getJSON(true);
         $delete = $model->delete($data['id']); 
-
-        header('Access-Control-Allow-Origin: *');
-        header('Content-Type: application/json');
 
         return $this->response->setJSON($data);
     }

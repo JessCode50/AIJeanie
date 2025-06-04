@@ -12,10 +12,29 @@ $routes->post('contacts/edit', 'Home::editContacts');
 $routes->post('contacts/new', 'Home::newContacts');
 $routes->post('contacts/delete', 'Home::deleteContacts');
 
-$routes->post('contacts/ai', 'AiController::chat'); 
-$routes->post('contacts/ai/clear', 'AiController::clear'); 
-$routes->post('contacts/ai/view', 'AiController::session_view'); 
-$routes->post('contacts/ai/log', 'AiController::history_log'); 
-$routes->post('contacts/ai/proceed', 'AiController::proceed'); 
+// OPTIONS routes for CORS preflight
+$routes->options('contacts', function() { return ''; });
+$routes->options('contacts/edit', function() { return ''; });
+$routes->options('contacts/new', function() { return ''; });
+$routes->options('contacts/delete', function() { return ''; });
+$routes->options('ai', function() { return ''; });
+$routes->options('ai/chat', function() { return ''; });
+$routes->options('ai/clear', function() { return ''; });
+$routes->options('ai/session_view', function() { return ''; });
+$routes->options('ai/history_log', function() { return ''; });
+$routes->options('ai/proceed', function() { return ''; });
+$routes->options('ai/rejected', function() { return ''; });
+
+// HEAD routes for connection status checks
+$routes->head('ai', 'AiController::index');
+
+// AI Routes
+$routes->get('ai', 'AiController::index');
+$routes->post('ai/chat', 'AiController::chat'); 
+$routes->post('ai/clear', 'AiController::clear'); 
+$routes->post('ai/session_view', 'AiController::session_view'); 
+$routes->post('ai/history_log', 'AiController::history_log'); 
+$routes->post('ai/proceed', 'AiController::proceed');
+$routes->post('ai/rejected', 'AiController::rejected');
 
 
