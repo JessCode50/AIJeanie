@@ -76,11 +76,30 @@ class AiController extends BaseController
                 // Update context and history
                 $this->contextManager->updateContext($session, $func, $result['data']);
                 
+                // Store API response data for follow-up questions
+                $recentApiData = $session->get('recent_api_data') ?? [];
+                $recentApiData[] = [
+                    'function' => $func,
+                    'timestamp' => time(),
+                    'response' => $result['data']
+                ];
+                
+                // Keep only last 3 API responses to prevent memory bloat
+                if (count($recentApiData) > 3) {
+                    $recentApiData = array_slice($recentApiData, -3);
+                }
+                
+                $session->set('recent_api_data', $recentApiData);
+                
+                // Generate follow-up ticket response
+                $ticketResponse = $this->generateTicketResponse($func, $parameters, $result['data'], $session);
+                
                 return $this->respond([
                     "status" => "success",
                     "response" => $this->responseFormatter->formatSuccessMessage($func, $parameters),
                     "API_response" => [$result['data']],
-                    "execution_time" => $result['execution_time'] ?? null
+                    "execution_time" => $result['execution_time'] ?? null,
+                    "pending_functions" => $ticketResponse ? [$ticketResponse] : []
                 ]);
             } else {
                 return $this->respondWithError($result['error'], $result['code']);
@@ -145,8 +164,11 @@ class AiController extends BaseController
             $chatHistory = $this->contextManager->getChatHistory($session);
             $conversationContext = $this->contextManager->analyzeConversationContext($chatHistory);
             
-            // Build enhanced message history
-            $historyString = $this->contextManager->buildEnhancedHistory($chatHistory, $userMessage, $conversationContext);
+            // Get recent API response data from session for follow-up questions
+            $recentApiData = $session->get('recent_api_data') ?? [];
+            
+            // Build enhanced message history with recent API data
+            $historyString = $this->contextManager->buildEnhancedHistory($chatHistory, $userMessage, $conversationContext, $recentApiData);
 
             // Get improved system prompt
             $systemPrompt = $this->getEnhancedSystemPrompt($conversationContext);
@@ -212,6 +234,7 @@ EOT;
         $session = session();
         $session->remove('history');
         $session->remove('response');
+        $session->remove('recent_api_data');
         
         return $this->respond([
             'status' => 'success',
@@ -332,16 +355,238 @@ EOT;
         $basePrompt .= "• Email Management (create, delete, list accounts)\n";
         $basePrompt .= "• Client Management (WHMCS integration)\n";
         $basePrompt .= "• Billing & Invoice Operations\n";
-        $basePrompt .= "• Domain & Package Administration\n\n";
+        $basePrompt .= "• Domain & Package Administration\n";
+        $basePrompt .= "• Server Monitoring & Health Analysis (load, services, disk usage)\n";
+        $basePrompt .= "• Real-time Server Troubleshooting & Performance Assessment\n";
+        $basePrompt .= "• Bandwidth Analysis & Usage Monitoring\n\n";
+        
+        $basePrompt .= "CRITICAL FOLLOW-UP QUESTION HANDLING:\n";
+        $basePrompt .= "When users ask follow-up questions about recently retrieved data (like 'is this normal?', 'what does this mean?', 'should I be worried?'):\n";
+        $basePrompt .= "• DO NOT request the same data again\n";
+        $basePrompt .= "• DO NOT call functions to retrieve data that was just shown\n";
+        $basePrompt .= "• INSTEAD, analyze and interpret the existing data in your conversation context\n";
+        $basePrompt .= "• Provide expert analysis, interpretation, and recommendations\n";
+        $basePrompt .= "• Reference specific values from the previous response\n";
+        $basePrompt .= "• Explain what the numbers mean in practical terms\n";
+        $basePrompt .= "• Offer actionable troubleshooting steps if issues are found\n\n";
+        
+        $basePrompt .= "FOLLOW-UP QUESTION PATTERNS TO RECOGNIZE:\n";
+        $basePrompt .= "• 'Is this normal?' → Analyze data against industry standards\n";
+        $basePrompt .= "• 'What does this mean?' → Explain technical details in plain language\n";
+        $basePrompt .= "• 'Should I be worried?' → Risk assessment with recommendations\n";
+        $basePrompt .= "• 'How can I fix this?' → Specific troubleshooting steps\n";
+        $basePrompt .= "• 'Is the server healthy?' → Health assessment based on shown data\n";
+        $basePrompt .= "• 'What's causing high load?' → Root cause analysis\n";
+        $basePrompt .= "• 'How much disk space is left?' → Analysis of shown disk data\n";
+        $basePrompt .= "• 'Are any services down?' → Service status interpretation\n\n";
+        
+        $basePrompt .= "SERVER LOAD ANALYSIS EXPERTISE:\n";
+        $basePrompt .= "Load Average Interpretation:\n";
+        $basePrompt .= "• 0.0-0.7: Excellent - Server has plenty of spare capacity\n";
+        $basePrompt .= "• 0.7-1.0: Good - Normal load, server handling requests well\n";
+        $basePrompt .= "• 1.0-1.5: Moderate - Server is busy but managing fine\n";
+        $basePrompt .= "• 1.5-2.0: High - Server approaching capacity limits\n";
+        $basePrompt .= "• 2.0-4.0: Very High - Performance degradation likely\n";
+        $basePrompt .= "• 4.0+: Critical - Immediate attention required\n\n";
+        
+        $basePrompt .= "Load Trend Analysis:\n";
+        $basePrompt .= "• 1-min > 5-min > 15-min: Load is increasing (concerning)\n";
+        $basePrompt .= "• 1-min < 5-min < 15-min: Load is decreasing (good sign)\n";
+        $basePrompt .= "• All three similar: Stable load (normal pattern)\n";
+        $basePrompt .= "• Spiky 1-min vs stable 5/15-min: Temporary load bursts\n\n";
+        
+        $basePrompt .= "DISK USAGE ANALYSIS EXPERTISE:\n";
+        $basePrompt .= "Disk Space Health Thresholds:\n";
+        $basePrompt .= "• 0-60% usage: Healthy - Plenty of space available\n";
+        $basePrompt .= "• 60-75% usage: Monitor - Keep an eye on growth rate\n";
+        $basePrompt .= "• 75-85% usage: Attention - Plan for cleanup or expansion\n";
+        $basePrompt .= "• 85-95% usage: Warning - Immediate action recommended\n";
+        $basePrompt .= "• 95%+ usage: Critical - System stability at risk\n\n";
+        
+        $basePrompt .= "ACCOUNT DISK USAGE ANALYSIS:\n";
+        $basePrompt .= "• >5GB per account: Review for optimization opportunities\n";
+        $basePrompt .= "• >10GB per account: Investigate for large files or logs\n";
+        $basePrompt .= "• Rapid growth: Monitor for runaway processes or attacks\n";
+        $basePrompt .= "• Multiple large accounts: Consider load balancing\n\n";
+        
+        $basePrompt .= "SERVICE STATUS ANALYSIS EXPERTISE:\n";
+        $basePrompt .= "Critical Services for Web Hosting:\n";
+        $basePrompt .= "• HTTPD (Apache): Essential - All websites down if stopped\n";
+        $basePrompt .= "• MySQL: Critical - Database-driven sites affected\n";
+        $basePrompt .= "• EXIM: Important - Email delivery impacted\n";
+        $basePrompt .= "• NAMED (DNS): Vital - Domain resolution issues\n";
+        $basePrompt .= "• FTPD: Moderate - File upload/download affected\n";
+        $basePrompt .= "• cPaneld: Critical - Control panel access affected\n\n";
+        
+        $basePrompt .= "SERVICE TROUBLESHOOTING PRIORITIES:\n";
+        $basePrompt .= "1. HTTPD down: Immediate priority - affects all websites\n";
+        $basePrompt .= "2. MySQL issues: High priority - affects dynamic sites\n";
+        $basePrompt .= "3. DNS problems: High priority - affects domain resolution\n";
+        $basePrompt .= "4. Mail issues: Medium priority - affects email services\n";
+        $basePrompt .= "5. FTP issues: Low priority - affects file management\n\n";
+        
+        $basePrompt .= "BANDWIDTH ANALYSIS EXPERTISE:\n";
+        $basePrompt .= "Bandwidth Usage Interpretation:\n";
+        $basePrompt .= "• Normal residential: 100-500GB/month per site\n";
+        $basePrompt .= "• Business websites: 500GB-2TB/month\n";
+        $basePrompt .= "• High-traffic sites: 2TB+ per month\n";
+        $basePrompt .= "• Sudden spikes: Investigate for DDoS or viral content\n";
+        $basePrompt .= "• Consistent high usage: Normal for media-heavy sites\n\n";
+        
+        $basePrompt .= "COMPREHENSIVE API KNOWLEDGE BASE:\n\n";
+        $basePrompt .= "=== BANDWIDTH MONITORING ===\n";
+        $basePrompt .= "showbw Function - Bandwidth Information Retrieval:\n";
+        $basePrompt .= "Purpose: Retrieves bandwidth usage statistics for reseller accounts\n";
+        $basePrompt .= "Response Structure:\n";
+        $basePrompt .= "• object: Main response object containing all bandwidth data\n";
+        $basePrompt .= "• acct: Array of objects - Bandwidth information for reseller's accounts\n";
+        $basePrompt .= "  - Each account object contains usage statistics, limits, and consumption data\n";
+        $basePrompt .= "• month: integer [1-12] - The queried month for bandwidth data\n";
+        $basePrompt .= "• reseller: string - The reseller username or root user\n";
+        $basePrompt .= "• totalused: integer ≥0 - Total bandwidth usage in bytes during queried period\n";
+        $basePrompt .= "• year: integer - The queried year for bandwidth data\n\n";
+        
+        $basePrompt .= "=== SERVER MONITORING & TROUBLESHOOTING ===\n";
+        $basePrompt .= "Server Load Analysis (get_server_load):\n";
+        $basePrompt .= "• Purpose: Returns 1, 5, 15 minute load averages for performance assessment\n";
+        $basePrompt .= "• Load Interpretation:\n";
+        $basePrompt .= "  - 0-1.0: Excellent performance, CPU has spare capacity\n";
+        $basePrompt .= "  - 1.0-2.0: Good performance, normal load for single-core systems\n";
+        $basePrompt .= "  - 2.0+: High load, may indicate performance issues\n";
+        $basePrompt .= "• Troubleshooting Tips:\n";
+        $basePrompt .= "  - High 1-min load: Check for runaway processes or DDoS attacks\n";
+        $basePrompt .= "  - High 5-min load: Investigate sustained high traffic or resource-intensive scripts\n";
+        $basePrompt .= "  - High 15-min load: Server may be consistently overloaded, consider resource upgrades\n";
+        $basePrompt .= "  - Load > CPU cores: Performance degradation expected\n\n";
+        
+        $basePrompt .= "Server Status Overview (get_server_status):\n";
+        $basePrompt .= "• Purpose: Comprehensive health including load, version, accounts, bandwidth\n";
+        $basePrompt .= "• Data Points: Load averages, cPanel version, account count, bandwidth statistics\n";
+        $basePrompt .= "• Health Indicators:\n";
+        $basePrompt .= "  - Load trends over time periods\n";
+        $basePrompt .= "  - Account distribution and resource usage\n";
+        $basePrompt .= "  - System version compatibility\n";
+        $basePrompt .= "• Common Issues & Solutions:\n";
+        $basePrompt .= "  - Outdated cPanel: Schedule maintenance window for updates\n";
+        $basePrompt .= "  - High account density: Consider load balancing or server migration\n";
+        $basePrompt .= "  - Bandwidth spikes: Investigate top consumers and potential abuse\n\n";
+        
+        $basePrompt .= "Disk Usage Analysis (get_disk_usage):\n";
+        $basePrompt .= "• Purpose: Account-by-account disk usage analysis with optimization recommendations\n";
+        $basePrompt .= "• Response includes: Total usage, per-account breakdown, heaviest users, partition info\n";
+        $basePrompt .= "• Critical Thresholds:\n";
+        $basePrompt .= "  - >80% partition usage: Immediate attention required\n";
+        $basePrompt .= "  - >5GB per account: Review for optimization opportunities\n";
+        $basePrompt .= "  - Rapid growth: Monitor for log file accumulation or uploads\n";
+        $basePrompt .= "• Optimization Strategies:\n";
+        $basePrompt .= "  - Log rotation and cleanup for high-usage accounts\n";
+        $basePrompt .= "  - Database optimization and cleanup\n";
+        $basePrompt .= "  - Backup compression and archival\n";
+        $basePrompt .= "  - WordPress cache and plugin cleanup\n";
+        $basePrompt .= "  - Email quota management and cleanup\n\n";
+        
+        $basePrompt .= "Server Services Status (get_server_services):\n";
+        $basePrompt .= "• Purpose: Complete service status (Apache, MySQL, FTP, DNS, mail)\n";
+        $basePrompt .= "• Monitored Services:\n";
+        $basePrompt .= "  - HTTPD (Apache): Web server for hosting websites\n";
+        $basePrompt .= "  - MySQL: Database server for applications\n";
+        $basePrompt .= "  - FTPD: File transfer service\n";
+        $basePrompt .= "  - EXIM: Mail transfer agent\n";
+        $basePrompt .= "  - NAMED (BIND): DNS resolution service\n";
+        $basePrompt .= "• Service Troubleshooting:\n";
+        $basePrompt .= "  - Apache Down: Check error logs, configuration syntax, resource limits\n";
+        $basePrompt .= "  - MySQL Issues: Investigate slow queries, connection limits, memory usage\n";
+        $basePrompt .= "  - FTP Problems: Verify user permissions, passive mode settings, firewall rules\n";
+        $basePrompt .= "  - Mail Issues: Check queue, DNS records (MX, SPF), blacklist status\n";
+        $basePrompt .= "  - DNS Problems: Verify zone files, recursion settings, upstream resolvers\n";
+        $basePrompt .= "• Performance Optimization:\n";
+        $basePrompt .= "  - Apache: Tune MaxRequestWorkers, enable compression, optimize .htaccess\n";
+        $basePrompt .= "  - MySQL: Optimize queries, tune my.cnf, implement caching\n";
+        $basePrompt .= "  - Mail: Configure rate limiting, implement greylisting\n\n";
+        
+        $basePrompt .= "=== ACCOUNT MANAGEMENT ===\n";
+        $basePrompt .= "Account Functions Response Structures:\n";
+        $basePrompt .= "• listaccts: Returns array of hosting accounts with domain, user, package, disk usage, creation date\n";
+        $basePrompt .= "• createacct: Creates new cPanel account, returns success/failure with account details\n";
+        $basePrompt .= "• listpkgs: Returns hosting packages with quotas, bandwidth limits, feature restrictions\n\n";
+        
+        $basePrompt .= "=== EMAIL MANAGEMENT ===\n";
+        $basePrompt .= "Email Functions Response Structures:\n";
+        $basePrompt .= "• list_pops: Returns email accounts with quotas, usage, last login times\n";
+        $basePrompt .= "• count_pops: Returns integer count of total email accounts\n";
+        $basePrompt .= "• add_pop: Creates email account, returns success confirmation\n";
+        $basePrompt .= "• delete_pop: Removes email account, returns deletion status\n";
+        $basePrompt .= "• list_forwarders: Returns email forwarding rules for specified domain\n";
+        $basePrompt .= "• add_forwarder: Creates email forwarder, returns configuration details\n\n";
+        
+        $basePrompt .= "=== CLIENT MANAGEMENT (WHMCS) ===\n";
+        $basePrompt .= "Client Functions Response Structures:\n";
+        $basePrompt .= "• client: Returns comprehensive client data including:\n";
+        $basePrompt .= "  - Personal info (name, email, phone, address)\n";
+        $basePrompt .= "  - Account status, currency, credit balance\n";
+        $basePrompt .= "  - Registration date, last login, billing preferences\n";
+        $basePrompt .= "• invoices: Returns invoice array with amounts, due dates, payment status, line items\n\n";
+        
+        $basePrompt .= "EXPERT TROUBLESHOOTING KNOWLEDGE:\n\n";
+        $basePrompt .= "=== PERFORMANCE ISSUES ===\n";
+        $basePrompt .= "High Load Diagnostics:\n";
+        $basePrompt .= "• Immediate Actions: Check top processes, identify resource hogs, review recent changes\n";
+        $basePrompt .= "• Analysis Steps: Review Apache access logs, MySQL slow query log, system logs\n";
+        $basePrompt .= "• Common Causes: DDoS attacks, poorly optimized code, database locks, backup processes\n";
+        $basePrompt .= "• Mitigation: Implement rate limiting, optimize queries, schedule intensive tasks\n\n";
+        
+        $basePrompt .= "Disk Space Issues:\n";
+        $basePrompt .= "• Quick Wins: Clear log files, empty trash, compress backups\n";
+        $basePrompt .= "• Investigation: Use 'du -sh' to find large directories, check for core dumps\n";
+        $basePrompt .= "• Prevention: Implement log rotation, automated cleanup scripts, quota monitoring\n\n";
+        
+        $basePrompt .= "Service Failures:\n";
+        $basePrompt .= "• Apache Won't Start: Check syntax (httpd -t), review error logs, verify ports\n";
+        $basePrompt .= "• MySQL Crashes: Check error log, verify disk space, review my.cnf settings\n";
+        $basePrompt .= "• Mail Issues: Test connectivity, check DNS records, review queue status\n\n";
+        
+        $basePrompt .= "=== SECURITY CONSIDERATIONS ===\n";
+        $basePrompt .= "• Monitor for unusual bandwidth spikes (potential attacks)\n";
+        $basePrompt .= "• Watch for accounts with excessive resource usage\n";
+        $basePrompt .= "• Regular security updates and patches\n";
+        $basePrompt .= "• Implement fail2ban and ModSecurity\n";
+        $basePrompt .= "• Regular malware scanning and cleanup\n\n";
         
         $basePrompt .= "FUNCTION SELECTION RULES:\n";
+        $basePrompt .= "• 'bandwidth usage' or 'showbw' = use showbw function (no parameters needed)\n";
         $basePrompt .= "• 'list email forwarders' = use list_forwarders function (requires cpanel_user and domain)\n";
         $basePrompt .= "• 'list accounts' or 'list hosting accounts' = use listaccts function (no parameters)\n";
         $basePrompt .= "• 'list emails' or 'list email accounts' = use list_pops function (requires cpanel_user)\n";
         $basePrompt .= "• 'count emails' = use count_pops function (requires cpanel_user)\n";
         $basePrompt .= "• 'create email' or 'add email' = use add_pop function (requires cpanel_user, email_user, password)\n";
         $basePrompt .= "• 'create account' = use createacct function (requires username, domain, contact_email)\n";
-        $basePrompt .= "• 'client info' or 'show client' = use client function (requires client_id)\n\n";
+        $basePrompt .= "• 'client info' or 'show client' = use client function (requires client_id)\n";
+        $basePrompt .= "• 'server load' or 'check load' = use get_server_load function (no parameters)\n";
+        $basePrompt .= "• 'server status' or 'server health' = use get_server_status function (no parameters)\n";
+        $basePrompt .= "• 'disk usage' or 'disk space' = use get_disk_usage function (no parameters)\n";
+        $basePrompt .= "• 'server services' or 'service status' = use get_server_services function (no parameters)\n\n";
+        
+        $basePrompt .= "DOCUMENTATION EXPERTISE:\n";
+        $basePrompt .= "You have complete knowledge of all API endpoints and their response structures. ";
+        $basePrompt .= "When users ask about API functions, provide comprehensive documentation including:\n";
+        $basePrompt .= "• Function purpose and use cases\n";
+        $basePrompt .= "• Required parameters and their data types\n";
+        $basePrompt .= "• Complete response structure with all fields\n";
+        $basePrompt .= "• Data types and constraints for each field\n";
+        $basePrompt .= "• Example use cases and practical applications\n";
+        $basePrompt .= "• Troubleshooting tips and optimization suggestions\n";
+        $basePrompt .= "• Performance benchmarks and thresholds\n";
+        $basePrompt .= "• Security considerations and best practices\n\n";
+        
+        $basePrompt .= "FOLLOW-UP QUESTION HANDLING:\n";
+        $basePrompt .= "When users ask follow-up questions about server health or performance:\n";
+        $basePrompt .= "• Provide specific, actionable troubleshooting steps\n";
+        $basePrompt .= "• Include command-line tools and diagnostic procedures\n";
+        $basePrompt .= "• Explain the reasoning behind recommendations\n";
+        $basePrompt .= "• Offer preventive measures and monitoring suggestions\n";
+        $basePrompt .= "• Cite specific log files and configuration options\n";
+        $basePrompt .= "• Provide performance optimization techniques\n";
+        $basePrompt .= "• Include industry best practices and standards\n\n";
         
         $basePrompt .= "BEHAVIOR RULES:\n";
         $basePrompt .= "1. ALWAYS prioritize accuracy and data integrity\n";
@@ -350,7 +595,12 @@ EOT;
         $basePrompt .= "4. Provide clear, formatted responses with relevant details\n";
         $basePrompt .= "5. If unsure about parameters, ask for clarification\n";
         $basePrompt .= "6. Escalate complex issues that exceed your tool capabilities\n";
-        $basePrompt .= "7. Pay careful attention to the EXACT wording of user requests\n\n";
+        $basePrompt .= "7. Pay careful attention to the EXACT wording of user requests\n";
+        $basePrompt .= "8. For documentation questions, provide complete API details without function calls\n";
+        $basePrompt .= "9. For troubleshooting questions, provide comprehensive guidance with examples\n";
+        $basePrompt .= "10. Always include preventive measures and monitoring recommendations\n";
+        $basePrompt .= "11. CRITICAL: For follow-up questions about recently shown data, analyze existing data instead of re-requesting\n";
+        $basePrompt .= "12. Recognize when users are asking for interpretation rather than new data\n\n";
         
         $basePrompt .= "CRITICAL PARAMETER RULES:\n";
         $basePrompt .= "• NEVER use placeholder, example, or dummy values (like 'exampleuser', 'newemail', 'securepassword123')\n";
@@ -373,11 +623,23 @@ EOT;
             $basePrompt .= "Check if the user needs follow-up actions or has completed their objective.\n\n";
         }
         
+        // Enhanced context for recent data
+        if (!empty($conversationContext['recent_data'])) {
+            $basePrompt .= "RECENT DATA CONTEXT: You have recently provided data to the user. ";
+            $basePrompt .= "If they ask follow-up questions about this data (like 'is this normal?', 'what does this mean?'), ";
+            $basePrompt .= "provide analysis and interpretation WITHOUT calling functions again. ";
+            $basePrompt .= "Use your expert knowledge to explain what the data means.\n\n";
+        }
+        
         $basePrompt .= "RESPONSE FORMAT:\n";
         $basePrompt .= "• Use clear, professional language\n";
         $basePrompt .= "• Include relevant details and status updates\n";
         $basePrompt .= "• Suggest logical next steps when appropriate\n";
         $basePrompt .= "• Format data outputs for easy reading\n";
+        $basePrompt .= "• For API documentation requests, provide comprehensive details in structured format\n";
+        $basePrompt .= "• For troubleshooting requests, provide step-by-step guidance with explanations\n";
+        $basePrompt .= "• Include relevant tools, commands, and configuration examples\n";
+        $basePrompt .= "• For follow-up questions, reference specific values from previous responses\n";
         
         return $basePrompt;
     }
@@ -646,7 +908,69 @@ EOT;
                         "required" => ["ticket_message"]
                     ]
                 ]
-            ]
+            ],
+            
+            // Server Monitoring & Health Tools
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "get_server_load",
+                    "description" => "Retrieves current server load averages (1, 5, 15 minute intervals) from the cPanel server to assess system performance",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "get_server_status",
+                    "description" => "Comprehensive server health check including load averages, cPanel version, account statistics, and bandwidth usage. Ideal for general server health assessment",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "get_disk_usage",
+                    "description" => "Analyzes disk usage across all hosting accounts with AI-powered health recommendations. Shows which accounts are using the most space",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "get_server_services",
+                    "description" => "Complete server service status including Apache, MySQL, FTP, DNS, mail services, system metrics (CPU, memory, swap), and disk partition information. Best for troubleshooting service issues",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
+            [
+                "type" => "function",
+                "function" => [
+                    "name" => "showbw",
+                    "description" => "Retrieves comprehensive bandwidth usage statistics for reseller accounts. Returns detailed information including monthly usage, account-specific data, and total consumption metrics",
+                    "parameters" => [
+                        "type" => "object",
+                        "properties" => new \stdClass(),
+                        "required" => []
+                    ]
+                ]
+            ],
         ];
     }
 
@@ -654,6 +978,49 @@ EOT;
     {
         // Smart tool choice based on message content and context
         $message = strtolower($userMessage);
+        
+        // If this is a follow-up question about recently shown data, don't force function calls
+        if ($conversationContext['user_intent'] === 'follow_up_question' || 
+            $conversationContext['conversation_flow'] === 'follow_up_analysis') {
+            return "auto"; // Let AI provide analysis without function calls
+        }
+        
+        // Enhanced follow-up question patterns - specifically look for data analysis requests
+        $followUpPatterns = [
+            // Direct data interpretation questions
+            'tell me about.*data.*normal', 'tell me about.*data.*good', 'tell me about.*data',
+            'is this normal', 'is that normal', 'is it normal', 'are these normal',
+            'what does this mean', 'what does that mean', 'what do these mean',
+            'should i be worried', 'should i worry', 'should i be concerned',
+            'how can i fix', 'how do i fix', 'how to fix',
+            'is the server healthy', 'is my server healthy', 'server health',
+            'what\'s causing', 'what is causing', 'what causes',
+            'how much.*left', 'how much.*remaining', 'how much space',
+            'are.*down', 'is.*down', 'what.*down',
+            'is.*good', 'is.*bad', 'is.*ok', 'is.*fine',
+            'what about', 'explain this', 'explain that', 'explain these',
+            'interpret', 'analysis', 'analyze', 'review',
+            'tell me about', 'help me understand', 'what should i know',
+            'why is', 'why are', 'why does', 'why do',
+            'should i be concerned', 'is this concerning',
+            // Performance related follow-ups  
+            'is performance.*good', 'is performance.*bad', 'performance.*normal',
+            'load.*normal', 'load.*high', 'load.*good', 'load.*bad',
+            'usage.*normal', 'usage.*high', 'usage.*good', 'usage.*bad',
+            'status.*good', 'status.*ok', 'status.*normal'
+        ];
+        
+        foreach ($followUpPatterns as $pattern) {
+            if (preg_match("/$pattern/i", $message)) {
+                return "auto"; // Analysis response, not data request
+            }
+        }
+        
+        // If recently retrieved data and asking about interpretation, use auto
+        if ($conversationContext['recent_data'] && 
+            (preg_match('/normal|good|bad|ok|healthy|concerning|worried|mean|interpret|explain|analysis|about/i', $message))) {
+            return "auto"; // Likely asking about existing data
+        }
         
         // If it's a greeting or thanks, allow natural response
         $conversationalPhrases = ['hello', 'hi', 'thank', 'thanks', 'appreciate'];
@@ -672,9 +1039,16 @@ EOT;
         }
         
         // If asking for data that doesn't need parameters, require function calls
-        $noParameterPhrases = ['list accounts', 'list hosting accounts', 'list packages'];
+        $noParameterPhrases = ['list accounts', 'list hosting accounts', 'list packages', 'server load', 'check load', 'server status', 'disk usage', 'server services'];
         foreach ($noParameterPhrases as $phrase) {
             if (strpos($message, $phrase) !== false) {
+                // But only if it's not a follow-up question
+                if ($conversationContext['recent_data'] && 
+                    (strpos($message, 'current') === false && 
+                     strpos($message, 'latest') === false && 
+                     strpos($message, 'updated') === false)) {
+                    return "auto"; // Might be asking about existing data
+                }
                 return "required";
             }
         }
@@ -879,6 +1253,30 @@ EOT;
                     }
                     break;
                     
+                // Server Monitoring Functions
+                case 'get_server_load':
+                    $result = $this->getServerLoadDirect();
+                    break;
+                    
+                case 'get_server_status':
+                    $result = $this->getServerStatusDirect();
+                    break;
+                    
+                case 'get_disk_usage':
+                    $result = $this->getDiskUsageDirect();
+                    break;
+                    
+                case 'get_server_services':
+                    $result = $this->getServerServicesDirect();
+                    break;
+                    
+                case 'showbw':
+                    $result = $this->cpanel->showbw();
+                    if ($result) {
+                        $result = $this->responseFormatter->formatBandwidthUsage($result);
+                    }
+                    break;
+                    
                 default:
                     throw new \Exception("Unknown function: {$functionName}");
             }
@@ -1013,7 +1411,12 @@ EOT;
             'list_forwarders' => 'List email forwarders for domain',
             'add_forwarder' => 'Create email forwarder',
             'client' => 'Retrieve client information',
-            'invoices' => 'Retrieve client invoices'
+            'invoices' => 'Retrieve client invoices',
+            'showbw' => 'Retrieve bandwidth usage statistics for reseller accounts',
+            'get_server_load' => 'Get current server load averages',
+            'get_server_status' => 'Get comprehensive server health status',
+            'get_disk_usage' => 'Analyze disk usage across hosting accounts',
+            'get_server_services' => 'Check status of all server services'
         ];
 
         return $descriptions[$functionName] ?? "Execute {$functionName} function";
@@ -1039,5 +1442,441 @@ EOT;
             'error' => $message,
             'timestamp' => date('Y-m-d H:i:s')
         ], $code);
+    }
+
+    private function generateTicketResponse($func, $parameters, $resultData, $session)
+    {
+        try {
+            $chatHistory = $this->contextManager->getChatHistory($session);
+            $conversationContext = $this->contextManager->analyzeConversationContext($chatHistory);
+            
+            $ticketPrompt = "Based on the successful execution of the {$func} function, generate a BRIEF, concise summary for the customer ticket. ";
+            $ticketPrompt .= "Keep it under 2-3 sentences. Focus on what was accomplished, not technical details. ";
+            $ticketPrompt .= "Function executed: {$func} with parameters: " . json_encode($parameters) . " ";
+            $ticketPrompt .= "Result summary: " . $this->extractKeySummary($resultData) . " ";
+            $ticketPrompt .= "Write a short, professional summary that a customer would understand.";
+
+            $data = [
+                "model" => "gpt-4o", 
+                "messages" => array_merge([
+                    ["role" => "system", "content" => $this->getEnhancedSystemPrompt($conversationContext)]
+                ], [
+                    ["role" => "user", "content" => $ticketPrompt]
+                ]),
+                "temperature" => 0.3,
+                "top_p" => 0.9,
+                "frequency_penalty" => 0.1,
+                "presence_penalty" => 0.1,
+                "max_tokens" => 1000,
+                "tools" => [
+                    [
+                        "type" => "function",
+                        "function" => [
+                            "name" => "ticketResponse",
+                            "description" => "Generate a professional response to send directly to the customer",
+                            "parameters" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "ticket_message" => [
+                                        "type" => "string",
+                                        "description" => "Professional, helpful response to send to the customer"
+                                    ]
+                                ],
+                                "required" => ["ticket_message"]
+                            ]
+                        ]
+                    ]
+                ],
+                "tool_choice" => ["type" => "function", "function" => ["name" => "ticketResponse"]]
+            ];
+
+            $config = config('App');
+            $responseData = $this->makeOpenAIRequest($data, $config->openai_key);
+            
+            if ($responseData && isset($responseData['choices'][0]['message']['tool_calls'][0])) {
+                $toolCall = $responseData['choices'][0]['message']['tool_calls'][0];
+                $arguments = json_decode($toolCall['function']['arguments'], true);
+                
+                return [
+                    "description" => $arguments['ticket_message'],
+                    "functionName" => "RECOMMENDED TICKET RESPONSE",
+                    "confirmation" => "pending",
+                    "parameters" => []
+                ];
+            }
+            
+            return null;
+            
+        } catch (Exception $e) {
+            $this->errorHandler->logError('TICKET_RESPONSE_GENERATION', $e->getMessage());
+            return null;
+        }
+    }
+
+    private function extractKeySummary($data)
+    {
+        if (empty($data)) {
+            return "Operation completed successfully";
+        }
+        
+        // Handle string responses
+        if (is_string($data)) {
+            return strlen($data) > 100 ? substr($data, 0, 100) . "..." : $data;
+        }
+        
+        // Handle arrays/objects
+        if (is_array($data)) {
+            $count = count($data);
+            
+            // Check for common data patterns
+            if (isset($data['result']) && $data['result'] === 'success') {
+                return "Action completed successfully";
+            }
+            
+            if (isset($data['data']) && is_array($data['data'])) {
+                $dataCount = count($data['data']);
+                return "Retrieved {$dataCount} items";
+            }
+            
+            if (isset($data['accounts']) || isset($data['acct'])) {
+                return "Account information retrieved";
+            }
+            
+            if (isset($data['email']) || isset($data['emails'])) {
+                return "Email operation completed";
+            }
+            
+            if (isset($data['domains'])) {
+                return "Domain information retrieved";
+            }
+            
+            if (isset($data['packages'])) {
+                return "Package information retrieved";
+            }
+            
+            // Generic count-based summary
+            if ($count > 0) {
+                return "Retrieved {$count} results";
+            }
+        }
+        
+        return "Operation completed successfully";
+    }
+
+    /**
+     * Helper method to call server monitoring endpoints
+     */
+    private function callServerMonitoringEndpoint($endpoint)
+    {
+        try {
+            // Directly instantiate ServerMonitorController to avoid HTTP loops
+            $serverMonitor = new \App\Controllers\ServerMonitorController();
+            
+            switch ($endpoint) {
+                case '/server/info':
+                    $response = $serverMonitor->getServerInfo();
+                    break;
+                case '/server/status':
+                    $response = $serverMonitor->getServerStatus();
+                    break;
+                case '/server/disk':
+                    $response = $serverMonitor->getDiskUsage();
+                    break;
+                case '/server/services':
+                    $response = $serverMonitor->getServerServices();
+                    break;
+                default:
+                    throw new \Exception('Unknown monitoring endpoint: ' . $endpoint);
+            }
+            
+            // Get the response body data
+            $data = $response->getBody();
+            if (is_string($data)) {
+                $data = json_decode($data, true);
+            }
+            
+            // Add AI analysis context to the response
+            if (isset($data['data'])) {
+                $data['ai_context'] = $this->generateServerAnalysisContext($endpoint, $data['data']);
+            }
+            
+            return $data;
+            
+        } catch (\Exception $e) {
+            // Return a simplified response instead of failing completely
+            return [
+                'status' => 'error',
+                'message' => 'Server monitoring temporarily unavailable: ' . $e->getMessage(),
+                'data' => null,
+                'ai_context' => [
+                    'analysis' => 'Server monitoring endpoint could not be reached',
+                    'recommendation' => 'Please try again or check server status manually'
+                ]
+            ];
+        }
+    }
+
+    /**
+     * Generate AI analysis context for server monitoring data
+     */
+    private function generateServerAnalysisContext($endpoint, $data)
+    {
+        $context = [];
+        
+        switch ($endpoint) {
+            case '/server/info':
+                if (isset($data['data'])) {
+                    $load = $data['data'];
+                    $context['analysis'] = 'Server load metrics for performance assessment';
+                    $context['health_indicators'] = [
+                        '1-minute load' => $load['one'] ?? 'unknown',
+                        '5-minute load' => $load['five'] ?? 'unknown', 
+                        '15-minute load' => $load['fifteen'] ?? 'unknown'
+                    ];
+                }
+                break;
+                
+            case '/server/status':
+                $context['analysis'] = 'Comprehensive server health overview';
+                $context['scope'] = 'Load averages, server version, account statistics, bandwidth usage';
+                break;
+                
+            case '/server/disk':
+                if (isset($data['summary'])) {
+                    $summary = $data['summary'];
+                    $context['analysis'] = 'Disk usage analysis with optimization recommendations';
+                    $context['key_metrics'] = [
+                        'total_accounts' => $data['total_accounts'] ?? 'unknown',
+                        'total_usage_gb' => isset($summary['total_disk_used_mb']) ? round($summary['total_disk_used_mb'] / 1024, 2) : 'unknown'
+                    ];
+                }
+                break;
+                
+            case '/server/services':
+                $context['analysis'] = 'Complete service status and system metrics';
+                $context['scope'] = 'All server services, CPU/memory usage, disk partitions';
+                break;
+        }
+        
+        return $context;
+    }
+
+    private function getServerLoadDirect()
+    {
+        try {
+            // Get server load average using WHM API
+            $serverInfo = $this->cpanel->whm_api_call('systemloadavg');
+            
+            if (!$serverInfo || isset($serverInfo['errors'])) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Unable to retrieve server load information',
+                    'data' => null
+                ];
+            }
+            
+            return [
+                'status' => 'success',
+                'data' => $serverInfo,
+                'timestamp' => date('Y-m-d H:i:s'),
+                'source' => 'cPanel WHM API - systemloadavg',
+                'ai_context' => [
+                    'analysis' => 'Server load metrics for performance assessment',
+                    'scope' => '1, 5, and 15 minute load averages'
+                ]
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Error retrieving server load: ' . $e->getMessage(),
+                'data' => null
+            ];
+        }
+    }
+
+    private function getServerStatusDirect()
+    {
+        try {
+            $serverData = [];
+            
+            // 1. System Load Average (WHM API)
+            $loadAvg = $this->cpanel->whm_api_call('systemloadavg');
+            $serverData['load_average'] = $loadAvg;
+            
+            // 2. Server Version Info (WHM API)
+            $serverInfo = $this->cpanel->whm_api_call('version');
+            $serverData['server_version'] = $serverInfo;
+            
+            // 3. Account Statistics (WHM API) 
+            $accounts = $this->cpanel->whm_api_call('listaccts');
+            $serverData['accounts'] = $accounts;
+            
+            // 4. Bandwidth Statistics (WHM API)
+            $stats = $this->cpanel->whm_api_call('showbw');
+            $serverData['bandwidth_stats'] = $stats;
+            
+            return [
+                'status' => 'success',
+                'data' => $serverData,
+                'timestamp' => date('Y-m-d H:i:s'),
+                'source' => 'cPanel WHM API - Comprehensive Status',
+                'ai_context' => [
+                    'analysis' => 'Complete server health overview',
+                    'scope' => 'Load averages, version, accounts, bandwidth usage'
+                ]
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Error retrieving server status: ' . $e->getMessage(),
+                'data' => null
+            ];
+        }
+    }
+
+    private function getDiskUsageDirect()
+    {
+        try {
+            // Get account list which contains disk usage data
+            $accounts = $this->cpanel->whm_api_call('listaccts');
+            
+            $diskSummary = [
+                'total_accounts' => 0,
+                'disk_usage_by_account' => [],
+                'summary' => [
+                    'total_disk_used_mb' => 0,
+                    'accounts_with_limits' => 0,
+                    'accounts_unlimited' => 0,
+                    'heaviest_user' => null
+                ]
+            ];
+            
+            if (isset($accounts['data']['acct'])) {
+                $diskSummary['total_accounts'] = count($accounts['data']['acct']);
+                $maxUsage = 0;
+                $heaviestUser = null;
+                
+                foreach ($accounts['data']['acct'] as $account) {
+                    $diskUsed = $account['diskused'] ?? '0M';
+                    $diskLimit = $account['disklimit'] ?? 'unlimited';
+                    
+                    // Convert disk usage to MB
+                    $diskUsedMB = (float)str_replace('M', '', $diskUsed);
+                    $diskSummary['summary']['total_disk_used_mb'] += $diskUsedMB;
+                    
+                    // Track heaviest user
+                    if ($diskUsedMB > $maxUsage) {
+                        $maxUsage = $diskUsedMB;
+                        $heaviestUser = [
+                            'user' => $account['user'],
+                            'domain' => $account['domain'],
+                            'disk_used' => $diskUsed,
+                            'disk_limit' => $diskLimit
+                        ];
+                    }
+                    
+                    $diskSummary['disk_usage_by_account'][] = [
+                        'user' => $account['user'],
+                        'domain' => $account['domain'],
+                        'disk_used' => $diskUsed,
+                        'disk_limit' => $diskLimit
+                    ];
+                    
+                    if ($diskLimit === 'unlimited') {
+                        $diskSummary['summary']['accounts_unlimited']++;
+                    } else {
+                        $diskSummary['summary']['accounts_with_limits']++;
+                    }
+                }
+                
+                $diskSummary['summary']['heaviest_user'] = $heaviestUser;
+            }
+            
+            return [
+                'status' => 'success',
+                'data' => $diskSummary,
+                'timestamp' => date('Y-m-d H:i:s'),
+                'source' => 'cPanel WHM API - Account Disk Usage',
+                'ai_context' => [
+                    'analysis' => 'Disk usage analysis with optimization recommendations',
+                    'scope' => 'All hosting accounts disk usage analysis'
+                ]
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Error retrieving disk usage: ' . $e->getMessage(),
+                'data' => null
+            ];
+        }
+    }
+
+    private function getServerServicesDirect()
+    {
+        try {
+            $results = [];
+            
+            // Try ServerInformation/get_information with specific users (as we discovered works)
+            $users_to_try = ['root', 'dev477'];
+            
+            foreach ($users_to_try as $user) {
+                try {
+                    $serverInfo = $this->cpanel->cpanel_api_call($user, 'ServerInformation', 'get_information');
+                    if ($serverInfo && !isset($serverInfo['error'])) {
+                        $results["server_info_for_$user"] = $serverInfo;
+                        break; // If successful, no need to try other users
+                    } else {
+                        $results["attempt_$user"] = $serverInfo;
+                    }
+                } catch (\Exception $e) {
+                    $results["error_$user"] = $e->getMessage();
+                }
+            }
+            
+            // Also get individual service statuses
+            $services = ['httpd', 'mysql', 'ftpd', 'exim', 'named'];
+            foreach ($services as $service) {
+                try {
+                    $serviceStatus = $this->cpanel->whm_api_call('servicestatus', ['service' => $service]);
+                    $results["{$service}_status"] = $serviceStatus;
+                } catch (\Exception $e) {
+                    $results["{$service}_error"] = $e->getMessage();
+                }
+            }
+            
+            return [
+                'status' => 'success',
+                'data' => $results,
+                'timestamp' => date('Y-m-d H:i:s'),
+                'source' => 'cPanel API - Server Services & System Info',
+                'ai_context' => [
+                    'analysis' => 'Complete service status and system metrics',
+                    'scope' => 'All server services, system information, and health data'
+                ]
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Error retrieving server services: ' . $e->getMessage(),
+                'data' => null
+            ];
+        }
+    }
+
+    public function debug_session()
+    {
+        $session = session();
+        $recentApiData = $session->get('recent_api_data') ?? [];
+        $history = $session->get('history') ?? [];
+        
+        return $this->respond([
+            'recent_api_data' => $recentApiData,
+            'history_count' => count($history),
+            'session_id' => $session->session_id
+        ]);
     }
 }

@@ -407,4 +407,19 @@ class APILib{
 		];
 		return $this->cpanel_api_call($cpanel_user,'Ftp','add_ftp',$params);
 	}
+
+	/**
+	 * Retrieves bandwidth usage statistics for reseller accounts
+	 * Ref: https://api.docs.cpanel.net/openapi/whm/operation/showbw/
+	 */
+	public function showbw($year=null,$month=null,$start_date=null,$end_date=null)
+	{
+		$params = [];
+		if ($year) $params['year'] = $year;
+		if ($month) $params['month'] = $month;
+		if ($start_date) $params['start'] = $start_date;
+		if ($end_date) $params['end'] = $end_date;
+		
+		return $this->whm_api_call('showbw',$params);
+	}
 }

@@ -24,6 +24,11 @@ $routes->options('ai/session_view', function() { return ''; });
 $routes->options('ai/history_log', function() { return ''; });
 $routes->options('ai/proceed', function() { return ''; });
 $routes->options('ai/rejected', function() { return ''; });
+$routes->options('ai/debug_session', function() { return ''; });
+$routes->options('server/info', function() { return ''; });
+$routes->options('server/disk', function() { return ''; });
+$routes->options('server/status', function() { return ''; });
+$routes->options('server/services', function() { return ''; });
 
 // HEAD routes for connection status checks
 $routes->head('ai', 'AiController::index');
@@ -36,5 +41,19 @@ $routes->post('ai/session_view', 'AiController::session_view');
 $routes->post('ai/history_log', 'AiController::history_log'); 
 $routes->post('ai/proceed', 'AiController::proceed');
 $routes->post('ai/rejected', 'AiController::rejected');
+$routes->get('ai/debug_session', 'AiController::debug_session');
+
+// Server Monitoring Routes (for AI integration)
+$routes->options('server/info', function() { return ''; });
+$routes->options('server/disk', function() { return ''; });
+$routes->options('server/status', function() { return ''; });
+$routes->get('server/info', 'ServerMonitorController::getServerInfo');
+$routes->get('server/disk', 'ServerMonitorController::getDiskUsage');
+$routes->get('server/status', 'ServerMonitorController::getServerStatus');
+$routes->get('server/services', 'ServerMonitorController::getServerServices');
+
+// Debug route for API testing
+$routes->get('ai/debug/load', 'AiController::debug_load_api');
+$routes->get('ai/debug/status', 'AiController::debug_server_status');
 
 

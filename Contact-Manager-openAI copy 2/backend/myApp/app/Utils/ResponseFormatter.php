@@ -460,9 +460,385 @@ class ResponseFormatter
 
     private function formatData($data)
     {
-        if (is_array($data)) {
+        if (is_array($data) || is_object($data)) {
             return json_encode($data, JSON_PRETTY_PRINT);
         }
-        return strval($data);
+        
+        return (string) $data;
+    }
+
+    public function formatServerLoad($loadData)
+    {
+        if (!isset($loadData['data'])) {
+            return "❌ Unable to retrieve server load information";
+        }
+
+        // Handle the nested data structure from WHM API
+        $data = $loadData['data'];
+        if (isset($data['data'])) {
+            $data = $data['data']; // Extract the actual load data
+        }
+        
+        $formatted = "📊 **Server Load Average**\n";
+        $formatted .= "═══════════════════════════════════════\n\n";
+        $formatted .= "🖥️ **Server:** " . ($data['hostname'] ?? 'cPanel Server') . "\n";
+        $formatted .= "⏰ **Timestamp:** " . ($loadData['timestamp'] ?? date('Y-m-d H:i:s')) . "\n\n";
+        
+        $formatted .= "📈 **Load Averages:**\n";
+        if (isset($data['one'])) {
+            $formatted .= "   • **1 minute:** " . $data['one'] . " " . $this->getLoadStatus(floatval($data['one'])) . "\n";
+        }
+        if (isset($data['five'])) {
+            $formatted .= "   • **5 minutes:** " . $data['five'] . " " . $this->getLoadStatus(floatval($data['five'])) . "\n";
+        }
+        if (isset($data['fifteen'])) {
+            $formatted .= "   • **15 minutes:** " . $data['fifteen'] . " " . $this->getLoadStatus(floatval($data['fifteen'])) . "\n";
+        }
+        
+        $formatted .= "\n💡 **Performance Status:** " . $this->getOverallLoadStatus($data) . "\n";
+        
+        return $formatted;
+    }
+
+    public function formatServerStatus($statusData)
+    {
+        // Handle nested data structure: data.data.actual_data
+        if (!isset($statusData['data'])) {
+            return "❌ Unable to retrieve server status information";
+        }
+
+        // Extract actual data from nested structure
+        $data = $statusData['data'];
+        if (isset($data['data'])) {
+            $data = $data['data'];
+        }
+
+        $formatted = "🖥️ **Complete Server Status**\n";
+        $formatted .= "═══════════════════════════════════════\n\n";
+        $formatted .= "⏰ **Report Generated:** " . ($statusData['timestamp'] ?? date('Y-m-d H:i:s')) . "\n\n";
+        
+        // Server Version Info - handle nested structure
+        if (isset($data['server_version'])) {
+            $versionData = $data['server_version'];
+            // Extract from nested data structure if exists
+            if (isset($versionData['data'])) {
+                $version = $versionData['data'];
+            } else {
+                $version = $versionData;
+            }
+            $formatted .= "🔧 **Server Information:**\n";
+            $formatted .= "   • **Version:** " . ($version['version'] ?? 'N/A') . "\n";
+            $formatted .= "   • **Build:** " . ($version['build'] ?? 'N/A') . "\n";
+            $formatted .= "   • **Release Tier:** " . ($version['release_tier'] ?? 'N/A') . "\n\n";
+        }
+        
+        // Load Average - handle nested structure 
+        if (isset($data['load_average'])) {
+            $loadData = $data['load_average'];
+            // Extract from nested data structure if exists
+            if (isset($loadData['data'])) {
+                $load = $loadData['data'];
+            } else {
+                $load = $loadData;
+            }
+            $formatted .= "📊 **Current Load:**\n";
+            $formatted .= "   • **1 min:** " . ($load['one'] ?? 'N/A') . " " . $this->getLoadStatus(floatval($load['one'] ?? 0)) . "\n";
+            $formatted .= "   • **5 min:** " . ($load['five'] ?? 'N/A') . " " . $this->getLoadStatus(floatval($load['five'] ?? 0)) . "\n";
+            $formatted .= "   • **15 min:** " . ($load['fifteen'] ?? 'N/A') . " " . $this->getLoadStatus(floatval($load['fifteen'] ?? 0)) . "\n\n";
+        }
+        
+        // Account Statistics
+        if (isset($data['accounts']['data']['acct'])) {
+            $accounts = $data['accounts']['data']['acct'];
+            $formatted .= "👥 **Hosting Accounts:**\n";
+            $formatted .= "   • **Total Accounts:** " . count($accounts) . "\n";
+            $formatted .= "   • **Active Domains:** " . count(array_unique(array_column($accounts, 'domain'))) . "\n\n";
+        }
+        
+        // Bandwidth Statistics
+        if (isset($data['bandwidth_stats'])) {
+            $formatted .= "📡 **Bandwidth Status:**\n";
+            $formatted .= "   • **Monitoring:** Active\n";
+            $formatted .= "   • **Data Available:** ✅ Yes\n\n";
+        }
+        
+        $formatted .= "✅ **Overall Status:** Server is operational and responding normally\n";
+        
+        return $formatted;
+    }
+
+    public function formatServerDiskUsage($diskData)
+    {
+        // Handle nested data structure: data.data.actual_data
+        if (!isset($diskData['data'])) {
+            return "❌ Unable to retrieve disk usage information";
+        }
+
+        // Extract actual data from nested structure
+        $data = $diskData['data'];
+        if (isset($data['data'])) {
+            $data = $data['data'];
+        }
+
+        $formatted = "💾 **Server Disk Usage Analysis**\n";
+        $formatted .= "═══════════════════════════════════════\n\n";
+        $formatted .= "⏰ **Analysis Time:** " . ($diskData['timestamp'] ?? date('Y-m-d H:i:s')) . "\n\n";
+        
+        // Summary
+        if (isset($data['summary'])) {
+            $summary = $data['summary'];
+            $formatted .= "📊 **Usage Summary:**\n";
+            $formatted .= "   • **Total Accounts:** " . ($data['total_accounts'] ?? 'N/A') . "\n";
+            $formatted .= "   • **Total Disk Used:** " . number_format($summary['total_disk_used_mb'] ?? 0, 2) . " MB\n";
+            $formatted .= "   • **Accounts with Limits:** " . ($summary['accounts_with_limits'] ?? 0) . "\n";
+            $formatted .= "   • **Unlimited Accounts:** " . ($summary['accounts_unlimited'] ?? 0) . "\n\n";
+            
+            // Heaviest User
+            if (isset($summary['heaviest_user'])) {
+                $heavy = $summary['heaviest_user'];
+                $formatted .= "🏆 **Highest Usage Account:**\n";
+                $formatted .= "   • **User:** " . ($heavy['user'] ?? 'N/A') . "\n";
+                $formatted .= "   • **Domain:** " . ($heavy['domain'] ?? 'N/A') . "\n";
+                $formatted .= "   • **Usage:** " . ($heavy['disk_used'] ?? 'N/A') . "\n";
+                $formatted .= "   • **Limit:** " . ($heavy['disk_limit'] ?? 'N/A') . "\n\n";
+            }
+        }
+        
+        // Account Details (show top 5 by usage)
+        if (isset($data['disk_usage_by_account']) && is_array($data['disk_usage_by_account'])) {
+            $accounts = $data['disk_usage_by_account'];
+            $formatted .= "📋 **Top Disk Usage by Account:**\n";
+            
+            // Sort by disk usage (convert MB values for sorting)
+            usort($accounts, function($a, $b) {
+                $aUsage = floatval(str_replace('M', '', $a['disk_used'] ?? '0'));
+                $bUsage = floatval(str_replace('M', '', $b['disk_used'] ?? '0'));
+                return $bUsage <=> $aUsage;
+            });
+            
+            $topAccounts = array_slice($accounts, 0, 5);
+            foreach ($topAccounts as $index => $account) {
+                $formatted .= "   " . ($index + 1) . ". **" . ($account['domain'] ?? 'N/A') . "**\n";
+                $formatted .= "      • User: " . ($account['user'] ?? 'N/A') . "\n";
+                $formatted .= "      • Usage: " . ($account['disk_used'] ?? 'N/A') . "\n";
+                $formatted .= "      • Limit: " . ($account['disk_limit'] ?? 'unlimited') . "\n";
+                if ($index < count($topAccounts) - 1) {
+                    $formatted .= "      ─────────────────────────────\n";
+                }
+                $formatted .= "\n";
+            }
+        }
+        
+        return $formatted;
+    }
+
+    public function formatServerServices($servicesData)
+    {
+        // Handle nested data structure: data.data.actual_data
+        if (!isset($servicesData['data'])) {
+            return "❌ Unable to retrieve server services information";
+        }
+
+        // Extract actual data from nested structure
+        $data = $servicesData['data'];
+        if (isset($data['data'])) {
+            $data = $data['data'];
+        }
+
+        $formatted = "🔧 **Server Services & System Information**\n";
+        $formatted .= "═══════════════════════════════════════\n\n";
+        $formatted .= "⏰ **Status Check Time:** " . ($servicesData['timestamp'] ?? date('Y-m-d H:i:s')) . "\n\n";
+        
+        // Service Status
+        $services = ['httpd', 'mysql', 'ftpd', 'exim', 'named'];
+        $formatted .= "🔍 **Service Status:**\n";
+        
+        foreach ($services as $service) {
+            $statusKey = $service . '_status';
+            if (isset($data[$statusKey])) {
+                $status = $data[$statusKey];
+                $isRunning = $this->determineServiceStatus($status);
+                $formatted .= "   • **" . strtoupper($service) . ":** " . ($isRunning ? '✅ Running' : '❌ Stopped') . "\n";
+            } else {
+                $formatted .= "   • **" . strtoupper($service) . ":** ⚠️ Status Unknown\n";
+            }
+        }
+        $formatted .= "\n";
+        
+        // System Information
+        foreach ($data as $key => $value) {
+            if (strpos($key, 'server_info_for_') === 0) {
+                $user = str_replace('server_info_for_', '', $key);
+                $formatted .= "💻 **System Info (via {$user}):**\n";
+                
+                if (isset($value['result']['data'])) {
+                    $info = $value['result']['data'];
+                    if (isset($info['hostname'])) {
+                        $formatted .= "   • **Hostname:** " . $info['hostname'] . "\n";
+                    }
+                    if (isset($info['machine_type'])) {
+                        $formatted .= "   • **Architecture:** " . $info['machine_type'] . "\n";
+                    }
+                    if (isset($info['operating_system'])) {
+                        $formatted .= "   • **OS:** " . $info['operating_system'] . "\n";
+                    }
+                    if (isset($info['processor_information'])) {
+                        $formatted .= "   • **CPU:** " . $info['processor_information'] . "\n";
+                    }
+                }
+                $formatted .= "\n";
+                break; // Only show one successful server info
+            }
+        }
+        
+        $formatted .= "📡 **Monitoring Status:** All services are being actively monitored\n";
+        $formatted .= "🔧 **System Health:** Server is operational and responding\n";
+        
+        return $formatted;
+    }
+
+    private function getLoadStatus($load)
+    {
+        if ($load < 1.0) {
+            return "🟢 (Low)";
+        } elseif ($load < 2.0) {
+            return "🟡 (Moderate)";
+        } else {
+            return "🔴 (High)";
+        }
+    }
+
+    private function getOverallLoadStatus($loadData)
+    {
+        $loads = [
+            floatval($loadData['one'] ?? 0),
+            floatval($loadData['five'] ?? 0),
+            floatval($loadData['fifteen'] ?? 0)
+        ];
+        
+        $avgLoad = array_sum($loads) / count($loads);
+        
+        if ($avgLoad < 1.0) {
+            return "🟢 Excellent - Server is running smoothly";
+        } elseif ($avgLoad < 2.0) {
+            return "🟡 Good - Normal server load";
+        } else {
+            return "🔴 High - Server may be under heavy load";
+        }
+    }
+
+    private function determineServiceStatus($serviceData)
+    {
+        if (!is_array($serviceData) || !isset($serviceData['data'])) {
+            return "🔍 Status Unknown";
+        }
+        
+        $data = $serviceData['data'];
+        
+        if (isset($data['enabled']) && $data['enabled'] == 1) {
+            return "✅ Running";
+        } elseif (isset($data['status']) && $data['status'] == 'running') {
+            return "✅ Running";
+        } elseif (isset($data['running']) && $data['running'] == 1) {
+            return "✅ Running";
+        } else {
+            return "❌ Stopped";
+        }
+    }
+
+    public function formatBandwidthUsage($bandwidthData)
+    {
+        if (!isset($bandwidthData['data']) || !is_array($bandwidthData['data'])) {
+            return "❌ Unable to retrieve bandwidth usage data";
+        }
+
+        $data = $bandwidthData['data'];
+        $formatted = "📊 **Bandwidth Usage Statistics**\n";
+        $formatted .= "═══════════════════════════════════════\n\n";
+        
+        // Basic Information
+        $formatted .= "🔹 **Query Information**\n";
+        $formatted .= "   • **Month:** " . ($data['month'] ?? 'Current') . "\n";
+        $formatted .= "   • **Year:** " . ($data['year'] ?? date('Y')) . "\n";
+        $formatted .= "   • **Reseller:** " . ($data['reseller'] ?? 'root') . "\n";
+        
+        // Total usage summary
+        if (isset($data['totalused'])) {
+            $totalUsedGB = round($data['totalused'] / (1024 * 1024 * 1024), 2);
+            $formatted .= "   • **Total Usage:** " . number_format($totalUsedGB, 2) . " GB (" . number_format($data['totalused']) . " bytes)\n";
+        }
+        
+        $formatted .= "\n";
+        
+        // Account-specific bandwidth usage
+        if (isset($data['acct']) && is_array($data['acct']) && count($data['acct']) > 0) {
+            $formatted .= "🔹 **Account Bandwidth Usage**\n";
+            $formatted .= "   📊 **Total Accounts:** " . count($data['acct']) . "\n\n";
+            
+            // Sort accounts by usage (highest first)
+            $accounts = $data['acct'];
+            usort($accounts, function($a, $b) {
+                $aUsage = isset($a['totalbytes']) ? $a['totalbytes'] : 0;
+                $bUsage = isset($b['totalbytes']) ? $b['totalbytes'] : 0;
+                return $bUsage <=> $aUsage;
+            });
+            
+            foreach ($accounts as $index => $account) {
+                $formatted .= "   🔸 **Account #" . ($index + 1) . "**\n";
+                $formatted .= "      • **Domain:** " . ($account['domain'] ?? 'N/A') . "\n";
+                $formatted .= "      • **User:** " . ($account['user'] ?? 'N/A') . "\n";
+                
+                if (isset($account['totalbytes'])) {
+                    $usageGB = round($account['totalbytes'] / (1024 * 1024 * 1024), 3);
+                    $formatted .= "      • **Total Usage:** " . number_format($usageGB, 3) . " GB\n";
+                }
+                
+                if (isset($account['in'])) {
+                    $inGB = round($account['in'] / (1024 * 1024 * 1024), 3);
+                    $formatted .= "      • **Incoming:** " . number_format($inGB, 3) . " GB\n";
+                }
+                
+                if (isset($account['out'])) {
+                    $outGB = round($account['out'] / (1024 * 1024 * 1024), 3);
+                    $formatted .= "      • **Outgoing:** " . number_format($outGB, 3) . " GB\n";
+                }
+                
+                if ($index < count($accounts) - 1) {
+                    $formatted .= "      ─────────────────────────\n";
+                }
+                $formatted .= "\n";
+            }
+        } else {
+            $formatted .= "🔹 **Account Information**\n";
+            $formatted .= "   📭 No detailed account bandwidth data available\n\n";
+        }
+        
+        // Analysis and recommendations
+        $formatted .= "🔹 **Analysis & Recommendations**\n";
+        
+        if (isset($data['acct']) && count($data['acct']) > 0) {
+            $accounts = $data['acct'];
+            $highUsageAccounts = array_filter($accounts, function($account) {
+                return isset($account['totalbytes']) && $account['totalbytes'] > (5 * 1024 * 1024 * 1024); // 5GB
+            });
+            
+            if (count($highUsageAccounts) > 0) {
+                $formatted .= "   ⚠️ **High Usage:** " . count($highUsageAccounts) . " account(s) using >5GB\n";
+            } else {
+                $formatted .= "   ✅ **Usage Status:** All accounts within normal usage ranges\n";
+            }
+            
+            // Find top consumer
+            $topAccount = reset($accounts); // First account after sorting
+            if (isset($topAccount['totalbytes']) && $topAccount['totalbytes'] > 0) {
+                $topUsageGB = round($topAccount['totalbytes'] / (1024 * 1024 * 1024), 2);
+                $formatted .= "   📈 **Top Consumer:** " . ($topAccount['domain'] ?? 'N/A') . " (" . number_format($topUsageGB, 2) . " GB)\n";
+            }
+        }
+        
+        $formatted .= "   💡 **Tip:** Monitor bandwidth usage regularly to optimize server performance\n";
+        $formatted .= "   🔧 **Actions:** Consider upgrading plans for high-usage accounts\n";
+        
+        return $formatted;
     }
 } 

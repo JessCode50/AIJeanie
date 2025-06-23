@@ -50,39 +50,101 @@ class ContextManager
     {
         $context = [
             'recent_topics' => [],
-            'recent_functions' => [],
-            'conversation_flow' => 'new',
+            'conversation_flow' => 'new_conversation',
+            'last_function_calls' => [],
+            'recent_data' => false,
+            'last_data_type' => null,
             'user_intent' => 'unknown',
             'domain_focus' => null,
             'client_focus' => null
         ];
-
+        
         if (empty($chatHistory)) {
             return $context;
         }
-
-        // Analyze last 5 messages for topics
-        $recentMessages = array_slice($chatHistory, -5);
         
-        foreach ($recentMessages as $message) {
-            if ($message['role'] === 'user') {
-                $topics = $this->extractTopics($message['content']);
-                $context['recent_topics'] = array_merge($context['recent_topics'], $topics);
-            }
-            
-            if (isset($message['function'])) {
-                $context['recent_functions'][] = $message['function'];
-            }
-        }
-
-        // Determine conversation flow
-        $context['conversation_flow'] = $this->determineConversationFlow($recentMessages);
-        $context['user_intent'] = $this->analyzeUserIntent($recentMessages);
+        $recentMessages = array_slice($chatHistory, -6); // Last 6 messages for context
+        $functionPattern = '/function[_\s]*(name|call)/i';
+        $dataPattern = '/(server|load|disk|bandwidth|service|status|account|email)/i';
         
-        // Extract specific focuses
+        // Extract domain and client focus
         $context['domain_focus'] = $this->extractDomainFocus($recentMessages);
         $context['client_focus'] = $this->extractClientFocus($recentMessages);
-
+        
+        // Track recent function calls and data
+        foreach ($recentMessages as $message) {
+            if (isset($message['content'])) {
+                $content = strtolower($message['content']);
+                
+                // Check for function calls or data requests
+                if (preg_match($functionPattern, $content) || 
+                    strpos($content, 'execute') !== false ||
+                    strpos($content, 'retrieve') !== false ||
+                    strpos($content, 'get_') !== false) {
+                    $context['recent_data'] = true;
+                    
+                    // Identify data type
+                    if (strpos($content, 'server') !== false || strpos($content, 'load') !== false) {
+                        $context['last_data_type'] = 'server_monitoring';
+                    } elseif (strpos($content, 'disk') !== false) {
+                        $context['last_data_type'] = 'disk_usage';
+                    } elseif (strpos($content, 'service') !== false) {
+                        $context['last_data_type'] = 'server_services';
+                    } elseif (strpos($content, 'bandwidth') !== false) {
+                        $context['last_data_type'] = 'bandwidth';
+                    } elseif (strpos($content, 'account') !== false) {
+                        $context['last_data_type'] = 'accounts';
+                    } elseif (strpos($content, 'email') !== false) {
+                        $context['last_data_type'] = 'email';
+                    }
+                }
+                
+                // Extract topics from content
+                if (preg_match_all($dataPattern, $content, $matches)) {
+                    $context['recent_topics'] = array_merge($context['recent_topics'], $matches[0]);
+                }
+                
+                // Check for follow-up question patterns
+                $followUpPatterns = [
+                    'is this normal',
+                    'what does this mean',
+                    'should i be worried',
+                    'how can i fix',
+                    'is the server healthy',
+                    'what\'s causing',
+                    'how much.*left',
+                    'are.*down',
+                    'is.*good',
+                    'is.*bad',
+                    'what about',
+                    'explain this',
+                    'interpret',
+                    'analysis'
+                ];
+                
+                foreach ($followUpPatterns as $pattern) {
+                    if (preg_match("/$pattern/i", $content)) {
+                        $context['user_intent'] = 'follow_up_question';
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Remove duplicates and limit topics
+        $context['recent_topics'] = array_unique($context['recent_topics']);
+        $context['recent_topics'] = array_slice($context['recent_topics'], -5);
+        
+        // Determine conversation flow
+        if (count($chatHistory) > 2) {
+            $context['conversation_flow'] = 'ongoing_conversation';
+            
+            // Check if this looks like a follow-up to recent data
+            if ($context['recent_data'] && $context['user_intent'] === 'follow_up_question') {
+                $context['conversation_flow'] = 'follow_up_analysis';
+            }
+        }
+        
         return $context;
     }
 
@@ -233,7 +295,7 @@ class ContextManager
         }
     }
 
-    public function buildEnhancedHistory($chatHistory, $userMessage, $conversationContext)
+    public function buildEnhancedHistory($chatHistory, $userMessage, $conversationContext, $apiResponseData = null)
     {
         $historyString = [];
         
@@ -256,15 +318,51 @@ class ContextManager
             ];
         }
         
+        // Add recent API response data for context
+        if ($apiResponseData && !empty($apiResponseData)) {
+            $recentData = '';
+            foreach ($apiResponseData as $responseEntry) {
+                if (is_string($responseEntry)) {
+                    $recentData .= $responseEntry . "\n";
+                } else if (is_array($responseEntry)) {
+                    // Handle the structure: function, timestamp, response
+                    if (isset($responseEntry['response'])) {
+                        $functionName = $responseEntry['function'] ?? 'unknown';
+                        $timestamp = isset($responseEntry['timestamp']) ? date('Y-m-d H:i:s', $responseEntry['timestamp']) : 'unknown';
+                        
+                        $recentData .= "=== {$functionName} (executed at {$timestamp}) ===\n";
+                        
+                        // Extract the actual data from the response
+                        if (is_string($responseEntry['response'])) {
+                            $recentData .= $responseEntry['response'] . "\n\n";
+                        } else if (is_array($responseEntry['response'])) {
+                            $recentData .= json_encode($responseEntry['response'], JSON_PRETTY_PRINT) . "\n\n";
+                        }
+                    }
+                }
+            }
+            
+            if (!empty($recentData)) {
+                $historyString[] = [
+                    "role" => "system",
+                    "content" => "🔥 **RECENTLY RETRIEVED DATA - USE THIS FOR FOLLOW-UP QUESTIONS** 🔥\n\n" . 
+                               "The following data was just retrieved in this conversation. For ANY follow-up questions about this data, " .
+                               "analyze and reference this information directly. DO NOT make new function calls for data you already have.\n\n" . 
+                               "**AVAILABLE DATA:**\n" . trim($recentData) . "\n\n" .
+                               "**INSTRUCTION**: Answer questions like 'is this normal?', 'is performance good?', 'what's the status?', 'how much space left?' using the above data."
+                ];
+            }
+        }
+        
         // Add domain/client focus context
-        if ($conversationContext['domain_focus']) {
+        if (!empty($conversationContext['domain_focus'])) {
             $historyString[] = [
                 "role" => "system",
                 "content" => "CONTEXT: Currently focused on domain: {$conversationContext['domain_focus']}"
             ];
         }
         
-        if ($conversationContext['client_focus']) {
+        if (!empty($conversationContext['client_focus'])) {
             $historyString[] = [
                 "role" => "system",
                 "content" => "CONTEXT: Currently focused on client ID: {$conversationContext['client_focus']}"
