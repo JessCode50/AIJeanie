@@ -12,11 +12,11 @@ class WHMCS {
 		$this->whmcs_server = $server;
 	}
 
-	public function clients($q = "") {
-		return $this->_post(array('action' => 'GetClients', 'search' => $q, 'limitnum' => 50000));
+	public function clients($status = "", $q = "") {
+		return $this->_post(array('action' => 'GetClients', 'search' => $q, 'limitnum' => 50000, 'status' => $status));
 	}
 
-	public function client($client_id) {
+	public function getClient($client_id) {
 		return $this->_post(array('action' => 'GetClientsDetails', 'clientid' => $client_id, 'limitnum' => 50000));
 	}
 
@@ -65,7 +65,7 @@ class WHMCS {
 		return $this->_post($contact);
 	}
 
-	public function invoices($client_id) {
+	public function getInvoices($client_id) {
 		$data = array();
 		$data["action"] = "GetInvoices";
 		$data["userid"] = $client_id;
@@ -141,12 +141,12 @@ class WHMCS {
 		return $this->_post($data);
 	}
 
-	public function getInvoices($client_id) {
-		$data = array();
-		$data["action"] = "GetInvoices";
-		$data["userid"] = $client_id;
-		return $this->_post($data);
-	}
+	// public function getInvoices($client_id) {
+	// 	$data = array();
+	// 	$data["action"] = "GetInvoices";
+	// 	$data["userid"] = $client_id;
+	// 	return $this->_post($data);
+	// }
 
 	public function updateClientProduct($service) {
 		$service["action"] = "UpdateClientProduct";
@@ -262,6 +262,39 @@ class WHMCS {
 		return $this->_post($data);
 	}
 
+	public function getPromo(){
+		$data = array();
+		$data["action"] = "GetPromotions";
+		return $this->_post($data);
+	}
+
+	public function getProducts($pid = ""){
+		$data = array();
+		$data["action"] = "GetProducts";
+        $data["pid"] = $pid;
+		return $this->_post($data);
+	}
+
+	public function getAdmin(){
+		$data = array();
+		$data["action"] = "GetAdminUsers";
+		return $this->_post($data);
+	}
+
+	public function getServers($fetchStatus = false){
+		$data = array();
+		$data["action"] = "GetServers";
+		$data["fetchStatus"] = $fetchStatus;
+		return $this->_post($data);
+	}
+
+	public function getPaymentMethods(){
+		$data = array();
+		$data["action"] = "GetPaymentMethods";
+		return $this->_post($data);
+	}
+
+
 	private function _post($data) {
 		$data['identifier'] = $this->whmcs_api_id;
 		$data['secret'] = $this->whmcs_api_secret;
@@ -304,10 +337,8 @@ $secret = 'ooxF2HcGp1VjifSAB6bcHO6WfunujurY';
 // Initialize WHMCS class
 $whmcs = new WHMCS($server, $identifier, $secret);
 
-$data = $whmcs->getTicket('WOF-562732');
-print_r ($data);
-$dataClient = $whmcs->client('14673');
-print_r ($dataClient);
+$data = $whmcs->getTicket('NTS-935845');
+print_r($data);
 // // Get client ID from command line or use a default for testing
 // $clientId = isset($argv[1]) ? $argv[1] : 24576; // Default to the first client ID we saw
 // // Get client details

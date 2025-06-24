@@ -82,13 +82,18 @@
   <!-- Agent Chat Left Column -->
   <div style="flex: 1; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 20px; display: flex; flex-direction: column;">
     <div style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
-  <p
-    v-for="(resp, index) in aiResponse"
-    :key="index"
-    :style="getStyle(resp)"
-  >
+    <p>
+      {{ priority }}
+    </p>
+
+  <template v-for="(resp, index) in aiResponse" :key="index">
+  <p v-if="shouldShow(resp)" :style="getStyle(resp)">
     {{ resp }}
   </p>
+</template>
+
+
+  <p v-if="loading === true" style="font-style: italic; text-align: left; font-size: 14px; color: #666;">Fetching Response{{ dots }}</p>
 </div>
     <textarea
       id="input-message"
@@ -99,29 +104,80 @@
     <div style="display: flex; gap: 10px;">
       <button @click="aiClick" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 6px; font-weight: 500;">Submit</button>
       <button @click="aiClear" style="padding: 8px 16px; background: #e0e0e0; color: #333; border: none; border-radius: 6px; font-weight: 500;">Clear History</button>
+      <button @click="view = 'clientInput'" style="padding: 8px 16px; background: #e1eefc; color: #333; border: none; border-radius: 6px; font-weight: 500;">Enter Client Info</button>
     </div>
   </div>
 
-  <!-- Action Queue Right Column -->
-  <div style="flex: 1; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 20px;">
-    <div
-      v-for="(func, index) in pending_functions"
-      :key="index"
-      style="background: #f0f0f0; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bbb;"
-    >
-      <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
-        {{ func.functionName }}
-      </div>
-      <p style="font-size: 14px; margin-bottom: 12px;">
-        {{ func.description }}
-      </p>
-      <div style="display: flex; gap: 10px;">
-        <button @click="aiReject(index)" style="padding: 8px 16px; background-color: #c0392b; color: white; border: none; border-radius: 6px; font-weight: 500;">Reject</button>
-        <button @click="aiProceed(index)" style="padding: 8px 16px; background-color: #27ae60; color: white; border: none; border-radius: 6px; font-weight: 500;">Proceed</button>
-      </div>
+<!-- Action Queue Right Column -->
+<div style="flex: 1; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 20px;">
+  <div
+    v-for="(func, index) in pending_functions"
+    :key="index"
+    style="background: #f0f0f0; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bbb;"
+  >
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+      {{ func.functionName }}
+    </div>
+    <p style="font-size: 14px; margin-bottom: 12px;">
+      {{ func.description }}
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+      <button
+        @click="aiReject(index)"
+        style="padding: 8px 16px; background-color: #c0392b; color: white; border: none; border-radius: 6px; font-weight: 500;"
+      >
+        Reject
+      </button>
+
+      <button
+        @click="aiProceed(index)"
+        style="padding: 8px 16px; background-color: #27ae60; color: white; border: none; border-radius: 6px; font-weight: 500;"
+      >
+        Proceed
+      </button>
+
+<!-- Info Tag Wrapper (always aligned right) -->
+<div style="width: 100%; display: flex; justify-content: flex-end;">
+  <div v-if="func.tag === 'Information Request'" style="display: flex; align-items: center; gap: 8px;">
+    <div style="width: 10px; height: 10px; background-color: #3498db; border-radius: 2px;"></div>
+    <span style="font-size: 13px; color: #3498db; font-weight: 500;">
+      {{ func.tag }}
+    </span>
+  </div>
+
+  <div v-else style="display: flex; align-items: center; gap: 8px;">
+    <div style="width: 10px; height: 10px; background-color: #e67e22; border-radius: 2px;"></div>
+    <span style="font-size: 13px; color: #e67e22; font-weight: 500;">
+      {{ func.tag }}
+    </span>
+  </div>
+</div>
+
     </div>
   </div>
 </div>
+
+</div>
+<!-- Ticket ID Submission Section -->
+<div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+  <input
+    v-model="ticketIdInput"
+    placeholder="Enter Ticket ID"
+    style="flex: 1; padding: 10px; font-size: 14px; border-radius: 6px; border: 1px solid #ccc;"
+  />
+  <button
+    @click="submitTicketId"
+    style="padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 6px; font-weight: 500;"
+  >
+    Submit Ticket ID
+  </button>
+</div>
+
+<p>
+  Customer Satisfaction: {{ satisfaction }}
+</p>
+
 
 <!-- Footer Buttons -->
 <div style="margin-top: 40px; display: flex; gap: 20px;">
@@ -164,9 +220,57 @@
         Back
     </button>
   </div>
-  
 
-  
+  <div v-else-if="view === 'clientInput'" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+  <p style="font-size: 40px; margin-bottom: 20px;"> 
+    Client Info Input:
+  </p>
+
+  <form @submit.prevent="handleClientSubmit" style="display: flex; flex-direction: column; width: 100%; max-width: 400px; gap: 15px;">
+    
+    <label style="display: flex; flex-direction: column; font-weight: 500;">
+      Client ID:
+      <input
+        v-model="clientId"
+        type="text"
+        placeholder="Enter Client ID"
+        style="padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 5px;"
+      />
+    </label>
+
+    <label style="display: flex; flex-direction: column; font-weight: 500;">
+      Product/Service:
+      <input
+        v-model="product"
+        type="text"
+        placeholder="Enter Product or Service"
+        style="padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 5px;"
+      />
+    </label>
+
+    <label style="display: flex; flex-direction: column; font-weight: 500;">
+      Server:
+      <input
+        v-model="server"
+        type="text"
+        placeholder="Enter Server"
+        style="padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 5px;"
+      />
+    </label>
+
+    <button
+      type="submit"
+      style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;"
+    >
+      Submit
+    </button>
+  </form>
+
+  <button @click="view ='AI'" :style="{marginTop: '40px'}">
+        Back
+  </button>
+</div>
+
 </template>
 
 <script>
@@ -186,7 +290,21 @@ export default {
       messageHistory: '',
       historyLog: '',
       pending_functions: [],
-      acknowledged_functions: []
+      acknowledged_functions: [],
+      ticketIdInput: '',
+      ticketMessage: '',
+
+      loading: false,
+      dots: '',
+      intervalId: null,
+
+      clientId: '',
+      product: '',
+      server: '',
+
+      satisfaction: '',
+      priority: '',
+
     }
   }, 
 
@@ -209,6 +327,32 @@ export default {
   },
 
   methods: {
+
+    startLoadingDots() {
+  if (this.intervalId) clearInterval(this.intervalId);
+  this.loading = true;
+  let i = 0;
+  this.intervalId = setInterval(() => {
+    this.dots = '.'.repeat(i % 4);
+    this.$forceUpdate(); // ← force re-render
+    i++;
+  }, 400);
+},
+
+stopLoadingDots() {
+  clearInterval(this.intervalId);
+  this.dots = '';
+  this.loading = false;
+},
+
+shouldShow(resp) {
+    return (
+      resp.startsWith('AI:') ||
+      resp.startsWith('CATEGORY:') ||
+      resp.startsWith('AGENT:') ||
+      resp.startsWith('TICKET')
+    );
+  },
   
     getStyle(text) {
   const upperText = text.toUpperCase();
@@ -227,7 +371,7 @@ export default {
     style.textAlign = 'left';
     style.marginLeft = 'auto';
     style.backgroundColor = '#fce3e1';
-  } else if (upperText.startsWith('TICKET:')) {
+  } else if (upperText.startsWith('TICKET')) {
     style.color = '#525050';
     style.textAlign = 'left';
     style.marginLeft = 'auto';
@@ -237,12 +381,18 @@ export default {
     style.textAlign = 'left';
     style.marginRight = 'auto';
     style.backgroundColor = '#e6f0ff';
-  } else {
-    style.color = 'white';
+  } else if (upperText.startsWith('CATEGORY:')) {
+    style.color = '#a29da6';
     style.textAlign = 'left';
     style.marginRight = 'auto';
-    style.backgroundColor = 'white';
-  }
+    style.backgroundColor = '#f6f2fa';
+  } 
+  //else {
+  //   style.color = 'white';
+  //   style.textAlign = 'left';
+  //   style.marginRight = 'auto';
+  //   style.backgroundColor = 'white';
+  // }
 
   return style;
 },
@@ -291,12 +441,13 @@ export default {
     },
 
     aiClick() {
-      console.log('Sending API_response:', JSON.parse(JSON.stringify(this.apiResponse)));
+      // console.log('Sending API_response:', JSON.parse(JSON.stringify(this.apiResponse)));
       const trimmedMessage = this.userMessage.trim();
       if (trimmedMessage){
         this.aiResponse.push(trimmedMessage);
       }
-
+      
+      this.startLoadingDots();
 
       fetch('http://localhost:8080/contacts/ai',{
         method: 'POST',
@@ -316,15 +467,21 @@ export default {
             if (data.response != 'No Response was Generated'){
               this.aiResponse.push(data.response);
             }
+            if (data.category != ''){
+                   this.aiResponse.push(data.category);
+            }
+            this.satisfaction = data.satisfaction;
             this.tokens = data.tokens_used;
             this.apiResponse = data.API_response;
             // this.pending_functions.push(...data.pending_functions);
             this.pending_functions = data.pending_functions;
+       
           
           }
+          this.stopLoadingDots();
           // console.log('tokens as string:', this.tokens);
     })
-    // userMessage = '';
+    this.userMessage = '';
     },
 
     aiClear() {
@@ -338,6 +495,8 @@ export default {
       this.apiResponse = [];
       this.pending_functions = [];
       this.acknowledged_functions = [];
+      this.ticketMessage = '';
+      this.priority = '';
     },
 
     aiView() {
@@ -387,15 +546,49 @@ export default {
             }
             this.tokens = data.tokens_used;
             this.apiResponse = data.API_response;
+            this.userMessage = data.user_message;
           }
           this.acknowledged_functions = [];
-      this.userMessage = '';
-      this.aiClick();
+          this.aiClick();
       })
     },
 
     aiReject(index) {
-      this.pending_functions.splice(index, 1);
+      fetch('http://localhost:8080/contacts/ai/reject',{
+        method: 'POST',
+        credentials: 'include'
+      }).then(response => response.json())  
+      .then(data => {
+        this.userMessage = data.user_message;
+        this.pending_functions.splice(index, 1);
+        this.aiClick();
+      })
+    },
+
+    submitTicketId(){
+      // this.userMessage = `TICKETID: ${this.ticketIdInput}`;
+      fetch('http://localhost:8080/contacts/ai/ticketID',{
+        method: 'POST',
+        credentials: 'include',
+        body:JSON.stringify ({'message': this.ticketIdInput})
+      }).then(response => response.json())  
+        .then(data => {
+          // this.aiResponse.push(data.summary);
+          this.userMessage = data.summary;
+          this.aiResponse.push(data.category);
+          this.priority = data.priority;
+          this.aiClick();
+      })
+      this.ticketIdInput = '';
+    },
+
+    handleClientSubmit(){
+      fetch('http://localhost:8080/contacts/ai/client',{
+        method: 'POST',
+        credentials: 'include',
+        body:JSON.stringify ({'clientID': this.clientId, 'product': this.product, 'server': this.server})
+      }) 
+      this.view = "AI";
     }
   }
 

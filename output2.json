@@ -1,0 +1,689 @@
+Array
+(
+    [result] => success
+    [servers] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 21
+                    [name] => 360 Monitoring
+                    [hostname] => ka.plesk.com
+                    [ipaddress] => 
+                    [active] => 1
+                    [activeServices] => 0
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 0
+                    [module] => p360monitoring
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [id] => 4
+                    [name] => bullshark.nerivon.cloud
+                    [hostname] => bullshark.nerivon.cloud
+                    [ipaddress] => 174.137.173.55
+                    [active] => 
+                    [activeServices] => 6
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 3
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [id] => 14
+                    [name] => columbus1.easyonnet.io
+                    [hostname] => columbus1.easyonnet.io
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 69
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 35
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [id] => 36
+                    [name] => Compton
+                    [hostname] => whm.compton.net
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 0
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 0
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [4] => Array
+                (
+                    [id] => 1
+                    [name] => davinci.easyonnet.io
+                    [hostname] => davinci.easyonnet.io
+                    [ipaddress] => 199.204.213.71
+                    [active] => 
+                    [activeServices] => 158
+                    [maxAllowedServices] => 100
+                    [percentUsed] => 158
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [5] => Array
+                (
+                    [id] => 20
+                    [name] => donatello.easyonnet.io
+                    [hostname] => donatello.easyonnet.io
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 82
+                    [maxAllowedServices] => 100
+                    [percentUsed] => 82
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [6] => Array
+                (
+                    [id] => 16
+                    [name] => edison.easyonnet.io
+                    [hostname] => edison.easyonnet.io
+                    [ipaddress] => 199.204.213.200
+                    [active] => 
+                    [activeServices] => 95
+                    [maxAllowedServices] => 100
+                    [percentUsed] => 95
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [7] => Array
+                (
+                    [id] => 32
+                    [name] => HID1700
+                    [hostname] => 1700
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 9
+                    [maxAllowedServices] => 5000
+                    [percentUsed] => 0
+                    [module] => hostopia
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [8] => Array
+                (
+                    [id] => 31
+                    [name] => HID2325
+                    [hostname] => 2325
+                    [ipaddress] => 
+                    [active] => 1
+                    [activeServices] => 3823
+                    [maxAllowedServices] => 5000
+                    [percentUsed] => 76
+                    [module] => hostopia
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [9] => Array
+                (
+                    [id] => 30
+                    [name] => HID731
+                    [hostname] => 731
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 645
+                    [maxAllowedServices] => 5000
+                    [percentUsed] => 13
+                    [module] => hostopia
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [10] => Array
+                (
+                    [id] => 23
+                    [name] => janus1.easyonnet.io
+                    [hostname] => janus1.easyonnet.io
+                    [ipaddress] => 204.13.48.131
+                    [active] => 
+                    [activeServices] => 148
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 74
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [11] => Array
+                (
+                    [id] => 39
+                    [name] => janus10.easyonnet.io
+                    [hostname] => janus10.easyonnet.io
+                    [ipaddress] => 204.13.48.222
+                    [active] => 1
+                    [activeServices] => 161
+                    [maxAllowedServices] => 300
+                    [percentUsed] => 54
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [12] => Array
+                (
+                    [id] => 40
+                    [name] => janus11.easyonnet.io
+                    [hostname] => janus11.easyonnet.io
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 43
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 22
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [13] => Array
+                (
+                    [id] => 25
+                    [name] => janus2
+                    [hostname] => janus2.easyonnet.io
+                    [ipaddress] => 204.13.48.132
+                    [active] => 
+                    [activeServices] => 199
+                    [maxAllowedServices] => 300
+                    [percentUsed] => 66
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [14] => Array
+                (
+                    [id] => 24
+                    [name] => janus4.easyonnet.io
+                    [hostname] => janus4.easyonnet.io
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 282
+                    [maxAllowedServices] => 300
+                    [percentUsed] => 94
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [15] => Array
+                (
+                    [id] => 27
+                    [name] => janus5.easyonnet.io
+                    [hostname] => janus5.easyonnet.io
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 106
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 53
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [16] => Array
+                (
+                    [id] => 26
+                    [name] => janus6.easyonnet.io
+                    [hostname] => janus6.easyonnet.io
+                    [ipaddress] => 204.13.48.137
+                    [active] => 
+                    [activeServices] => 1
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 1
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [17] => Array
+                (
+                    [id] => 29
+                    [name] => janus7.easyonnet.io
+                    [hostname] => janus7.easyonnet.io
+                    [ipaddress] => 204.13.48.205
+                    [active] => 
+                    [activeServices] => 205
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 103
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [18] => Array
+                (
+                    [id] => 38
+                    [name] => janus9.easyonnet.io
+                    [hostname] => janus9.easyonnet.io
+                    [ipaddress] => 204.13.49.10
+                    [active] => 
+                    [activeServices] => 81
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 41
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [19] => Array
+                (
+                    [id] => 15
+                    [name] => l3managed.dynamichosting.cloud
+                    [hostname] => l3managed.dynamichosting.cloud
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 94
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 47
+                    [module] => cpanel
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [20] => Array
+                (
+                    [id] => 22
+                    [name] => morse.easyonnet.io
+                    [hostname] => morse.easyonnet.io
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 38
+                    [maxAllowedServices] => 100
+                    [percentUsed] => 38
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [21] => Array
+                (
+                    [id] => 35
+                    [name] => Neptune
+                    [hostname] => neptune.kwic.com
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 2
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 1
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [22] => Array
+                (
+                    [id] => 18
+                    [name] => new.xodmedia.cloud
+                    [hostname] => new.xodmedia.cloud
+                    [ipaddress] => 69.42.68.188
+                    [active] => 
+                    [activeServices] => 70
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 35
+                    [module] => cpanel
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [23] => Array
+                (
+                    [id] => 34
+                    [name] => Picassofish
+                    [hostname] => hosting.picassofish.net
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 4
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 2
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [24] => Array
+                (
+                    [id] => 17
+                    [name] => raphael.easyonnet.io
+                    [hostname] => raphael.easyonnet.io
+                    [ipaddress] => 199.204.213.140
+                    [active] => 
+                    [activeServices] => 153
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 77
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [25] => Array
+                (
+                    [id] => 19
+                    [name] => raphael.easyonnet.io
+                    [hostname] => raphael.easyonnet.io
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 86
+                    [maxAllowedServices] => 100
+                    [percentUsed] => 86
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [26] => Array
+                (
+                    [id] => 13
+                    [name] => tesla04.nerivon.cloud
+                    [hostname] => tesla04.nerivon.cloud
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 3
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 2
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [27] => Array
+                (
+                    [id] => 2
+                    [name] => tesla1.easyonnet.io
+                    [hostname] => tesla1.easyonnet.io
+                    [ipaddress] => 199.204.213.200
+                    [active] => 
+                    [activeServices] => 17
+                    [maxAllowedServices] => 100
+                    [percentUsed] => 17
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [28] => Array
+                (
+                    [id] => 5
+                    [name] => tesla1.nerivon.ca
+                    [hostname] => tesla1.nerivon.ca
+                    [ipaddress] => 172.105.20.37
+                    [active] => 
+                    [activeServices] => 82
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 41
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [29] => Array
+                (
+                    [id] => 6
+                    [name] => torplesk-01.dynamichosting.biz
+                    [hostname] => torplesk-01.dynamichosting.biz
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 181
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 91
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [30] => Array
+                (
+                    [id] => 7
+                    [name] => Torplesk-02.dynamichosting.biz
+                    [hostname] => torplesk-02.dynamichosting.biz
+                    [ipaddress] => 
+                    [active] => 1
+                    [activeServices] => 275
+                    [maxAllowedServices] => 400
+                    [percentUsed] => 69
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [31] => Array
+                (
+                    [id] => 11
+                    [name] => torwinplesk.dynamichosting.cloud
+                    [hostname] => torwinplesk.dynamichosting.cloud
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 20
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 10
+                    [module] => PleskExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [32] => Array
+                (
+                    [id] => 33
+                    [name] => unassigned
+                    [hostname] => 127.0.0.1
+                    [ipaddress] => 127.0.0.1
+                    [active] => 
+                    [activeServices] => 486
+                    [maxAllowedServices] => 5000
+                    [percentUsed] => 10
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+            [33] => Array
+                (
+                    [id] => 37
+                    [name] => XCountry
+                    [hostname] => vhost1.xcountry.tv
+                    [ipaddress] => 
+                    [active] => 
+                    [activeServices] => 0
+                    [maxAllowedServices] => 200
+                    [percentUsed] => 0
+                    [module] => cpanelExtended
+                    [status] => Array
+                        (
+                            [http] => 
+                            [load] => 
+                            [uptime] => 
+                        )
+
+                )
+
+        )
+
+    [fetchStatus] => 
+)
