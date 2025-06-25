@@ -329,7 +329,7 @@ class AiController extends BaseController
         
         $session = session();
         
-        $open_ai_key = getenv('OPENAI_API_KEY') ?: 'YOUR_OPENAI_API_KEY_HERE';
+        $open_ai_key = getenv('app.openai_key');
         $json = $this->request->getJSON(true);
         $userMessage = $json['message'] ?? ''; // Default message
       
@@ -727,7 +727,7 @@ class AiController extends BaseController
                     "name" => "getClientDetails",
                     "description" => "This function retrieves detailed information for a specific WHMCS client.
                     When used, it provides client information, including: 
-                    status: Client's account status (Active, Inactive, or Closed)
+                    status: Client’s account status (Active, Inactive, or Closed)
                     domain: Primary domain associated with the client (if set)
                     lastlogin: Timestamp of the client's most recent login
                     numtickets: Total number of support tickets the client has submitted
@@ -777,7 +777,7 @@ class AiController extends BaseController
                     status: Status of the product (e.g., Active, Suspended, Terminated)
                     diskusage: Current disk usage for the product (in MB/GB depending on setup)
                     disklimit: Disk quota/limit for the product
-                    This function is used to inspect a client's services and hosting usage, 
+                    This function is used to inspect a client’s services and hosting usage, 
                     including server assignments and billing info",
                     "parameters" => [
                         "type" => "object",
@@ -939,13 +939,6 @@ the near past:
   about what was done.
   - Also call the agentChat tool to send a brief internal summary of what you did to the
   internal agent
-
-6. If the 'agent' denied the use of certain tools
-   - If it is absolutely necessary to use that tool to complete the request, then call that tool
-   again and using 'agentChat' tell the agent that you think the use of this tool
-   is necessary.
-   - Otherwise, logically think about another tool that would complete the request
-   or give you some more relevant information about the problem.
 
 
 You must not deviate from this logic under any circumstance."
@@ -1461,7 +1454,7 @@ EOT;
         header("Access-Control-Allow-Origin: http://localhost:5173");
         header("Access-Control-Allow-Credentials: true");
         
-        $open_ai_key = getenv('OPENAI_API_KEY') ?: 'YOUR_OPENAI_API_KEY_HERE';
+        $open_ai_key = getenv('app.openai_key');
         $json = $this->request->getJSON(true);
         $ticketId = $json['message'] ?? '';
 
@@ -1567,7 +1560,7 @@ EOT;
         header("Access-Control-Allow-Origin: http://localhost:5173");
         header("Access-Control-Allow-Credentials: true");
         
-        $open_ai_key = getenv('OPENAI_API_KEY') ?: 'YOUR_OPENAI_API_KEY_HERE';
+        $open_ai_key = getenv('app.openai_key');
         $json = $this->request->getJSON(true);
         $clientID = $json['clientID'] ?? '';
         $product = $json['product'] ?? '';
