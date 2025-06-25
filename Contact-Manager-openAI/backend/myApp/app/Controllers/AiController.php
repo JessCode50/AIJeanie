@@ -329,7 +329,7 @@ class AiController extends BaseController
         
         $session = session();
         
-        $open_ai_key = getenv('app.openai_key');
+        $open_ai_key = getenv('OPENAI_API_KEY') ?: 'YOUR_OPENAI_API_KEY_HERE';
         $json = $this->request->getJSON(true);
         $userMessage = $json['message'] ?? ''; // Default message
       
@@ -727,7 +727,7 @@ class AiController extends BaseController
                     "name" => "getClientDetails",
                     "description" => "This function retrieves detailed information for a specific WHMCS client.
                     When used, it provides client information, including: 
-                    status: Client’s account status (Active, Inactive, or Closed)
+                    status: Client's account status (Active, Inactive, or Closed)
                     domain: Primary domain associated with the client (if set)
                     lastlogin: Timestamp of the client's most recent login
                     numtickets: Total number of support tickets the client has submitted
@@ -777,7 +777,7 @@ class AiController extends BaseController
                     status: Status of the product (e.g., Active, Suspended, Terminated)
                     diskusage: Current disk usage for the product (in MB/GB depending on setup)
                     disklimit: Disk quota/limit for the product
-                    This function is used to inspect a client’s services and hosting usage, 
+                    This function is used to inspect a client's services and hosting usage, 
                     including server assignments and billing info",
                     "parameters" => [
                         "type" => "object",
@@ -1461,7 +1461,7 @@ EOT;
         header("Access-Control-Allow-Origin: http://localhost:5173");
         header("Access-Control-Allow-Credentials: true");
         
-        $open_ai_key = getenv('app.openai_key');
+        $open_ai_key = getenv('OPENAI_API_KEY') ?: 'YOUR_OPENAI_API_KEY_HERE';
         $json = $this->request->getJSON(true);
         $ticketId = $json['message'] ?? '';
 
@@ -1567,7 +1567,7 @@ EOT;
         header("Access-Control-Allow-Origin: http://localhost:5173");
         header("Access-Control-Allow-Credentials: true");
         
-        $open_ai_key = getenv('app.openai_key');
+        $open_ai_key = getenv('OPENAI_API_KEY') ?: 'YOUR_OPENAI_API_KEY_HERE';
         $json = $this->request->getJSON(true);
         $clientID = $json['clientID'] ?? '';
         $product = $json['product'] ?? '';
