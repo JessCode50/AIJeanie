@@ -9453,5 +9453,725 @@
             "0": "systemloadavg",
             "systemloadavg": []
         }
+    },
+    {
+        "date": "2025-06-25 18:28:23",
+        "session_id": "db8b6a27d9a9b021766ebdce47387f3a",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 18:31:39",
+        "session_id": "db8b6a27d9a9b021766ebdce47387f3a",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 18:31:55",
+        "session_id": "db8b6a27d9a9b021766ebdce47387f3a",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 18:32:00",
+        "session_id": "db8b6a27d9a9b021766ebdce47387f3a",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-25 18:32:21",
+        "session_id": "db8b6a27d9a9b021766ebdce47387f3a",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 18:32:25",
+        "session_id": "db8b6a27d9a9b021766ebdce47387f3a",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-25 18:35:07",
+        "session_id": "2caf2847d5e88523aec688967e49820c",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-25 18:40:35",
+        "session_id": "dff2461c779c2fdbdb4ef5e9c67d7f95",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 18:50:27",
+        "session_id": "59497b44485c7154cd791dee8404ee05",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 18:51:06",
+        "session_id": "59497b44485c7154cd791dee8404ee05",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 20:12:04",
+        "session_id": "da18c9b21310f70d0cf1e1d190387821",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 20:20:46",
+        "session_id": "4634b0e9b91434932db2cae470b3d33b",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 20:20:50",
+        "session_id": "4634b0e9b91434932db2cae470b3d33b",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-25 20:29:13",
+        "session_id": "4d40c79485f3cacf023816319487a876",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 20:38:12",
+        "session_id": "33bd45ca9210ba060edee176cd4c7742",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 20:39:51",
+        "session_id": "33bd45ca9210ba060edee176cd4c7742",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 20:39:58",
+        "session_id": "33bd45ca9210ba060edee176cd4c7742",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-25 20:40:49",
+        "session_id": "33bd45ca9210ba060edee176cd4c7742",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-25 20:47:30",
+        "session_id": "9ff6d6a625bd1778b4523a018d43b1db",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-25 21:11:55",
+        "session_id": "65c5f79d61f9ab81ea91882b7c5bd9b5",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 21:12:52",
+        "session_id": "65c5f79d61f9ab81ea91882b7c5bd9b5",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 21:19:21",
+        "session_id": "e3e31f0823aa5bb5b3edbbf877b537d5",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 21:21:31",
+        "session_id": "e3e31f0823aa5bb5b3edbbf877b537d5",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 21:22:38",
+        "session_id": "e3e31f0823aa5bb5b3edbbf877b537d5",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 21:23:29",
+        "session_id": "e3e31f0823aa5bb5b3edbbf877b537d5",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-25 21:24:41",
+        "session_id": "c37e07250d39a262a104cadad56fb15e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 12:57:07",
+        "session_id": "fa41a755b0b9a9e284f01d26653f25b7",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:00:07",
+        "session_id": "fa41a755b0b9a9e284f01d26653f25b7",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:02:28",
+        "session_id": "31dd54ff0320d24cd35289fe60180952",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:04:32",
+        "session_id": "31dd54ff0320d24cd35289fe60180952",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:06:27",
+        "session_id": "31dd54ff0320d24cd35289fe60180952",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:10:13",
+        "session_id": "0cf34b395184c150148251dfce89933c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:11:12",
+        "session_id": "0cf34b395184c150148251dfce89933c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:11:54",
+        "session_id": "0cf34b395184c150148251dfce89933c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:13:50",
+        "session_id": "0cf34b395184c150148251dfce89933c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:14:03",
+        "session_id": "0cf34b395184c150148251dfce89933c",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-26 13:14:08",
+        "session_id": "0cf34b395184c150148251dfce89933c",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-26 13:20:10",
+        "session_id": "715c23c063693378b16a2c30eed3fbb4",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:20:51",
+        "session_id": "715c23c063693378b16a2c30eed3fbb4",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:21:54",
+        "session_id": "715c23c063693378b16a2c30eed3fbb4",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:22:44",
+        "session_id": "715c23c063693378b16a2c30eed3fbb4",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:25:06",
+        "session_id": "5d4df5673adc44a658ee7f9d7079af3d",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:27:27",
+        "session_id": "5d4df5673adc44a658ee7f9d7079af3d",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:31:04",
+        "session_id": "93f0b65e437812c3032e7a1609728d6c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:34:31",
+        "session_id": "93f0b65e437812c3032e7a1609728d6c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:49:57",
+        "session_id": "d76eb7ac91ba755f84df9b64e0508633",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-26 13:50:30",
+        "session_id": "d76eb7ac91ba755f84df9b64e0508633",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-26 14:03:30",
+        "session_id": "d046c9901ca6d1f62751c8891a1cff1c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 14:06:16",
+        "session_id": "d046c9901ca6d1f62751c8891a1cff1c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 14:06:57",
+        "session_id": "d046c9901ca6d1f62751c8891a1cff1c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 14:10:03",
+        "session_id": "b4a4b8497f9e5f76875e27b30a49a034",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 14:49:30",
+        "session_id": "24dcbb23b4c689515aaf9f47def9f8fc",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 14:50:23",
+        "session_id": "24dcbb23b4c689515aaf9f47def9f8fc",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-26 14:50:28",
+        "session_id": "24dcbb23b4c689515aaf9f47def9f8fc",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-26 15:03:24",
+        "session_id": "f2fec9d232357f878f266f21dbcbe07e",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-26 15:04:27",
+        "session_id": "f2fec9d232357f878f266f21dbcbe07e",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-26 15:06:23",
+        "session_id": "f2fec9d232357f878f266f21dbcbe07e",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-06-26 15:11:08",
+        "session_id": "2c3966840fccd73b228e2e96b7b4c060",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:17:21",
+        "session_id": "c5a9d9c497bb637ddadacca611d07653",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:20:15",
+        "session_id": "c5a9d9c497bb637ddadacca611d07653",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:32:47",
+        "session_id": "aa45d0c0bae2ddb664b083efc143223e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:33:19",
+        "session_id": "aa45d0c0bae2ddb664b083efc143223e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:33:56",
+        "session_id": "aa45d0c0bae2ddb664b083efc143223e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:34:53",
+        "session_id": "aa45d0c0bae2ddb664b083efc143223e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:36:56",
+        "session_id": "aa45d0c0bae2ddb664b083efc143223e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:37:18",
+        "session_id": "aa45d0c0bae2ddb664b083efc143223e",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:38:48",
+        "session_id": "a8dca11c2b82cd3d368abda3c478dd49",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:53:28",
+        "session_id": "9386d68e6be28d025dc0be44aa4c646f",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:56:09",
+        "session_id": "9386d68e6be28d025dc0be44aa4c646f",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:57:10",
+        "session_id": "9386d68e6be28d025dc0be44aa4c646f",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 17:58:59",
+        "session_id": "965d2b03e4d469efd92971a9ea985167",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:01:11",
+        "session_id": "965d2b03e4d469efd92971a9ea985167",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:01:52",
+        "session_id": "965d2b03e4d469efd92971a9ea985167",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:05:03",
+        "session_id": "cfa36c48ace97377b0e31935a800bb3c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:07:44",
+        "session_id": "cfa36c48ace97377b0e31935a800bb3c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:08:42",
+        "session_id": "cfa36c48ace97377b0e31935a800bb3c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:09:40",
+        "session_id": "cfa36c48ace97377b0e31935a800bb3c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:10:26",
+        "session_id": "82e0ab574b23531700e2dba7095edf53",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:17:38",
+        "session_id": "2431c47e4fe4e33d50312d4d883996e0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:21:34",
+        "session_id": "2431c47e4fe4e33d50312d4d883996e0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:23:29",
+        "session_id": "781d6c8888b53949915b5ea7430187bc",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:25:25",
+        "session_id": "781d6c8888b53949915b5ea7430187bc",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:25:48",
+        "session_id": "781d6c8888b53949915b5ea7430187bc",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:28:28",
+        "session_id": "3c4f59fb5515ef50c20b317f5ebfbdb2",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:29:21",
+        "session_id": "3c4f59fb5515ef50c20b317f5ebfbdb2",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:31:44",
+        "session_id": "3c4f59fb5515ef50c20b317f5ebfbdb2",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:43:12",
+        "session_id": "19cf5459f31fd9a9caf3798067551523",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:47:50",
+        "session_id": "19cf5459f31fd9a9caf3798067551523",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:49:54",
+        "session_id": "10201d246fa31971f71aa23d0886ecd1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:52:01",
+        "session_id": "10201d246fa31971f71aa23d0886ecd1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:56:23",
+        "session_id": "f76cbbd6e036905193fe817d28b36580",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 18:57:03",
+        "session_id": "f76cbbd6e036905193fe817d28b36580",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 19:03:40",
+        "session_id": "5221bd636a002f47c335380f51c291ae",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 19:06:00",
+        "session_id": "5221bd636a002f47c335380f51c291ae",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 19:10:15",
+        "session_id": "553d1d47bb16f9765906ada60808d740",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 20:17:52",
+        "session_id": "eccb00a3917982432794b0fb5a884e32",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-26 20:21:48",
+        "session_id": "eccb00a3917982432794b0fb5a884e32",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 13:52:39",
+        "session_id": "17a45d56107303bf6f97afb10d1f2d90",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-27 13:53:01",
+        "session_id": "17a45d56107303bf6f97afb10d1f2d90",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 13:54:12",
+        "session_id": "17a45d56107303bf6f97afb10d1f2d90",
+        "action": [
+            "listaccts"
+        ]
     }
 ]

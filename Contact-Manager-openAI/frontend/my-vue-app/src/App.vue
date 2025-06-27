@@ -135,8 +135,10 @@
 
             <!-- Dynamic AI Responses with enhanced styling -->
             <template v-for="(resp, index) in aiResponse" :key="index">
-              <div v-if="shouldShow(resp)" :style="getProfessionalChatStyle(resp)" class="message-bubble">
+              <!-- <div v-if="shouldShow(resp)" > -->
+              <div :style="getProfessionalChatStyle(resp)" class="message-bubble">
                 <div class="message-content">
+                  <!-- <div class="message-text"> {{resp}}</div> -->
                   <div class="message-text" v-html="formatApiResponse(resp)"></div>
                   <div class="message-time">{{ getMessageTime() }}</div>
                 </div>
@@ -207,7 +209,7 @@
               
               <!-- Message count and status -->
               <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6b7280;">
-                <span>{{ aiResponse.filter(shouldShow).length }} messages</span>
+                <!-- <span>{{ aiResponse.filter(shouldShow).length }} messages</span> -->
                 <div style="width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite;"></div>
                 <span>Connected</span>
               </div>
@@ -872,7 +874,9 @@ shouldShow(resp) {
       // console.log('Sending API_response:', JSON.parse(JSON.stringify(this.apiResponse)));
       const trimmedMessage = this.userMessage.trim();
       if (trimmedMessage){
-        this.aiResponse.push(trimmedMessage);
+        if (this.shouldShow(trimmedMessage)){
+          this.aiResponse.push(trimmedMessage);
+        }
       }
       
       this.startLoadingDots();
@@ -972,6 +976,9 @@ shouldShow(resp) {
             if (data.response != 'No Response was Generated'){
               this.aiResponse.push(data.response);
             }
+
+            this.aiResponse.push(data.API_response);
+
             this.tokens = data.tokens_used;
             this.apiResponse = data.API_response;
             this.userMessage = data.user_message;
@@ -1067,7 +1074,7 @@ shouldShow(resp) {
     },
 
     getProfessionalChatStyle(text) {
-      const upperText = text.toUpperCase();
+      // const upperText = text.toUpperCase();
 
       const style = {
         fontSize: '14px',
@@ -1079,25 +1086,32 @@ shouldShow(resp) {
         border: '1px solid rgba(229, 231, 235, 0.8)',
       };
 
-      if (upperText.startsWith('AGENT:')) {
+      if (Array.isArray(text)){
+            style.backgroundColor = 'rgba(249, 250, 251, 0.95)';
+        style.color = '#374151';
+        style.marginLeft = 'auto';
+        style.borderLeft = '3px solid #2563eb';
+        style.fontWeight = '500'; 
+      }
+      else if (text.startsWith('AGENT:')) {
         style.backgroundColor = 'rgba(249, 250, 251, 0.95)';
         style.color = '#374151';
         style.marginLeft = 'auto';
         style.borderLeft = '3px solid #2563eb';
         style.fontWeight = '500';
-      } else if (upperText.startsWith('TICKET')) {
+      } else if (text.startsWith('TICKET')) {
         style.backgroundColor = '#2563eb';
         style.color = 'white';
         style.fontWeight = '600';
         style.marginBottom = '20px';
         style.borderColor = '#1d4ed8';
-      } else if (upperText.startsWith('AI:')) {
+      } else if (text.startsWith('AI:')) {
         style.backgroundColor = 'rgba(239, 246, 255, 0.9)';
         style.color = '#1e40af';
         style.marginRight = 'auto';
         style.borderLeft = '3px solid #3b82f6';
         style.fontWeight = '500';
-      } else if (upperText.startsWith('CATEGORY:')) {
+      } else if (text.startsWith('CATEGORY:')) {
         style.backgroundColor = 'rgba(248, 250, 252, 0.9)';
         style.color = '#7c3aed';
         style.marginRight = 'auto';
@@ -1149,18 +1163,56 @@ shouldShow(resp) {
 
     formatApiResponse(resp) {
       // Check if response contains system metrics or structured data
-      if (this.containsSystemMetrics(resp)) {
-        return this.formatSystemMetrics(resp);
-      } else if (this.containsDiskUsage(resp)) {
-        return this.formatDiskUsage(resp);
-      } else if (this.containsLoadMetrics(resp)) {
-        return this.formatLoadMetrics(resp);
-      } else if (this.containsTableData(resp)) {
-        return this.formatTableData(resp);
-      }
+      // if (this.containsSystemMetrics(resp)) {
+      //   return this.formatSystemMetrics(resp);
+      // } else if (this.containsDiskUsage(resp)) {
+      //   return this.formatDiskUsage(resp);
+      // } else if (this.containsLoadMetrics(resp)) {
+      //   return this.formatLoadMetrics(resp);
+      // } else if (this.containsTableData(resp)) {
+      //   return this.formatTableData(resp);
+      // }
+      
+      if (Array.isArray(resp)){ // the only time resp will ever be an array is when it's API data
+        return ` <div style="font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #374151;">
+            This is where info card would go (Simply need a function call here)
+          </div>`
+    
+    }
       
       // Default formatting for regular responses
       return this.formatRegularResponse(resp);
+    },
+    generateHtml(obj, depth = 0) {
+      if (obj === null || obj === undefined) return `<div>null</div>`;
+
+      if (Array.isArray(obj)) {
+        return `
+          <div class="array-block" style="margin-left: ${depth * 20}px;">
+            ${obj.map(item => this.generateHtml(item, depth + 1)).join("")}
+          </div>
+        `;
+      }
+
+      if (typeof obj === "object") {
+        return `
+          <div class="object-card" style="margin-left: ${depth * 20}px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin-bottom: 10px; background: #f9f9f9;">
+            ${Object.entries(obj)
+              .map(([key, value]) => {
+                return `
+                  <div style="margin-bottom: 5px;">
+                    <strong>${key}:</strong>
+                    ${typeof value === "object" ? this.generateHtml(value, depth + 1) : ` ${value}`}
+                  </div>
+                `;
+              })
+              .join("")}
+          </div>
+        `;
+      }
+
+      // Primitive value
+      return `<div style="margin-left: ${depth * 20}px;">${obj}</div>`;
     },
 
     containsSystemMetrics(resp) {
@@ -1671,4 +1723,3 @@ input:focus, textarea:focus {
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 </style>
-
