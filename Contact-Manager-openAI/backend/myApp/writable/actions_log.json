@@ -10173,5 +10173,579 @@
         "action": [
             "listaccts"
         ]
+    },
+    {
+        "date": "2025-06-27 14:06:15",
+        "session_id": "a8f13c28be1af874f93cb38909f425ef",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 14:13:51",
+        "session_id": "18b45b04e3fcf6d15c30f37ccff080ff",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-27 14:14:22",
+        "session_id": "18b45b04e3fcf6d15c30f37ccff080ff",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 14:15:00",
+        "session_id": "18b45b04e3fcf6d15c30f37ccff080ff",
+        "action": {
+            "0": "getClientDetails",
+            "getClientDetails": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-06-27 14:15:05",
+        "session_id": "18b45b04e3fcf6d15c30f37ccff080ff",
+        "action": {
+            "0": "getClientsProducts",
+            "getClientsProducts": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-06-27 14:15:36",
+        "session_id": "18b45b04e3fcf6d15c30f37ccff080ff",
+        "action": {
+            "0": "getClientDetails",
+            "getClientDetails": {
+                "client_id": "26627"
+            }
+        }
+    },
+    {
+        "date": "2025-06-27 14:19:01",
+        "session_id": "95fd0c34d2a001b5bbefe0ded502c3fa",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 14:19:17",
+        "session_id": "95fd0c34d2a001b5bbefe0ded502c3fa",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 15:23:35",
+        "session_id": "7a831f72f803eb983ec310f5689c781c",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 15:24:46",
+        "session_id": "7a831f72f803eb983ec310f5689c781c",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-27 16:21:23",
+        "session_id": "5230f05bc74cff55aa5a7efd8d67d5eb",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:35:00",
+        "session_id": "7c794df0ffe5c9a3410ca89f9561ca4d",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:35:23",
+        "session_id": "7c794df0ffe5c9a3410ca89f9561ca4d",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:36:29",
+        "session_id": "7c794df0ffe5c9a3410ca89f9561ca4d",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:36:40",
+        "session_id": "7c794df0ffe5c9a3410ca89f9561ca4d",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:39:53",
+        "session_id": "c4e77c06854162f06558458488edf5fe",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:40:38",
+        "session_id": "c4e77c06854162f06558458488edf5fe",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:40:59",
+        "session_id": "c4e77c06854162f06558458488edf5fe",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:41:28",
+        "session_id": "c4e77c06854162f06558458488edf5fe",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:42:21",
+        "session_id": "c4e77c06854162f06558458488edf5fe",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:42:28",
+        "session_id": "c4e77c06854162f06558458488edf5fe",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 16:42:57",
+        "session_id": "c4e77c06854162f06558458488edf5fe",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 17:58:43",
+        "session_id": "908d30cdd36bfc92148313a72b278f8f",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 17:58:52",
+        "session_id": "908d30cdd36bfc92148313a72b278f8f",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:00:39",
+        "session_id": "908d30cdd36bfc92148313a72b278f8f",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:01:28",
+        "session_id": "908d30cdd36bfc92148313a72b278f8f",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:01:36",
+        "session_id": "908d30cdd36bfc92148313a72b278f8f",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:16:19",
+        "session_id": "8373da4509b6a24054aa6fcea8d4dbd8",
+        "action": {
+            "0": "getClientsProducts",
+            "getClientsProducts": {
+                "client_id": "26421"
+            }
+        }
+    },
+    {
+        "date": "2025-06-27 18:16:28",
+        "session_id": "8373da4509b6a24054aa6fcea8d4dbd8",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-27 18:38:20",
+        "session_id": "15c218f5f687ee96b61a56545ef464e2",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:43:12",
+        "session_id": "49f63e96e6d6b592300c9ce85f0708d7",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:46:27",
+        "session_id": "49f63e96e6d6b592300c9ce85f0708d7",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:48:45",
+        "session_id": "ea5b9da8939fc034029b09e1ba841903",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 18:55:11",
+        "session_id": "5cb5e8f9d7e16beafcde4564b52190cd",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 20:02:12",
+        "session_id": "cef9671e21a3dd8aaf8d13fddc8e9ecb",
+        "action": [
+            "RECOMMENDED TICKET RESPONSE"
+        ]
+    },
+    {
+        "date": "2025-06-27 20:04:07",
+        "session_id": "cef9671e21a3dd8aaf8d13fddc8e9ecb",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-27 20:05:26",
+        "session_id": "cef9671e21a3dd8aaf8d13fddc8e9ecb",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-27 20:07:37",
+        "session_id": "487b848bf1824354ea11e036761dae5f",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 13:25:06",
+        "session_id": "c76dc59de6dfb9925cf817c3a90e65e6",
+        "action": [
+            "get_domain_info"
+        ]
+    },
+    {
+        "date": "2025-06-30 14:04:10",
+        "session_id": "54fdce4367197d0726f7d2a326681bd0",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 14:38:43",
+        "session_id": "ff4fd7a64049d6be3d3521d757ec325a",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 14:58:29",
+        "session_id": "80460537d09df5cda9194b8aecc228e1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 15:00:31",
+        "session_id": "80460537d09df5cda9194b8aecc228e1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 15:01:04",
+        "session_id": "80460537d09df5cda9194b8aecc228e1",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 15:06:51",
+        "session_id": "6e983e7f7808bc43d9ec859c94c74c36",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:36:47",
+        "session_id": "93fb27669323791aba29ace03de3042e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:38:38",
+        "session_id": "93fb27669323791aba29ace03de3042e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:40:41",
+        "session_id": "93fb27669323791aba29ace03de3042e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:41:20",
+        "session_id": "93fb27669323791aba29ace03de3042e",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:42:03",
+        "session_id": "cdc5bf608f8792fdb5d628babfa05081",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:42:44",
+        "session_id": "cdc5bf608f8792fdb5d628babfa05081",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:43:20",
+        "session_id": "cdc5bf608f8792fdb5d628babfa05081",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-06-30 16:43:59",
+        "session_id": "cdc5bf608f8792fdb5d628babfa05081",
+        "action": {
+            "0": "getClientDetails",
+            "getClientDetails": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-06-30 16:44:09",
+        "session_id": "cdc5bf608f8792fdb5d628babfa05081",
+        "action": {
+            "0": "getClientsProducts",
+            "getClientsProducts": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-06-30 16:46:21",
+        "session_id": "cdc5bf608f8792fdb5d628babfa05081",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 17:10:25",
+        "session_id": "27586bf805670f3e0d513973afc6932f",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-30 17:10:33",
+        "session_id": "27586bf805670f3e0d513973afc6932f",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
+    },
+    {
+        "date": "2025-06-30 17:27:30",
+        "session_id": "2901d3d0389aa4c054dfc5ca62d61a70",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 17:28:25",
+        "session_id": "2901d3d0389aa4c054dfc5ca62d61a70",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-06-30 17:29:21",
+        "session_id": "2901d3d0389aa4c054dfc5ca62d61a70",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-30 20:06:28",
+        "session_id": "cdec770542356df61b3c3c6477ee68a1",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-06-30 20:08:32",
+        "session_id": "cdec770542356df61b3c3c6477ee68a1",
+        "action": {
+            "0": "getClientDetails",
+            "getClientDetails": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-06-30 20:08:39",
+        "session_id": "cdec770542356df61b3c3c6477ee68a1",
+        "action": {
+            "0": "getClientsProducts",
+            "getClientsProducts": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-06-30 20:08:53",
+        "session_id": "cdec770542356df61b3c3c6477ee68a1",
+        "action": {
+            "0": "getInvoices",
+            "getInvoices": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-07-02 13:38:42",
+        "session_id": "4afd2895270b676e9e7a70e4d80a550c",
+        "action": {
+            "0": "systemloadavg",
+            "systemloadavg": []
+        }
+    },
+    {
+        "date": "2025-07-02 13:39:23",
+        "session_id": "4afd2895270b676e9e7a70e4d80a550c",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-07-02 13:45:12",
+        "session_id": "eb36dea9916a28fcbfc17c1f31fd0f01",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-07-02 13:45:43",
+        "session_id": "eb36dea9916a28fcbfc17c1f31fd0f01",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-07-02 13:46:23",
+        "session_id": "eb36dea9916a28fcbfc17c1f31fd0f01",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-07-02 14:25:34",
+        "session_id": "67a3030d28c52269b4509c685b175179",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-07-02 14:34:02",
+        "session_id": "8010f4a8e4188e5a64f3c25dd5fd1a6a",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-07-02 14:34:45",
+        "session_id": "8010f4a8e4188e5a64f3c25dd5fd1a6a",
+        "action": [
+            "listaccts"
+        ]
+    },
+    {
+        "date": "2025-07-02 14:36:12",
+        "session_id": "8010f4a8e4188e5a64f3c25dd5fd1a6a",
+        "action": {
+            "0": "getClientDetails",
+            "getClientDetails": {
+                "client_id": "29292"
+            }
+        }
+    },
+    {
+        "date": "2025-07-02 14:36:51",
+        "session_id": "8010f4a8e4188e5a64f3c25dd5fd1a6a",
+        "action": [
+            "listpkgs"
+        ]
+    },
+    {
+        "date": "2025-07-02 14:38:46",
+        "session_id": "8010f4a8e4188e5a64f3c25dd5fd1a6a",
+        "action": {
+            "0": "get_information",
+            "get_information": {
+                "cpanel_user": "newacct456"
+            }
+        }
+    },
+    {
+        "date": "2025-07-02 14:40:33",
+        "session_id": "464485e49b2eff9b143e3bd8a1099d5c",
+        "action": {
+            "0": "get_disk_usage",
+            "get_disk_usage": []
+        }
     }
 ]

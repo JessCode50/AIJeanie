@@ -266,7 +266,7 @@ class AiController extends BaseController
                 "status" => "success",
                 "response" => $responseData['choices'][0]['message']['content'], //*** 
                 "tokens_used" => $responseData['usage'] ?? null,
-                "API_response" => $functionsResponse,
+                "API_response" => $format,
                 "user_message" => $returnMessage,
                 "function"   => $func
             ]);
@@ -280,7 +280,7 @@ class AiController extends BaseController
                 "status" => "success",
                 "response" => "No Response was Generated", //*** 
                 "tokens_used" => $responseData['usage'] ?? null,
-                "API_response" => $functionsResponse,
+                "API_response" => $format,
                 "user_message" => $returnMessage,
                 "function"   => $func
             ]);
@@ -336,6 +336,7 @@ class AiController extends BaseController
       
         $category = '';
         $satisfaction = '';
+        $rating = '';
 
         
         $url = "https://api.openai.com/v1/chat/completions";
@@ -393,8 +394,15 @@ class AiController extends BaseController
                             satisfaction from the options:
                             neutral, dissatisfied, satisfied."
                         ],
+                        "rating" => [
+                            "type" => "string",
+                            "description" => "The rating (a number from 1-5 where it can also be a decimal)
+                            you as the AI assistant would give for the customer's satisfaction. Note that 1 is
+                            really unsatisfied, where the customer is threatening to eave the company and 5 is when the customer
+                            is very happy with the service."
                         ],
-                        "required" => ["summary", "category", "satisfaction"]
+                        ],
+                        "required" => ["summary", "category", "satisfaction", "rating"]
                     ]
                 ]
             ]
@@ -463,6 +471,7 @@ class AiController extends BaseController
             $userMessage = "TICKET: " . $arguments["summary"];
             $category = "CATEGORY: " . $arguments["category"];
             $satisfaction = $arguments["satisfaction"];
+            $rating = $arguments["rating"];
         }
          
 
@@ -1083,7 +1092,8 @@ You must not deviate from this logic under any circumstance."
         "response" => $agentChatMessage,
         "tokens_used" => $responseData['usage'] ?? null,
         "API_response" => $apiResponse, "category" => $category,
-        "satisfaction" => $satisfaction]);
+        "satisfaction" => $satisfaction,
+        "rating" => $rating]);
     }
 
     public function hosting_servers_list()

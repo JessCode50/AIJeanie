@@ -209,7 +209,7 @@
               
               <!-- Message count and status -->
               <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6b7280;">
-                <!-- <span>{{ aiResponse.filter(shouldShow).length }} messages</span> -->
+                <span>{{ aiResponse.filter(shouldShow).length }} messages</span>
                 <div style="width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite;"></div>
                 <span>Connected</span>
               </div>
@@ -520,19 +520,21 @@
             <div>
               <div style="color: #64748b; font-size: 11px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em;">Customer Satisfaction</div>
               <div style="display: flex; align-items: center; gap: 16px;">
-                <span style="font-size: 32px; font-weight: 800; color: #0f172a;">{{ satisfaction || '4.8' }}</span>
+                <span style="font-size: 32px; font-weight: 800; color: #0f172a;">{{ rating}}</span>
                 <div style="display: flex; gap: 4px;">
-                  <span style="color: #fbbf24; font-size: 18px; filter: drop-shadow(0 1px 3px rgba(251, 191, 36, 0.4));">⭐</span>
-                  <span style="color: #fbbf24; font-size: 18px; filter: drop-shadow(0 1px 3px rgba(251, 191, 36, 0.4));">⭐</span>
-                  <span style="color: #fbbf24; font-size: 18px; filter: drop-shadow(0 1px 3px rgba(251, 191, 36, 0.4));">⭐</span>
-                  <span style="color: #fbbf24; font-size: 18px; filter: drop-shadow(0 1px 3px rgba(251, 191, 36, 0.4));">⭐</span>
-                  <span style="color: #cbd5e1; font-size: 18px;">⭐</span>
+                  <span
+                    v-for="i in Number(rating)"
+                    :key="'star-' + i"
+                    style="color: #fbbf24; font-size: 18px; filter: drop-shadow(0 1px 3px rgba(251, 191, 36, 0.4));"
+                  >
+                    ⭐
+                  </span>
                 </div>
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px; background: rgba(34, 197, 94, 0.1); padding: 8px 16px; border-radius: 24px; border: 1px solid rgba(34, 197, 94, 0.2);">
               <span style="color: #16a34a; font-size: 14px;">📈</span>
-              <span style="color: #0f5132; font-size: 12px; font-weight: 700;">Excellent</span>
+              <span style="color: #0f5132; font-size: 12px; font-weight: 700;">{{ satisfaction}}</span>
             </div>
           </div>
         </div>
@@ -725,6 +727,7 @@ export default {
       server: '',
 
       satisfaction: '',
+      rating: '',
       priority: '',
 
       // Ticket lookup functionality
@@ -776,6 +779,9 @@ stopLoadingDots() {
 },
 
 shouldShow(resp) {
+  if (Array.isArray(resp)){
+    return false;
+  }
     return (
       resp.startsWith('AI:') ||
       resp.startsWith('CATEGORY:') ||
@@ -891,9 +897,9 @@ shouldShow(resp) {
         .then(data => {
           if (data === 'alert'){
             alert("I couldn't handle the current request made");
-            this.aiResponse = [];
-            this.tokens = {};
-            this.apiResponse = [];
+            // this.aiResponse = [];
+            // this.tokens = {};
+            // this.apiResponse = [];
           }
           else{
             if (data.response != 'No Response was Generated'){
@@ -902,7 +908,12 @@ shouldShow(resp) {
             if (data.category != ''){
                    this.aiResponse.push(data.category);
             }
-            this.satisfaction = data.satisfaction;
+
+            if (data.satisfaction != ''){
+              this.satisfaction = data.satisfaction;
+              this.rating = data.rating.includes('.') ? str.split('.')[1] : data.rating;
+            }
+  
             this.tokens = data.tokens_used;
             this.apiResponse = data.API_response;
             // this.pending_functions.push(...data.pending_functions);
@@ -929,6 +940,8 @@ shouldShow(resp) {
       this.acknowledged_functions = [];
       this.ticketMessage = '';
       this.priority = '';
+      this.satisfaction = '';
+      this.rating = '';
     },
 
     aiView() {
@@ -1067,7 +1080,7 @@ shouldShow(resp) {
       } else {
         style.backgroundColor = '#f8f9fa';
         style.color = '#495057';
-        style.marginRight = 'auto';
+        // style.marginRight = 'auto';
       }
 
       return style;
@@ -1120,7 +1133,7 @@ shouldShow(resp) {
       } else {
         style.backgroundColor = 'rgba(249, 250, 251, 0.95)';
         style.color = '#374151';
-        style.marginRight = 'auto';
+        // style.marginRight = 'auto';
         style.fontWeight = '500';
       }
 
@@ -1174,46 +1187,49 @@ shouldShow(resp) {
       // }
       
       if (Array.isArray(resp)){ // the only time resp will ever be an array is when it's API data
-        return ` <div style="font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #374151;">
-            This is where info card would go (Simply need a function call here)
-          </div>`
+        return this.generateHtml(resp);
+        // return ` <div style="font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #374151;">
+        //     This is where info card would go (Simply need a function call here)
+        //   </div>`
     
     }
       
       // Default formatting for regular responses
       return this.formatRegularResponse(resp);
     },
-    generateHtml(obj, depth = 0) {
-      if (obj === null || obj === undefined) return `<div>null</div>`;
 
-      if (Array.isArray(obj)) {
-        return `
-          <div class="array-block" style="margin-left: ${depth * 20}px;">
-            ${obj.map(item => this.generateHtml(item, depth + 1)).join("")}
-          </div>
-        `;
-      }
+    generateHtml(data) {
+    function renderValue(value) {
+        if (typeof value === 'object' && value !== null) {
+            if (Array.isArray(value)) {
+                return `<ul style="padding-left: 1em;">${value.map(item => `<li>${renderValue(item)}</li>`).join('')}</ul>`;
+            } else {
+                // Nested object
+                return `<div style="margin-left: 1em; border-left: 2px solid #ddd; padding-left: 1em;">${Object.entries(value).map(
+                    ([key, val]) => `<p><strong>${key}:</strong> ${renderValue(val)}</p>`
+                ).join('')}</div>`;
+            }
+        } else {
+            return value; // primitive
+        }
+    }
 
-      if (typeof obj === "object") {
-        return `
-          <div class="object-card" style="margin-left: ${depth * 20}px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin-bottom: 10px; background: #f9f9f9;">
-            ${Object.entries(obj)
-              .map(([key, value]) => {
-                return `
-                  <div style="margin-bottom: 5px;">
-                    <strong>${key}:</strong>
-                    ${typeof value === "object" ? this.generateHtml(value, depth + 1) : ` ${value}`}
-                  </div>
-                `;
-              })
-              .join("")}
-          </div>
-        `;
-      }
+    let html = '';
 
-      // Primitive value
-      return `<div style="margin-left: ${depth * 20}px;">${obj}</div>`;
-    },
+    data.forEach(item => {
+        html += `<div class="professional-card" style="border:1px solid #ccc; border-radius:8px; padding:16px; margin-bottom:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">`;
+
+        for (const key in item) {
+            if (item.hasOwnProperty(key)) {
+                html += `<p><strong>${key}:</strong> ${renderValue(item[key])}</p>`;
+            }
+        }
+
+        html += `</div>`;
+    });
+
+    return html;
+},
 
     containsSystemMetrics(resp) {
       return resp.includes('System Load Average') || resp.includes('Disk Usage') || resp.includes('performance metrics');
