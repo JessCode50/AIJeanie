@@ -69,6 +69,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'cors',        // Enable CORS for all requests
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
