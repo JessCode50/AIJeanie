@@ -507,6 +507,9 @@ export default {
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.95) !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  height: 350px !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .enhanced-widget:hover {
@@ -517,14 +520,58 @@ export default {
 /* Dashboard Grid */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-  padding: 0 1rem 2rem;
+  grid-template-columns: 1fr 0.5fr 0.5fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2rem;
+  padding: 0 2rem 3rem;
   max-width: 100%;
   margin: 0;
   position: relative;
   z-index: 1;
   width: 100%;
+  height: calc(100vh - 200px);
+}
+
+/* Recent Tickets - Large square on the left taking full height */
+.dashboard-grid .enhanced-widget:first-child {
+  grid-row: 1 / 3;
+  grid-column: 1;
+  height: 100% !important;
+}
+
+/* Server Status - Top right, first column */
+.dashboard-grid .enhanced-widget:nth-child(2) {
+  grid-row: 1;
+  grid-column: 2;
+}
+
+/* Recent Activities - Top right, second column */
+.dashboard-grid .enhanced-widget:nth-child(3) {
+  grid-row: 1;
+  grid-column: 3;
+}
+
+/* AI Assistant - Bottom right, first column */
+.dashboard-grid .enhanced-widget:nth-child(4) {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+/* Performance Metrics - Bottom right, second column */
+.dashboard-grid .enhanced-widget:nth-child(5) {
+  grid-row: 2;
+  grid-column: 3;
+}
+
+/* Ensure all widgets have consistent styling */
+.enhanced-widget {
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 /* Quick Actions Bar Override */
@@ -579,16 +626,28 @@ export default {
 }
 
 /* Ticket List */
+.ticket-list {
+  overflow-y: auto;
+  height: 100%;
+  flex: 1;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
 .ticket-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: 10px;
   background: rgba(248, 250, 252, 0.8);
   margin-bottom: 0.75rem;
   transition: all 0.3s ease;
   border-left: 4px solid transparent;
+  position: relative;
+  min-height: 60px;
+  flex-shrink: 0;
 }
 
 .ticket-item:hover {
@@ -651,13 +710,16 @@ export default {
 .server-stats {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  overflow-y: auto;
+  max-height: 100%;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  padding: 0.5rem 0;
 }
 
 .stat-header {
@@ -712,15 +774,22 @@ export default {
 .stat-fill.disk { background: linear-gradient(90deg, #10b981, #059669); }
 
 /* Activity List */
+.activity-list {
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 8px;
+}
+
 .activity-item {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: 10px;
   background: rgba(248, 250, 252, 0.8);
   margin-bottom: 0.75rem;
   transition: all 0.3s ease;
+  min-height: 60px;
 }
 
 .activity-item:hover {
@@ -774,105 +843,142 @@ export default {
 .activity-priority.low { background: #d1fae5; color: #065f46; }
 
 /* AI Widget */
-.ai-widget .ai-preview {
-  padding: 1rem 0;
+.ai-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .ai-message {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
   align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(239, 246, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .ai-avatar {
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5em;
   flex-shrink: 0;
+  font-size: 16px;
+}
+
+.ai-text {
+  flex: 1;
 }
 
 .ai-text p {
-  margin: 0 0 1rem 0;
-  color: #374151;
-  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 14px;
 }
 
 .ai-capabilities {
-  list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
 }
 
 .ai-capabilities li {
-  color: #6b7280;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .chat-start-button {
-  width: 100%;
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
   border: none;
-  padding: 1rem;
-  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: all 0.3s ease;
+  margin-top: auto;
+  font-size: 14px;
 }
 
 .chat-start-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
 }
 
-/* Metrics Widget */
+.button-icon {
+  font-size: 16px;
+}
+
+/* Metrics Grid */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  overflow-y: auto;
+  max-height: 100%;
 }
 
 .metric-card {
-  background: rgba(248, 250, 252, 0.8);
-  border-radius: 10px;
-  padding: 1rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.6);
   transition: all 0.3s ease;
 }
 
 .metric-card:hover {
   background: rgba(241, 245, 249, 0.9);
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .metric-icon {
-  font-size: 1.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.metric-content {
+  flex: 1;
 }
 
 .metric-value {
-  font-size: 1.25rem;
+  font-size: 18px;
   font-weight: 700;
   color: #1f2937;
+  line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .metric-label {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: #6b7280;
+  font-weight: 500;
   text-transform: uppercase;
-  font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
 /* Responsive Design */

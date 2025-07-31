@@ -91,8 +91,8 @@
     <!-- Main Content Container -->
     <div style="padding: 32px; display: flex; gap: 32px; height: calc(100vh - 340px); overflow: hidden;">
       <!-- Left Column - Agent Chat -->
-      <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
-        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; flex: 1; border: 1px solid rgba(226,232,240,0.5); overflow: hidden;">
+      <div style="flex: 1; display: flex; flex-direction: column; min-width: 0; max-width: 50%;">
+        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; border: 1px solid rgba(226,232,240,0.5); overflow: hidden;">
           <!-- Agent Chat Header -->
           <div style="display: flex; align-items: center; gap: 16px; padding: 24px 28px; border-bottom: 1px solid rgba(226, 232, 240, 0.6); flex-shrink: 0;">
             <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(59, 130, 246, 0.3);">
@@ -219,8 +219,8 @@
       </div>
 
       <!-- Right Column - Action Queue -->
-      <div style="flex: 1; display: flex; flex-direction: column;">
-        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; flex: 1; border: 1px solid rgba(226,232,240,0.5); overflow: hidden;">
+      <div style="flex: 1; display: flex; flex-direction: column; max-width: 50%;">
+        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; border: 1px solid rgba(226,232,240,0.5); overflow: hidden;">
           <!-- Action Queue Header -->
           <div style="display: flex; align-items: center; gap: 16px; padding: 24px 28px; border-bottom: 1px solid rgba(226, 232, 240, 0.6); flex-shrink: 0;">
             <div v-if="pending_functions.length > 0" style="width: 32px; height: 32px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700; box-shadow: 0 3px 8px rgba(239,68,68,0.4); animation: pulse 2s infinite;">{{ pending_functions.length }}</div>
@@ -275,9 +275,9 @@
     </div>
 
     <!-- Bottom Stats Section -->
-    <div style="padding: 0 32px 24px; display: flex; gap: 32px;">
+    <div style="padding: 0 32px 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; height: 400px;">
       <!-- Quick Ticket -->
-      <div style="flex: 1; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); padding: 28px; border: 1px solid rgba(226,232,240,0.5);">
+      <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); padding: 28px; border: 1px solid rgba(226,232,240,0.5); display: flex; flex-direction: column; overflow: hidden;">
         <h3 style="margin: 0 0 24px 0; font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 16px;">
             <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);">
@@ -348,7 +348,7 @@
           </div>
           
           <!-- Placeholder for submit mode -->
-          <div style="background: rgba(240, 253, 244, 0.8); border: 2px dashed rgba(34, 197, 94, 0.4); border-radius: 8px; padding: 24px; margin-top: 12px; text-align: center; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+          <div style="background: rgba(240, 253, 244, 0.8); border: 2px dashed rgba(34, 197, 94, 0.4); border-radius: 8px; padding: 24px; margin-top: 12px; text-align: center; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
               <div style="width: 48px; height: 48px; background: linear-gradient(45deg, rgba(5, 150, 105, 0.1), rgba(5, 150, 105, 0.05)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(5, 150, 105, 0.2);">
                 <span style="font-size: 20px; opacity: 0.7;">🎫</span>
@@ -384,7 +384,7 @@
           </div>
 
           <!-- Placeholder when no ticket info is shown -->
-          <div v-if="!ticketInfo && !lookupError" style="background: rgba(249, 250, 251, 0.8); border: 2px dashed rgba(209, 213, 219, 0.6); border-radius: 8px; padding: 24px; text-align: center; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+          <div v-if="!ticketInfo && !lookupError" style="background: rgba(249, 250, 251, 0.8); border: 2px dashed rgba(209, 213, 219, 0.6); border-radius: 8px; padding: 24px; text-align: center; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
               <div style="width: 48px; height: 48px; background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(37, 99, 235, 0.2);">
                 <span style="font-size: 20px; opacity: 0.7;">🔍</span>
@@ -395,7 +395,7 @@
           </div>
 
           <!-- Ticket Information Display -->
-          <div v-if="ticketInfo" style="background: rgba(239, 246, 255, 0.8); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 16px; margin-top: 12px;">
+          <div v-if="ticketInfo" style="background: rgba(239, 246, 255, 0.8); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 16px; margin-top: 12px; height: 200px; overflow-y: auto;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
               <span style="font-size: 16px;">🎫</span>
               <h4 style="margin: 0; font-size: 16px; font-weight: 600; color: #1e40af;">Ticket Details</h4>
@@ -454,14 +454,14 @@
           </div>
 
           <!-- Error display -->
-          <div v-if="lookupError" style="background: rgba(254, 242, 242, 0.8); border: 1px solid rgba(252, 165, 165, 0.5); border-radius: 8px; padding: 12px; margin-top: 12px; color: #dc2626; font-size: 13px;">
+          <div v-if="lookupError" style="background: rgba(254, 242, 242, 0.8); border: 1px solid rgba(252, 165, 165, 0.5); border-radius: 8px; padding: 12px; margin-top: 12px; color: #dc2626; font-size: 13px; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center;">
             {{ lookupError }}
           </div>
         </div>
       </div>
 
       <!-- System Stats -->
-      <div style="flex: 1; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); padding: 28px; border: 1px solid rgba(226,232,240,0.5);">
+      <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); padding: 28px; border: 1px solid rgba(226,232,240,0.5); display: flex; flex-direction: column; overflow: hidden;">
         <h3 style="margin: 0 0 28px 0; font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 16px;">
           <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);">
             <span style="font-size: 20px; color: white;">📊</span>
@@ -541,15 +541,15 @@
       </div>
 
       <!-- Client Info -->
-      <div style="flex: 1; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); padding: 28px; border: 1px solid rgba(226,232,240,0.5);">
+      <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05); padding: 28px; border: 1px solid rgba(226,232,240,0.5); display: flex; flex-direction: column; overflow: hidden;">
         <h3 style="margin: 0 0 24px 0; font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 16px;">
           <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(139, 92, 246, 0.3);">
             <span style="font-size: 16px; color: white;">👤</span>
-          </div>
+    </div>
           <div>
             <div style="font-size: 18px; font-weight: 700; color: #0f172a;">Client Information</div>
             <div style="font-size: 13px; color: #64748b; font-weight: 500;">Customer & system details</div>
-          </div>
+  </div>
         </h3>
         
         <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -717,7 +717,7 @@ export default {
       acknowledged_functions: [],
       ticketIdInput: '',
       ticketMessage: '',
-
+      
       loading: false,
       dots: '',
       intervalId: null,
@@ -740,7 +740,7 @@ export default {
       id: '',
       summary: ''
     }
-  }, 
+  },
 
   mounted() {
     fetch('http://localhost:8080/contacts',{
@@ -763,30 +763,30 @@ export default {
   methods: {
 
     startLoadingDots() {
-  if (this.intervalId) clearInterval(this.intervalId);
+      if (this.intervalId) clearInterval(this.intervalId);
   this.loading = true;
-  let i = 0;
-  this.intervalId = setInterval(() => {
-    this.dots = '.'.repeat(i % 4);
-    this.$forceUpdate(); // ← force re-render
-    i++;
-  }, 400);
-},
+      let i = 0;
+      this.intervalId = setInterval(() => {
+        this.dots = '.'.repeat(i % 4);
+        this.$forceUpdate(); // ← force re-render
+        i++;
+      }, 400);
+    },
 
-stopLoadingDots() {
-  clearInterval(this.intervalId);
-  this.dots = '';
+    stopLoadingDots() {
+      clearInterval(this.intervalId);
+      this.dots = '';
   this.loading = false;
-},
+    },
 
-shouldShow(resp) {
-  if (Array.isArray(resp)){
-    return false;
-  }
-    return (
-      resp.startsWith('AI:') ||
-      resp.startsWith('CATEGORY:') ||
-      resp.startsWith('AGENT:') ||
+    shouldShow(resp) {
+      if (Array.isArray(resp)){
+        return false;
+      }
+        return (
+          resp.startsWith('AI:') ||
+          resp.startsWith('CATEGORY:') ||
+          resp.startsWith('AGENT:') ||
       resp.startsWith('TICKET')
     );
   },
@@ -1254,44 +1254,44 @@ shouldShow(resp) {
         //     This is where info card would go (Simply need a function call here)
         //   </div>`
     
-    }
+      }
       
       // Default formatting for regular responses
       return this.formatRegularResponse(resp);
     },
 
     generateHtml(data) {
-    function renderValue(value) {
-        if (typeof value === 'object' && value !== null) {
-            if (Array.isArray(value)) {
-                return `<ul style="padding-left: 1em;">${value.map(item => `<li>${renderValue(item)}</li>`).join('')}</ul>`;
-            } else {
+      function renderValue(value) {
+          if (typeof value === 'object' && value !== null) {
+              if (Array.isArray(value)) {
+                  return `<ul style="padding-left: 1em;">${value.map(item => `<li>${renderValue(item)}</li>`).join('')}</ul>`;
+              } else {
                 // Nested object
-                return `<div style="margin-left: 1em; border-left: 2px solid #ddd; padding-left: 1em;">${Object.entries(value).map(
-                    ([key, val]) => `<p><strong>${key}:</strong> ${renderValue(val)}</p>`
-                ).join('')}</div>`;
-            }
-        } else {
+                  return `<div style="margin-left: 1em; border-left: 2px solid #ddd; padding-left: 1em;">${Object.entries(value).map(
+                      ([key, val]) => `<p><strong>${key}:</strong> ${renderValue(val)}</p>`
+                  ).join('')}</div>`;
+              }
+          } else {
             return value; // primitive
-        }
-    }
+          }
+      }
 
-    let html = '';
+      let html = '';
 
-    data.forEach(item => {
-        html += `<div class="professional-card" style="border:1px solid #ccc; border-radius:8px; padding:16px; margin-bottom:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">`;
+      data.forEach(item => {
+          html += `<div class="professional-card" style="border:1px solid #ccc; border-radius:8px; padding:16px; margin-bottom:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">`;
 
-        for (const key in item) {
-            if (item.hasOwnProperty(key)) {
-                html += `<p><strong>${key}:</strong> ${renderValue(item[key])}</p>`;
-            }
-        }
+          for (const key in item) {
+              if (item.hasOwnProperty(key)) {
+                  html += `<p><strong>${key}:</strong> ${renderValue(item[key])}</p>`;
+              }
+          }
 
-        html += `</div>`;
-    });
+          html += `</div>`;
+      });
 
-    return html;
-},
+      return html;
+    },
 
     containsSystemMetrics(resp) {
       return resp.includes('System Load Average') || resp.includes('Disk Usage') || resp.includes('performance metrics');
@@ -1800,4 +1800,4 @@ input:focus, textarea:focus {
 .professional-card:hover {
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
-</style>
+</style> 

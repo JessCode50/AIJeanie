@@ -76,51 +76,94 @@ export default {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
   border: 1px solid rgba(226,232,240,0.5);
   overflow: hidden;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
 }
 
 .widget-header {
-  padding: 24px 28px;
+  padding: 32px 36px;
   border-bottom: 1px solid rgba(226, 232, 240, 0.6);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .widget-info {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
 
 .widget-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  flex-shrink: 0;
 }
 
-.widget-icon span {
-  font-size: 16px;
-}
-
-.widget-text h3 {
-  margin: 0;
-  font-size: 18px;
+.widget-title {
+  font-size: 20px;
   font-weight: 700;
   color: #0f172a;
+  margin-bottom: 2px;
 }
 
-.widget-text p {
-  margin: 0;
-  font-size: 13px;
+.widget-subtitle {
+  font-size: 14px;
   color: #64748b;
   font-weight: 500;
 }
 
+.widget-action {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.widget-action:hover {
+  background: rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+
 .widget-content {
-  padding: 24px 28px;
+  flex: 1;
+  padding: 32px 36px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Custom scrollbar for widget content */
+.widget-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.widget-content::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.03);
+  border-radius: 3px;
+}
+
+.widget-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, rgba(99, 102, 241, 0.3), rgba(99, 102, 241, 0.6));
+  border-radius: 3px;
+}
+
+.widget-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, rgba(99, 102, 241, 0.5), rgba(99, 102, 241, 0.8));
 }
 </style> 
