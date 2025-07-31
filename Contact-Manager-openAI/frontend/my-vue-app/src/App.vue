@@ -2,7 +2,7 @@
   <div class="app">
     <!-- Global Header (hidden for fullscreen views) -->
     <AppHeader 
-      v-if="!isFullscreenView"
+      v-if="!isFullscreenView && !isDashboardView"
       :title="getViewTitle()"
       :subtitle="getViewSubtitle()"
       :icon="getViewIcon()"
@@ -19,7 +19,7 @@
     />
 
     <!-- Main Content Views -->
-    <div class="app-content" :class="{ 'fullscreen': isFullscreenView }">
+    <div class="app-content" :class="{ 'fullscreen': isFullscreenView || isDashboardView }">
       <!-- Router View - This will display the current route component -->
       <router-view 
         :quick-actions="quickActions"
@@ -83,6 +83,9 @@ export default {
     },
     isFullscreenView() {
       return this.$route.meta?.fullscreen || false
+    },
+    isDashboardView() {
+      return this.currentRouteName === 'dashboard' || this.$route.name === 'Dashboard'
     }
   },
   data() {
@@ -124,10 +127,10 @@ export default {
         { id: 3, type: 'success', message: 'Backup completed successfully', time: '1 hour ago' }
       ],
       quickActions: [
-        { id: 'create-ticket', label: 'New Ticket', icon: '🎫', color: '#3b82f6' },
-        { id: 'add-client', label: 'Add Client', icon: '👤', color: '#10b981' },
+        { id: 'create-ticket', label: 'Tickets', icon: '🎫', color: '#3b82f6' },
+        { id: 'add-client', label: 'Clients', icon: '👤', color: '#10b981' },
         { id: 'ai-assistant', label: 'AI Assistant', icon: '🤖', color: '#8b5cf6' },
-        { id: 'create-invoice', label: 'Invoice', icon: '💰', color: '#f59e0b' },
+        { id: 'create-invoice', label: 'Invoices', icon: '💰', color: '#f59e0b' },
         { id: 'backup-account', label: 'Backup', icon: '💾', color: '#059669' },
         { id: 'check-ssl', label: 'SSL Check', icon: '🔒', color: '#ef4444' },
         { id: 'system-status', label: 'System', icon: '⚡', color: '#06b6d4' }
@@ -525,7 +528,37 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 .app {
   margin: 0;
   padding: 0;
@@ -536,6 +569,8 @@ export default {
 
 .app-content {
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .app-content.fullscreen {
@@ -545,7 +580,8 @@ export default {
   width: 100vw;
   height: 100vh;
   z-index: 1000;
-  background: #f8fafc;
   overflow: auto;
+  margin: 0;
+  padding: 0;
 }
 </style>

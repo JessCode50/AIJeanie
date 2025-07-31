@@ -981,22 +981,12 @@ shouldShow(resp) {
       this.acknowledged_functions.push(func);
       this.pending_functions.splice(index, 1); 
 
-      console.log('Sending to proceed endpoint:', this.acknowledged_functions);
-      console.log('Acknowledged functions JSON:', JSON.stringify(this.acknowledged_functions, null, 2));
-
       fetch('http://localhost:8080/contacts/ai/proceed',{
         method: 'POST',
         credentials: 'include',
         body:JSON.stringify (this.acknowledged_functions)
-      }).then(response => {
-        console.log('Proceed response status:', response.status);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
+      }).then(response => response.json())  
         .then(data => {
-          console.log('Proceed response data:', data);
           if (data === 'alert'){
             alert("I couldn't handle the current request made");
             this.aiResponse = [];
@@ -1023,34 +1013,18 @@ shouldShow(resp) {
             }
           }
       })
-      .catch(error => {
-        console.error('Error in aiProceed:', error);
-        alert(`Failed to proceed with action: ${error.message}`);
-        // Restore the function back to pending on error
-        this.pending_functions.splice(index, 0, func);
-        this.acknowledged_functions.pop();
-      });
     },
 
     aiReject(index) {
       fetch('http://localhost:8080/contacts/ai/reject',{
         method: 'POST',
         credentials: 'include'
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
+      }).then(response => response.json())  
       .then(data => {
         this.userMessage = data.user_message;
         this.pending_functions.splice(index, 1);
         this.aiClick();
       })
-      .catch(error => {
-        console.error('Error in aiReject:', error);
-        alert(`Failed to reject action: ${error.message}`);
-      });
     },
 
     submitTicketId(){
