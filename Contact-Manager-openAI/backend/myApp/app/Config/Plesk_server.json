@@ -1,0 +1,21 @@
+{
+    "servers": [
+        {
+        "server": "raphael.easyonnet.io",
+        "APIToken": "357eacb0-f06d-0d36-fc5d-06e0a16fff8f"
+        }, 
+        {
+            "server": "donatello.easyonnet.io",
+            "APIToken": "c9f9fe10-0059-b433-a086-c9c949822d35"
+        }, 
+        {
+            "server": "Torplesk-01.dynamichosting.biz",
+            "APIToken": "efd294be-6c40-0c9d-0df3-fec09f52133c"
+        }, 
+        {
+            "server": "Torplesk-02.dynamichosting.biz",
+            "APIToken": "9f39b0dd-1339-7d75-98e4-e3e7f9847208"
+        }
+
+    ]
+}
