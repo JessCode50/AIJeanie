@@ -1,0 +1,109 @@
+{
+    "servers": [
+        {
+        "server": "janus1.easyonnet.io",
+        "APIToken": "YBY2RXIZJ289REIZQDLTICQ7PD5Q5EHH"
+        }, 
+        {
+            "server": "janus2.easyonnet.io",
+            "APIToken": "OHTE8M9CIJ6A44ET0OUM52IQOW15Y4C5"
+        }, 
+        {
+            "server": "janus4.easyonnet.io",
+            "APIToken": "JE2LKTDKTA9EZ9B9BVX0MB3817Y283N5"
+        }, 
+        {
+            "server": "janus5.easyonnet.io",
+            "APIToken": "FUC0PYADF8F1XV9VQBE0QOET5DAC7FAB"
+        }, 
+        {
+            "server": "janus7.easyonnet.io",
+            "APIToken": "E82Y64KMSSQ9H86463OTP0ISH3NO935N"
+        }, 
+        {
+            "server": "janus8.easyonnet.io",
+            "APIToken": "745LVM80VGU26Z14LQWFIBBKTVD4V3DN"
+        }, 
+        {
+            "server": "janus9.easyonnet.io",
+            "APIToken": "AAZJ8DE4TEQ13NF3KEC01KHD64FUWN3W"
+        }, 
+        {
+            "server": "janus10.easyonnet.io",
+            "APIToken": "2ADH05IE9ZG2MMS5GOMSTDJ8RRHRXYF4"
+        }, 
+        {
+            "server": "janus11.easyonnet.io",
+            "APIToken": "20CHI36L0CSS73XB6Z6A1DCBBH6XIV52"
+        }, 
+        {
+            "server": "janus12.easyonnet.io",
+            "APIToken": "0D6DA12M87RY35ARTLIG56KOASGQ9M2U"
+        }, 
+        {
+            "server": "janus13.easyonnet.io",
+            "APIToken": "GGWKWFGGCBIGJZ9RJV8Z7H47TM8YA1EG"
+        },
+        {
+            "server": "janus14.easyonnet.io",
+            "APIToken": "GC1MWK6IX0UMN6LTYUUSHXOA12G0X2RO"
+        },
+        {
+            "server": "janus15.easyonnet.io",
+            "APIToken": "RN6PUU0QG3SZQH8JE0NK8TJ22H14KREG"
+        }, 
+        {
+            "server": "janus16.easyonnet.io",
+            "APIToken": "7E0XIX05PGE4CUDLHKJJ5HV9BGLW2Z75"
+        }, 
+        {
+            "server": "janus17.easyonnet.io",
+            "APIToken": "XRM14JWCQ6PA682OFA45HCYZKXDWZ4E2"
+        }, 
+        {
+            "server": "janus18.easyonnet.io",
+            "APIToken": "F06GE9MTCXHI5G0NS92I9H3FSGRLNLNN"
+        }, 
+        {
+            "server": "janus19.easyonnet.io",
+            "APIToken": "OR6N4D2ADOLJ3P66D6DKLZNY1696RPI1"
+        },
+        {
+            "server": "janus20.easyonnet.io",
+            "APIToken": "0MIIXV5IIJMCZYLXX9E19RENJRBB3UIH"
+        },
+        {
+            "server": "janus21.easyonnet.io",
+            "APIToken": "C4VF3FHTWDDPLX6IHPMPHZ17AJM6NF86"
+        },
+        {
+            "server": "janus22.easyonnet.io",
+            "APIToken": "5MI0ARN2TT9ON7WAKJKLPEB4LIIYLEIX"
+        },
+        {
+            "server": "janus23.easyonnet.io",
+            "APIToken": "THCG2RHVUGRF9CJR3NQ2T7ZEI602FO7Y"
+        },
+        {
+            "server": "tesla1.nerivon.ca",
+            "APIToken": "S3KBTMESRTX6N4FAKOSLWH2LFPRDUWJK"
+        },
+        {
+            "server": "danvinci.easyonnet.io",
+            "APIToken": "G9NIARS1BJQIWI03AOUT6JSAM3TSA0F5"
+        },
+        {
+            "server": "columbus1.easyonnet.io",
+            "APIToken": "31QEPRAB1VX27HRHDLVX3P53WMZ5RYWB"
+        },
+        {
+            "server": "morse.easyonnet.io",
+            "APIToken": "4RK6Y824JL8D5S8GL2N1DDGD73RG8WX3"
+        },
+        {
+            "server": "edison.easyonnet.io",
+            "APIToken": "5VYQK2RNB8A2VNNY3QP5TKT70O6MMMBZ"
+        }
+    ]
+    
+    }
