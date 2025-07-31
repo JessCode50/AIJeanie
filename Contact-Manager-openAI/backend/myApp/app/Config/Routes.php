@@ -13,22 +13,31 @@ $routes->post('contacts/new', 'Home::newContacts');
 $routes->post('contacts/delete', 'Home::deleteContacts');
 
 // AI Assistant Routes
-$routes->post('contacts/ai', 'AiController::chat');
-$routes->options('contacts/ai', 'AiController::options');
-$routes->post('contacts/ai/clear', 'AiController::clear');
-$routes->options('contacts/ai/clear', 'AiController::options');
-$routes->post('contacts/ai/view', 'AiController::session_view');
-$routes->options('contacts/ai/view', 'AiController::options');
-$routes->post('contacts/ai/log', 'AiController::history_log');
-$routes->options('contacts/ai/log', 'AiController::options');
-$routes->post('contacts/ai/proceed', 'AiController::proceed');
-$routes->options('contacts/ai/proceed', 'AiController::options');
-$routes->post('contacts/ai/ticketID', 'AiController::sum_cat_AI');
-$routes->options('contacts/ai/ticketID', 'AiController::options');
-$routes->post('contacts/ai/client', 'AiController::enterClientInfo');
-$routes->options('contacts/ai/client', 'AiController::options');
+// $routes->post('contacts/ai', 'AiController::chat');
+// $routes->options('contacts/ai', 'AiController::options');
+// $routes->post('contacts/ai/clear', 'AiController::clear');
+// $routes->options('contacts/ai/clear', 'AiController::options');
+// $routes->post('contacts/ai/view', 'AiController::session_view');
+// $routes->options('contacts/ai/view', 'AiController::options');
+// $routes->post('contacts/ai/log', 'AiController::history_log');
+// $routes->options('contacts/ai/log', 'AiController::options');
+// $routes->post('contacts/ai/proceed', 'AiController::proceed');
+// $routes->options('contacts/ai/proceed', 'AiController::options');
+// $routes->post('contacts/ai/ticketID', 'AiController::sum_cat_AI');
+// $routes->options('contacts/ai/ticketID', 'AiController::options');
+// $routes->post('contacts/ai/client', 'AiController::enterClientInfo');
+// $routes->options('contacts/ai/client', 'AiController::options');
+// $routes->post('contacts/ai/reject', 'AiController::rejected');
+// $routes->options('contacts/ai/reject', 'AiController::options');
+
+$routes->post('contacts/ai', 'AiController::chat'); 
+$routes->post('contacts/ai/clear', 'AiController::clear'); 
+$routes->post('contacts/ai/view', 'AiController::session_view'); 
+$routes->post('contacts/ai/log', 'AiController::history_log'); 
+$routes->post('contacts/ai/proceed', 'AiController::proceed'); 
+$routes->post('contacts/ai/ticketID', 'AiController::sum_cat_AI'); 
+$routes->post('contacts/ai/client', 'AiController::enterClientInfo'); 
 $routes->post('contacts/ai/reject', 'AiController::rejected');
-$routes->options('contacts/ai/reject', 'AiController::options');
 
 // NEW ENHANCED API ROUTES
 

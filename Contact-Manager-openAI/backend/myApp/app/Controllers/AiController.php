@@ -581,7 +581,8 @@ class AiController extends BaseController
             "tools" => $toolsSum,
             "tool_choice" => "required"
         ];
-        if (str_contains($userMessage, 'TICKET_TEST')) {
+
+        if (str_contains($userMessage, 'TICKET_TEST')){
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1039,7 +1040,7 @@ class AiController extends BaseController
                     "name" => "getClientDetails",
                     "description" => "This function retrieves detailed information for a specific WHMCS client.
                     When used, it provides client information, including: 
-                    status: Client's account status (Active, Inactive, or Closed)
+                    status: Client’s account status (Active, Inactive, or Closed)
                     domain: Primary domain associated with the client (if set)
                     lastlogin: Timestamp of the client's most recent login
                     numtickets: Total number of support tickets the client has submitted
@@ -1089,7 +1090,7 @@ class AiController extends BaseController
                     status: Status of the product (e.g., Active, Suspended, Terminated)
                     diskusage: Current disk usage for the product (in MB/GB depending on setup)
                     disklimit: Disk quota/limit for the product
-                    This function is used to inspect a client's services and hosting usage, 
+                    This function is used to inspect a client’s services and hosting usage, 
                     including server assignments and billing info",
                     "parameters" => [
                         "type" => "object",
@@ -1205,7 +1206,7 @@ the 'agentChat' tool.
   prompts that are formated as 'TICKET: 'content'' indicating that is the customer's
   request that you must resolve
   - A prompt with 'AGENT : 'content'' indicates the internal employee's response
-  to what you are doing.
+  to what you are doing. 
 
 You must always follow this strict behavior when responding to user requests:
 1. If a tool will provide you the AI any other necessary info to complete the request,
@@ -1674,11 +1675,11 @@ EOT;
         $products = $data['products']['product'];
 
         foreach ($products as $product){
-        $formattedProducts[] = [
-            'Module'    => $product['module'],
+            $formattedProducts[] = [
+                'Module'    => $product['module'],
                 'Product Name'    => $product['name'],
                 'Monthly Pricing CAD' => $product['pricing']['CAD']['monthly']
-        ];
+            ];
         }
 
         return $formattedProducts;
@@ -1811,7 +1812,7 @@ EOT;
 
         return $formattedServices;
     }
-    
+
     public function formatGetInvoices($data) {
         $formattedInvoices = [];
         $invoices = $data['invoices']['invoice'];
@@ -1958,9 +1959,16 @@ EOT;
                             Web Hosting, Email Account Help,
                             Billing and Account Help, DNS Problems, Website Problems,
                             General or Unknown Issue."
-                        ]
+                        ]     ,    
+                        "rating" => [
+                            "type" => "string",
+                            "description" => "The rating (a number from 1-5 where it can also be a decimal)
+                            you as the AI assistant would give for the customer's satisfaction. Note that 1 is
+                            really unsatisfied, where the customer is threatening to eave the company and 5 is when the customer
+                            is very happy with the service."
                         ],
-                        "required" => ["summary", "category"]
+                        ],
+                        "required" => ["summary", "category", "rating"]
                     ]
                 ]
             ]
@@ -2006,13 +2014,15 @@ EOT;
             $arguments = json_decode($rawArguments, true);
             $userMessage = "TICKET: " . $arguments["summary"];
             $category = $arguments["category"];
+            $rating = $arguments["rating"];
 
 
             if ($requestor === "Guest"){
 
-            return $this->respond([
-                "summary" => $userMessage,
-                "category" => $category,
+                return $this->respond([
+                    "summary" => $userMessage,
+                    "category" => $category,
+                    "rating" => $rating,
                     "priority" => $priority,
                     "response" => "AI: This ticket was sent by a 'Guest' requestor. Please ensure this is a valid client before proceeding and submit their client ID to me."
                 ]);
@@ -2039,7 +2049,8 @@ EOT;
             return $this->respond([
                 "summary" => $userMessage,
                 "category" => $category,
-                "priority" => $priority
+                "priority" => $priority,
+                "rating" => $rating
             ]);
     }
 
@@ -2108,6 +2119,7 @@ EOT;
         $session->set('information', $chatHistory);
 
     }
+    
     
     // ========================================================================
     // DASHBOARD API ENDPOINTS - MERGED FROM WORKING VERSION
