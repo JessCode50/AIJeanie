@@ -12,6 +12,7 @@ use Cpanel\APILib as CpanelAPI;
 use Plesk\APILib as PleskAPI;
 use WHMCS;
 
+
 class AiController extends BaseController
 
 {
@@ -581,7 +582,8 @@ class AiController extends BaseController
             "tools" => $toolsSum,
             "tool_choice" => "required"
         ];
-        if (str_contains($userMessage, 'TICKET_TEST')) {
+
+        if (str_contains($userMessage, 'TICKET_TEST')){
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1039,7 +1041,7 @@ class AiController extends BaseController
                     "name" => "getClientDetails",
                     "description" => "This function retrieves detailed information for a specific WHMCS client.
                     When used, it provides client information, including: 
-                    status: Client's account status (Active, Inactive, or Closed)
+                    status: Client’s account status (Active, Inactive, or Closed)
                     domain: Primary domain associated with the client (if set)
                     lastlogin: Timestamp of the client's most recent login
                     numtickets: Total number of support tickets the client has submitted
@@ -1089,7 +1091,7 @@ class AiController extends BaseController
                     status: Status of the product (e.g., Active, Suspended, Terminated)
                     diskusage: Current disk usage for the product (in MB/GB depending on setup)
                     disklimit: Disk quota/limit for the product
-                    This function is used to inspect a client's services and hosting usage, 
+                    This function is used to inspect a client’s services and hosting usage, 
                     including server assignments and billing info",
                     "parameters" => [
                         "type" => "object",
@@ -1205,7 +1207,7 @@ the 'agentChat' tool.
   prompts that are formated as 'TICKET: 'content'' indicating that is the customer's
   request that you must resolve
   - A prompt with 'AGENT : 'content'' indicates the internal employee's response
-  to what you are doing.
+  to what you are doing. 
 
 You must always follow this strict behavior when responding to user requests:
 1. If a tool will provide you the AI any other necessary info to complete the request,
@@ -1674,11 +1676,11 @@ EOT;
         $products = $data['products']['product'];
 
         foreach ($products as $product){
-        $formattedProducts[] = [
-            'Module'    => $product['module'],
+            $formattedProducts[] = [
+                'Module'    => $product['module'],
                 'Product Name'    => $product['name'],
                 'Monthly Pricing CAD' => $product['pricing']['CAD']['monthly']
-        ];
+            ];
         }
 
         return $formattedProducts;
@@ -1811,7 +1813,7 @@ EOT;
 
         return $formattedServices;
     }
-    
+
     public function formatGetInvoices($data) {
         $formattedInvoices = [];
         $invoices = $data['invoices']['invoice'];
@@ -1958,9 +1960,16 @@ EOT;
                             Web Hosting, Email Account Help,
                             Billing and Account Help, DNS Problems, Website Problems,
                             General or Unknown Issue."
-                        ]
+                        ]     ,    
+                        "rating" => [
+                            "type" => "string",
+                            "description" => "The rating (a number from 1-5 where it can also be a decimal)
+                            you as the AI assistant would give for the customer's satisfaction. Note that 1 is
+                            really unsatisfied, where the customer is threatening to eave the company and 5 is when the customer
+                            is very happy with the service."
                         ],
-                        "required" => ["summary", "category"]
+                        ],
+                        "required" => ["summary", "category", "rating"]
                     ]
                 ]
             ]
@@ -2006,13 +2015,15 @@ EOT;
             $arguments = json_decode($rawArguments, true);
             $userMessage = "TICKET: " . $arguments["summary"];
             $category = $arguments["category"];
+            $rating = $arguments["rating"];
 
 
             if ($requestor === "Guest"){
 
-            return $this->respond([
-                "summary" => $userMessage,
-                "category" => $category,
+                return $this->respond([
+                    "summary" => $userMessage,
+                    "category" => $category,
+                    "rating" => $rating,
                     "priority" => $priority,
                     "response" => "AI: This ticket was sent by a 'Guest' requestor. Please ensure this is a valid client before proceeding and submit their client ID to me."
                 ]);
@@ -2039,7 +2050,8 @@ EOT;
             return $this->respond([
                 "summary" => $userMessage,
                 "category" => $category,
-                "priority" => $priority
+                "priority" => $priority,
+                "rating" => $rating
             ]);
     }
 
@@ -2108,6 +2120,7 @@ EOT;
         $session->set('information', $chatHistory);
 
     }
+    
     
     // ========================================================================
     // DASHBOARD API ENDPOINTS - MERGED FROM WORKING VERSION
@@ -2958,239 +2971,6 @@ EOT;
                 'success' => false,
                 'error' => $e->getMessage()
             ]);
-        }
-    }
-
-    // Invoice Management Methods
-    
-    public function listInvoices()
-    {
-        $this->setCorsHeaders();
-        
-        try {
-            $whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
-                'YdW5rB1z7ZRsQ5tPWgGX0tYQ9Fj2mAHp',
-                'y3VDBdgaTVrp8zS3SBzD7L1WwHCwI46P'
-            );
-            
-            // Get all clients first to fetch invoices for each
-            $clients = $whmcs->getClients();
-            $allInvoices = [];
-            
-            if (isset($clients['clients']['client'])) {
-                foreach ($clients['clients']['client'] as $client) {
-                    $invoices = $whmcs->getInvoices($client['id']);
-                    
-                    if (isset($invoices['invoices']['invoice'])) {
-                        // Handle both single invoice and array of invoices
-                        $invoiceList = isset($invoices['invoices']['invoice'][0]) ? 
-                            $invoices['invoices']['invoice'] : [$invoices['invoices']['invoice']];
-                            
-                        foreach ($invoiceList as $invoice) {
-                            $invoice['clientName'] = $client['firstname'] . ' ' . $client['lastname'];
-                            $invoice['clientEmail'] = $client['email'];
-                            $invoice['clientCompany'] = $client['companyname'] ?? '';
-                            $allInvoices[] = $invoice;
-                        }
-                    }
-                }
-            }
-            
-            // If no real invoices found, return sample data for development
-            if (empty($allInvoices)) {
-                throw new \Exception('No real invoices found, using sample data');
-            }
-            
-            return $this->response->setJSON($allInvoices);
-            
-        } catch (\Exception $e) {
-            log_message('error', 'Error in listInvoices: ' . $e->getMessage());
-            
-            // Return sample data for development
-            $sampleInvoices = [
-                [
-                    'id' => '1001',
-                    'userid' => '1',
-                    'status' => 'unpaid',
-                    'total' => '299.99',
-                    'duedate' => '2024-02-15',
-                    'datepaid' => '',
-                    'paymentmethod' => '',
-                    'date' => '2024-01-15',
-                    'subtotal' => '277.76',
-                    'tax' => '22.23',
-                    'clientName' => 'John Doe',
-                    'clientEmail' => 'john@example.com',
-                    'clientCompany' => 'Acme Corp'
-                ],
-                [
-                    'id' => '1002',
-                    'userid' => '2',
-                    'status' => 'paid',
-                    'total' => '149.50',
-                    'duedate' => '2024-01-30',
-                    'datepaid' => '2024-01-28',
-                    'paymentmethod' => 'PayPal',
-                    'date' => '2024-01-01',
-                    'subtotal' => '137.79',
-                    'tax' => '11.71',
-                    'clientName' => 'Jane Smith',
-                    'clientEmail' => 'jane@example.com',
-                    'clientCompany' => 'Tech Solutions'
-                ],
-                [
-                    'id' => '1003',
-                    'userid' => '3',
-                    'status' => 'overdue',
-                    'total' => '89.99',
-                    'duedate' => '2024-01-01',
-                    'datepaid' => '',
-                    'paymentmethod' => '',
-                    'date' => '2023-12-01',
-                    'subtotal' => '82.94',
-                    'tax' => '7.05',
-                    'clientName' => 'Bob Wilson',
-                    'clientEmail' => 'bob@example.com',
-                    'clientCompany' => 'Design Studio'
-                ]
-            ];
-            
-            return $this->response->setJSON($sampleInvoices);
-        }
-    }
-
-    public function getClientInvoices($clientId)
-    {
-        $this->setCorsHeaders();
-        
-        try {
-            $whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
-                'YdW5rB1z7ZRsQ5tPWgGX0tYQ9Fj2mAHp',
-                'y3VDBdgaTVrp8zS3SBzD7L1WwHCwI46P'
-            );
-            
-            $invoices = $whmcs->getInvoices($clientId);
-            $clientDetails = $whmcs->getClientDetails($clientId);
-            
-            $result = [];
-            if (isset($invoices['invoices']['invoice'])) {
-                $invoiceList = isset($invoices['invoices']['invoice'][0]) ? 
-                    $invoices['invoices']['invoice'] : [$invoices['invoices']['invoice']];
-                    
-                foreach ($invoiceList as $invoice) {
-                    $invoice['clientName'] = $clientDetails['firstname'] . ' ' . $clientDetails['lastname'];
-                    $invoice['clientEmail'] = $clientDetails['email'];
-                    $invoice['clientCompany'] = $clientDetails['companyname'] ?? '';
-                    $result[] = $invoice;
-                }
-            }
-            
-            return $this->response->setJSON($result);
-            
-        } catch (\Exception $e) {
-            return $this->response->setJSON([
-                'success' => false,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    public function generateInvoice()
-    {
-        $this->setCorsHeaders();
-        
-        try {
-            $whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
-                'YdW5rB1z7ZRsQ5tPWgGX0tYQ9Fj2mAHp',
-                'y3VDBdgaTVrp8zS3SBzD7L1WwHCwI46P'
-            );
-            
-            $requestData = $this->request->getJSON(true);
-            
-            // Generate invoice using WHMCS API
-            $result = $whmcs->genInvoices($requestData['clientId']);
-            
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Invoice generated successfully',
-                'data' => $result
-            ]);
-            
-        } catch (\Exception $e) {
-            return $this->response->setJSON([
-                'success' => false,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    public function captureInvoicePayment()
-    {
-        $this->setCorsHeaders();
-        
-        try {
-            $whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
-                'YdW5rB1z7ZRsQ5tPWgGX0tYQ9Fj2mAHp',
-                'y3VDBdgaTVrp8zS3SBzD7L1WwHCwI46P'
-            );
-            
-            $requestData = $this->request->getJSON(true);
-            
-            // Capture payment using WHMCS API
-            $result = $whmcs->capturePayment($requestData['invoiceId']);
-            
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Payment captured successfully',
-                'data' => $result
-            ]);
-            
-        } catch (\Exception $e) {
-            return $this->response->setJSON([
-                'success' => false,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    public function getPaymentMethods()
-    {
-        $this->setCorsHeaders();
-        
-        try {
-            $whmcs = new WHMCS('https://portal.easyonnet.io/includes/api.php',
-                'YdW5rB1z7ZRsQ5tPWgGX0tYQ9Fj2mAHp',
-                'y3VDBdgaTVrp8zS3SBzD7L1WwHCwI46P'
-            );
-            
-            $result = $whmcs->getPaymentMethods();
-            
-            return $this->response->setJSON($result);
-            
-        } catch (\Exception $e) {
-            // Return sample payment methods for development
-            $sampleMethods = [
-                [
-                    'id' => 1,
-                    'name' => 'PayPal',
-                    'description' => 'PayPal payment processing',
-                    'enabled' => true
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Stripe',
-                    'description' => 'Credit card processing via Stripe',
-                    'enabled' => true
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Bank Transfer',
-                    'description' => 'Direct bank transfer',
-                    'enabled' => false
-                ]
-            ];
-            
-            return $this->response->setJSON($sampleMethods);
         }
     }
 

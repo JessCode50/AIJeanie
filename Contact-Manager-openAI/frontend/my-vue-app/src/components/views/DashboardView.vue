@@ -5,8 +5,8 @@
       <div class="hero-content">
         <div class="hero-text">
           <h1 class="hero-title">
-            <span class="gradient-text">AI-Powered</span>
-            Contact Manager
+            <span class="gradient-text">AI-Powered </span>
+            JeanieAI Assistant
           </h1>
           <p class="hero-subtitle">
             Streamline your customer support with intelligent automation, 
