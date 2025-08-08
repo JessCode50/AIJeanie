@@ -700,6 +700,12 @@
 
 <script>
 export default {
+  props: {
+    selectedTicket: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
       title: 'Contact Manager',
@@ -751,6 +757,8 @@ export default {
           console.log('Fetched contacts:', data);
           this.contacts = data;
     })
+    // If navigated here from TicketsView with a selected ticket, auto-submit it
+    this.tryAutoSubmitSelectedTicket();
   },
 
   watch: {
@@ -758,10 +766,23 @@ export default {
       if (newView === 'contacts') {
         this.reset();
       }
+    },
+    // Auto-submit when selectedTicket is provided/changed
+    selectedTicket(newVal) {
+      if (newVal && newVal.id) {
+        this.tryAutoSubmitSelectedTicket();
+      }
     }
   },
 
   methods: {
+    tryAutoSubmitSelectedTicket() {
+      if (this.selectedTicket && this.selectedTicket.id) {
+        this.view = 'AI';
+        this.ticketIdInput = String(this.selectedTicket.id);
+        this.submitTicketId();
+      }
+    },
 
     startLoadingDots() {
   if (this.intervalId) clearInterval(this.intervalId);

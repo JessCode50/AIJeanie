@@ -527,21 +527,9 @@ export default {
     },
     async sendTicketToAI() {
       if (!this.currentSelectedTicket) return
-      const t = this.currentSelectedTicket
-      const ticketData = {
-        id: t.id,
-        subject: t.subject,
-        message: t.message,
-        priority: t.priority,
-        status: t.status,
-        category: t.category,
-        client: t.client,
-        created_at: t.created_at,
-        updated_at: t.updated_at,
-        tags: t.tags
-      }
       try {
-        this.$emit('send-to-ai', ticketData)
+        // Emit selected ticket upward; App.vue already sets selectedTicketForAI and routes to /ai
+        this.$emit('send-to-ai', this.currentSelectedTicket)
         this.$router.push('/ai')
       } catch (error) {
         console.error('Error sending ticket to AI:', error)
