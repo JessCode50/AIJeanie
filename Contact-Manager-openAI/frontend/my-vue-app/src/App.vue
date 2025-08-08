@@ -208,6 +208,9 @@ export default {
         case 'create-invoice':
           this.$router.push('/invoices');
           break;
+        case 'ai-assistant':
+          this.$router.push('/ai');
+          break;
         case 'backup-account':
           this.executeServerAction('backup-account');
           break;
