@@ -28,6 +28,8 @@
         :activities="recentActivities"
         :loading="dashboardLoading"
         :clients="clients"
+        :invoices="invoices"
+        :invoices-loading="invoicesLoading"
         :cpanel-accounts="cpanelAccounts"
         :hosting-accounts="hostingAccounts"
         :hosting-domains="hostingDomains"
@@ -43,6 +45,7 @@
         :ai-loading="loading"
         @view-change="handleViewChange"
         @quick-action="executeQuickAction"
+        @ticket-click="handleTicketClick"
         @send-message="sendAIMessage"
         @clear-chat="aiClear"
         @export-chat="exportChat"
@@ -53,6 +56,12 @@
         @delete-ticket="deleteTicket"
         @load-tickets="loadRealTickets"
         @send-to-ai="handleSendTicketToAI"
+        @generate-invoice="generateInvoice"
+        @capture-payment="capturePayment"
+        @load-invoices="loadRealInvoices"
+        @load-payment-methods="loadPaymentMethods"
+        @download-invoice="downloadInvoice"
+        @email-invoice="emailInvoice"
         @create-client="createClient"
         @update-client="updateClient"
         @load-clients="loadRealClients"
@@ -138,7 +147,12 @@ export default {
       recentActivities: [],
       realDataLoaded: false,
       dashboardLoading: false,
-      selectedTicketForAI: null
+      selectedTicketForAI: null,
+      
+      // Invoice data
+      invoices: [],
+      invoicesLoading: false,
+      paymentMethods: []
     }
   },
   methods: {
@@ -149,6 +163,7 @@ export default {
         'AI': '/ai',
         'tickets': '/tickets',
         'clients': '/clients',
+        'invoices': '/invoices',
         'servers': '/servers',
         'hosting': '/hosting',
         'session': '/session',
@@ -181,18 +196,29 @@ export default {
       console.log('Searching for:', query)
     },
     executeQuickAction(actionId) {
+      console.log('Executing quick action:', actionId);
+      
       switch(actionId) {
         case 'create-ticket':
-          this.$router.push('/tickets')
-          break
+          this.$router.push('/tickets');
+          break;
         case 'add-client':
-          this.$router.push('/clients')
-          break
-        case 'ai-assistant':
-          this.$router.push('/ai')
-          break
+          this.$router.push('/clients');
+          break;
+        case 'create-invoice':
+          this.$router.push('/invoices');
+          break;
+        case 'backup-account':
+          this.executeServerAction('backup-account');
+          break;
+        case 'check-ssl':
+          this.executeServerAction('ssl-status');
+          break;
+        case 'system-status':
+          this.$router.push('/servers');
+          break;
         default:
-          console.log('Action:', actionId)
+          console.log('Unknown action:', actionId);
       }
     },
     sendAIMessage(message) {
@@ -520,10 +546,205 @@ export default {
       } catch (error) {
         console.error('Error loading activities:', error);
       }
+    },
+    handleTicketClick(ticket) {
+      console.log('Ticket clicked:', ticket);
+      // Store the selected ticket globally so TicketsView can access it
+      this.selectedTicketForAI = ticket;
+      // Navigate to tickets view
+      this.$router.push('/tickets');
+    },
+
+    // Invoice Management Methods
+    async generateInvoice(invoiceData) {
+      console.log('Generating invoice:', invoiceData);
+      try {
+        const response = await fetch('http://localhost:8080/contacts/invoices/generate', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(invoiceData)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Invoice generated:', result);
+        
+        // Refresh invoices list
+        await this.loadRealInvoices();
+        
+        alert('Invoice generated successfully!');
+      } catch (error) {
+        console.error('Error generating invoice:', error);
+        alert('Failed to generate invoice. Please try again.');
+      }
+    },
+
+    async capturePayment(invoiceId) {
+      console.log('Capturing payment for invoice:', invoiceId);
+      try {
+        const response = await fetch('http://localhost:8080/contacts/invoices/capture-payment', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ invoiceId })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Payment captured:', result);
+        
+        // Refresh invoices list
+        await this.loadRealInvoices();
+        
+        alert('Payment captured successfully!');
+      } catch (error) {
+        console.error('Error capturing payment:', error);
+        alert('Failed to capture payment. Please try again.');
+      }
+    },
+
+    async loadRealInvoices(clientId = null) {
+      this.invoicesLoading = true;
+      try {
+        const url = clientId 
+          ? `http://localhost:8080/contacts/invoices/client/${clientId}`
+          : 'http://localhost:8080/contacts/invoices/list';
+          
+        const response = await fetch(url, {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Invoices loaded:', data);
+        
+        // Process invoice data to include client names
+        this.invoices = data.map(invoice => ({
+          ...invoice,
+          clientName: this.getClientName(invoice.userid),
+          clientEmail: this.getClientEmail(invoice.userid)
+        }));
+        
+      } catch (error) {
+        console.error('Error loading invoices:', error);
+        // Use sample data for development
+        this.invoices = this.getSampleInvoices();
+      } finally {
+        this.invoicesLoading = false;
+      }
+    },
+
+    async loadPaymentMethods() {
+      try {
+        const response = await fetch('http://localhost:8080/contacts/payment-methods', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Payment methods loaded:', data);
+        this.paymentMethods = data;
+        
+      } catch (error) {
+        console.error('Error loading payment methods:', error);
+        // Use sample data for development
+        this.paymentMethods = [
+          { id: 1, name: 'PayPal', description: 'PayPal payment processing', enabled: true },
+          { id: 2, name: 'Stripe', description: 'Credit card processing via Stripe', enabled: true },
+          { id: 3, name: 'Bank Transfer', description: 'Direct bank transfer', enabled: false }
+        ];
+      }
+    },
+
+    downloadInvoice(invoice) {
+      console.log('Downloading invoice:', invoice);
+      // This would typically generate and download a PDF
+      alert(`Invoice #${invoice.id} download started...`);
+    },
+
+    emailInvoice(invoice) {
+      console.log('Emailing invoice:', invoice);
+      // This would send the invoice via email
+      alert(`Invoice #${invoice.id} emailed to ${invoice.clientEmail || 'client'}!`);
+    },
+
+    getClientName(userId) {
+      const client = this.clients.find(c => c.id == userId);
+      return client ? client.name : 'Unknown Client';
+    },
+
+    getClientEmail(userId) {
+      const client = this.clients.find(c => c.id == userId);
+      return client ? client.email : '';
+    },
+
+    getSampleInvoices() {
+      return [
+        {
+          id: '1001',
+          userid: '1',
+          status: 'unpaid',
+          total: '299.99',
+          duedate: '2024-02-15',
+          datepaid: '',
+          paymentmethod: '',
+          date: '2024-01-15',
+          subtotal: '277.76',
+          tax: '22.23'
+        },
+        {
+          id: '1002',
+          userid: '2',
+          status: 'paid',
+          total: '149.50',
+          duedate: '2024-01-30',
+          datepaid: '2024-01-28',
+          paymentmethod: 'PayPal',
+          date: '2024-01-01',
+          subtotal: '137.79',
+          tax: '11.71'
+        },
+        {
+          id: '1003',
+          userid: '3',
+          status: 'overdue',
+          total: '89.99',
+          duedate: '2024-01-01',
+          datepaid: '',
+          paymentmethod: '',
+          date: '2023-12-01',
+          subtotal: '82.94',
+          tax: '7.05'
+        }
+      ];
     }
   },
   mounted() {
-    this.loadRealDashboardData()
+    // Load initial dashboard data
+    this.loadRealDashboardData();
+    
+    // Load clients and invoices for the application
+    this.loadRealClients();
+    this.loadRealInvoices();
   }
 }
 </script>

@@ -5,6 +5,7 @@ import TicketsView from '../components/views/TicketsView.vue'
 import ClientsView from '../components/views/ClientsView.vue'
 import ServersView from '../components/views/ServersView.vue'
 import HostingView from '../components/views/HostingView.vue'
+import InvoicesView from '../components/views/InvoicesView.vue'
 
 const routes = [
   {
@@ -34,6 +35,12 @@ const routes = [
     name: 'Clients',
     component: ClientsView,
     meta: { title: 'Client Management', icon: '👥', fullscreen: true }
+  },
+  {
+    path: '/invoices',
+    name: 'Invoices',
+    component: InvoicesView,
+    meta: { title: 'Invoice Management', icon: '💰', fullscreen: true }
   },
   {
     path: '/servers',

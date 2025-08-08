@@ -75,6 +75,18 @@ $routes->get('contacts/reports/usage', 'AiController::getUsageReport');
 $routes->get('contacts/reports/revenue', 'AiController::getRevenueReport');
 $routes->options('contacts/reports/revenue', 'AiController::getRevenueReport');
 
+// Invoice Management Routes
+$routes->get('contacts/invoices/list', 'AiController::listInvoices');
+$routes->options('contacts/invoices/list', 'AiController::listInvoices');
+$routes->get('contacts/invoices/client/(:num)', 'AiController::getClientInvoices/$1');
+$routes->options('contacts/invoices/client/(:num)', 'AiController::getClientInvoices/$1');
+$routes->post('contacts/invoices/generate', 'AiController::generateInvoice');
+$routes->options('contacts/invoices/generate', 'AiController::generateInvoice');
+$routes->post('contacts/invoices/capture-payment', 'AiController::captureInvoicePayment');
+$routes->options('contacts/invoices/capture-payment', 'AiController::captureInvoicePayment');
+$routes->get('contacts/payment-methods', 'AiController::getPaymentMethods');
+$routes->options('contacts/payment-methods', 'AiController::getPaymentMethods');
+
 // NEW REAL HOSTING DATA ROUTES
 $routes->get('contacts/hosting/accounts', 'AiController::getRealCpanelAccounts');
 $routes->options('contacts/hosting/accounts', 'AiController::getRealCpanelAccounts');
